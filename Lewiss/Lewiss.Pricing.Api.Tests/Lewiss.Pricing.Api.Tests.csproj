@@ -18,4 +18,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Lewiss.Pricing.Api\Lewiss.Pricing.Api.csproj" />
+  </ItemGroup>
+
 </Project>
