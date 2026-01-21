@@ -2,8 +2,9 @@ using Lewiss.Pricing.Shared.Customer;
 
 public static class CustomerFixture
 {
-   public static CustomerDTO TestCustomer {get;} = new CustomerDTO()
-   {
+    private static readonly TimeSpan NZDTimeSpanOffset = new TimeSpan(13, 0, 0);
+    public static CustomerDTO TestCustomer {get;} = new CustomerDTO()
+    {
        FamilyName = "April",
        Street = "Street Address",
        Suburb = "Suburb",
@@ -11,9 +12,7 @@ public static class CustomerFixture
        Email = "email.address@domain",
        Consultant = "Consultant",
        Measurer = "Measurer",
-       CreatedAt = new DateTime(2026, 1, 21, 10, 20, 20)
-   };
-
-   
+       CreatedAt = new DateTimeOffset(2026, 1, 21, 10, 20, 20, NZDTimeSpanOffset)
+    };
 
 }

@@ -1,8 +1,10 @@
 using Lewiss.Pricing.Api.Controllers;
-using Lewiss.Pricing.Shared.Customer;
+using Lewiss.Pricing.Shared.Worksheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Xunit.Abstractions;
+
+namespace Lewiss.Pricing.Api.Tests.Systems.Controllers;
 
 public class PricingControllerTests
 {
@@ -21,8 +23,12 @@ public class PricingControllerTests
         var result = await pricingController.CreateWorksheet(customerDTO);
 
         Assert.NotNull(result);
-        var okResultObject = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal(StatusCodes.Status201Created, okResultObject.StatusCode);
+        var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
+        Assert.Equal(StatusCodes.Status201Created, createdAtActionResult.StatusCode);
+        
+        var worksheetDTO = Assert.IsType<WorksheetDTO>(createdAtActionResult.Value);
+        Assert.Equal(customerDTO.FamilyName, worksheetDTO.Customer.FamilyName);
+
     }
 
 
