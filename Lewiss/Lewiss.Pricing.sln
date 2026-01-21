@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lewiss.Pricing.Api.Tests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lewiss.Pricing.Shared", "Lewiss.Pricing.Shared\Lewiss.Pricing.Shared.csproj", "{7B7C0332-5E07-4B27-B5DA-AC84AC863486}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lewiss.Pricing.Data", "Lewiss.Pricing.Data\Lewiss.Pricing.Data.csproj", "{3FD6B837-A166-4825-95E4-A6C621BE605F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{7B7C0332-5E07-4B27-B5DA-AC84AC863486}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B7C0332-5E07-4B27-B5DA-AC84AC863486}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B7C0332-5E07-4B27-B5DA-AC84AC863486}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FD6B837-A166-4825-95E4-A6C621BE605F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FD6B837-A166-4825-95E4-A6C621BE605F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FD6B837-A166-4825-95E4-A6C621BE605F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FD6B837-A166-4825-95E4-A6C621BE605F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

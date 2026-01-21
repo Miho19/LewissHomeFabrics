@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Lewiss.Pricing.Shared\Lewiss.Pricing.Shared.csproj" />
+    <ProjectReference Include="..\Lewiss.Pricing.Data\Lewiss.Pricing.Data.csproj" />
   </ItemGroup>
 
 </Project>
