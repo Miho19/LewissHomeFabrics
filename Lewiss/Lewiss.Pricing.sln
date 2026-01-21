@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lewiss.Pricing.Api", "Lewiss.Pricing.Api\Lewiss.Pricing.Api.csproj", "{820EE0CD-AC01-4F1C-A85C-8DF139C69D56}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lewiss.Pricing.Api.Tests", "Lewiss.Pricing.Api.Tests\Lewiss.Pricing.Api.Tests.csproj", "{909EDB45-F51E-4CEF-95FF-B8A71CFB2EC4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{820EE0CD-AC01-4F1C-A85C-8DF139C69D56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{820EE0CD-AC01-4F1C-A85C-8DF139C69D56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{820EE0CD-AC01-4F1C-A85C-8DF139C69D56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{909EDB45-F51E-4CEF-95FF-B8A71CFB2EC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{909EDB45-F51E-4CEF-95FF-B8A71CFB2EC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{909EDB45-F51E-4CEF-95FF-B8A71CFB2EC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{909EDB45-F51E-4CEF-95FF-B8A71CFB2EC4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
