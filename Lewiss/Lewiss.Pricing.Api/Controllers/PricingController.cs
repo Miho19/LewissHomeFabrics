@@ -18,9 +18,8 @@ public class PricingController : ControllerBase
     [HttpPost("worksheet", Name = "CreateWorksheet")]
 
     /** 
-        Add Customer To database
-        Add Worksheet To Database
-        
+        Add Customer To database / 
+        Request new Worksheet from Database
     */
     public async Task<IActionResult> CreateWorksheet([FromBody] CustomerDTO customerDTO)
     {
