@@ -1,4 +1,5 @@
 using Lewiss.Pricing.Api.Controllers;
+using Lewiss.Pricing.Shared.Worksheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Xunit.Abstractions;
@@ -13,9 +14,11 @@ public class PricingControllerTests
 
     [Fact]
     public async Task CreateWorksheet_ShouldReturnOkCreated_OnSuccess()
-    {
+    {   
+        var worksheetCreateDTOMock = new WorksheetCreateDTO();
+
         var pricingController = new PricingController();
-        var result = await pricingController.CreateWorksheet();
+        var result = await pricingController.CreateWorksheet(worksheetCreateDTOMock);
 
         Assert.NotNull(result);
         var okResultObject = Assert.IsType<OkObjectResult>(result);
