@@ -15,11 +15,8 @@ public class PricingControllerTests
     [Fact]
     public async Task CreateWorksheet_ShouldReturnOkCreated_OnSuccess()
     {   
-        var customerDTO = new CustomerDTO()
-        {
-            
-        };
-
+        var customerDTO = CustomerFixture.TestCustomer;
+        
         var pricingController = new PricingController();
         var result = await pricingController.CreateWorksheet(customerDTO);
 
