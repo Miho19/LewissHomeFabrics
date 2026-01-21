@@ -12,7 +12,6 @@ public static class CustomerFixture
        Email = "email.address@domain",
        Consultant = "Consultant",
        Measurer = "Measurer",
-       CreatedAt = new DateTimeOffset(2026, 1, 21, 10, 20, 20, NZDTimeSpanOffset)
     };
 
 }

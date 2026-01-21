@@ -17,6 +17,11 @@ public class PricingController : ControllerBase
  
     [HttpPost("worksheet", Name = "CreateWorksheet")]
 
+    /** 
+        Add Customer To database
+        Add Worksheet To Database
+        
+    */
     public async Task<IActionResult> CreateWorksheet([FromBody] CustomerDTO customerDTO)
     {
         Guid worksheetId = Guid.CreateVersion7(DateTimeOffset.UtcNow);

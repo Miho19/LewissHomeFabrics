@@ -8,5 +8,5 @@ public record CustomerDTO
     public required string Email {get; set;}
     public required string Consultant {get; set;}
     public required string Measurer {get; set;}
-    public required DateTimeOffset CreatedAt {get; set;}
+   
 }
