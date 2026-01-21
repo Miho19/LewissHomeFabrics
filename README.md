@@ -7,7 +7,7 @@
 
 ## Objects
 
-    Customer
+    Customer DTO
         - Family Name
         - Street
         - Suburb
@@ -15,17 +15,17 @@
         - Email
         - Consultant
         - Measurer
-        - Created at Date
 
-    Worksheet
+    Worksheet DTO
         - WorksheetId
         - Customer
-        - Product Information
+        - Products
         - Additional
 
-    Product
+    Product DTO
         - ProductId
         - WorksheetId
+        - Price
         - Location
         - Width
         - Height
@@ -61,3 +61,51 @@
 
 1. Send Customer information in
 2. Send back a worksheet object
+
+## Database Tables
+
+    Customer Table
+    - CustomerId
+    - Family Name
+    - Street
+    - Suburb
+    - Mobile
+    - Email
+    - Consultant
+    - Measurer
+    - CreatedAt
+
+    - Current Worksheets
+        - One to Many
+    - Past Worksheets
+        - One to Many
+
+
+    Worksheet
+    - WorksheetId
+    - CreatedAt
+    - CustomerId
+        - One to One
+
+    Product
+    - ProductId
+    - Price
+    - Location
+    - Width
+    - Height
+    - WorksheetId
+        - One to One
+    OptionVariations
+        - Many to Many
+
+    Option
+    - OptionId
+    - Name
+    These are the available attributes that can change for a product
+
+    OptionVariations
+    - OptionVariationId
+    - Price
+    - OptionId
+        - many to One
+    - Value

@@ -6,6 +6,5 @@ public class Option
     [Key]
     public required Guid Id;
     public required string Name {get; set;}
-
+    
 }
-
