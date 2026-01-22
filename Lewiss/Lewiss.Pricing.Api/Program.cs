@@ -1,3 +1,6 @@
+using Lewiss.Pricing.Data.Context;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +8,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+var dbConnectionString = System.Environment.GetEnvironmentVariable("DatabaseConnectionString");
+
+
+builder.Services.AddDbContext<PricingDbContext>(options =>
+{
+    options.UseMySql(dbConnectionString, ServerVersion.AutoDetect(dbConnectionString));
+});
 
 var app = builder.Build();
 
