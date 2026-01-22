@@ -1,5 +1,10 @@
+using DotNetEnv;
 using Lewiss.Pricing.Data.Context;
 using Microsoft.EntityFrameworkCore;
+
+
+Env.Load();
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +15,6 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 var dbConnectionString = System.Environment.GetEnvironmentVariable("DatabaseConnectionString");
-
 
 builder.Services.AddDbContext<PricingDbContext>(options =>
 {

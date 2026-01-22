@@ -9,6 +9,5 @@ public class Worksheet
 
     public required Guid CustomerId {get; set;}
     public required Customer Customer {get; set;}
-
-
+    
 }
