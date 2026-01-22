@@ -1,15 +1,15 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lewiss.Pricing.Api", "Lewiss.Pricing.Api\Lewiss.Pricing.Api.csproj", "{820EE0CD-AC01-4F1C-A85C-8DF139C69D56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lewiss.Pricing.Api", "Lewiss.Pricing.Api\Lewiss.Pricing.Api.csproj", "{820EE0CD-AC01-4F1C-A85C-8DF139C69D56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lewiss.Pricing.Api.Tests", "Lewiss.Pricing.Api.Tests\Lewiss.Pricing.Api.Tests.csproj", "{909EDB45-F51E-4CEF-95FF-B8A71CFB2EC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lewiss.Pricing.Api.Tests", "Lewiss.Pricing.Api.Tests\Lewiss.Pricing.Api.Tests.csproj", "{909EDB45-F51E-4CEF-95FF-B8A71CFB2EC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lewiss.Pricing.Shared", "Lewiss.Pricing.Shared\Lewiss.Pricing.Shared.csproj", "{7B7C0332-5E07-4B27-B5DA-AC84AC863486}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lewiss.Pricing.Shared", "Lewiss.Pricing.Shared\Lewiss.Pricing.Shared.csproj", "{7B7C0332-5E07-4B27-B5DA-AC84AC863486}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lewiss.Pricing.Data", "Lewiss.Pricing.Data\Lewiss.Pricing.Data.csproj", "{3FD6B837-A166-4825-95E4-A6C621BE605F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lewiss.Pricing.Data", "Lewiss.Pricing.Data\Lewiss.Pricing.Data.csproj", "{3FD6B837-A166-4825-95E4-A6C621BE605F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -7,6 +7,7 @@ public static class CustomerFixture
     {
        FamilyName = "April",
        Street = "Street Address",
+       City = "City",
        Suburb = "Suburb",
        Mobile = "123 458 7891",
        Email = "email.address@domain",

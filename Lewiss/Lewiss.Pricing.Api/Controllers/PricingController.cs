@@ -23,12 +23,14 @@ public class PricingController : ControllerBase
     */
     public async Task<IActionResult> CreateWorksheet([FromBody] CustomerDTO customerDTO)
     {
-        Guid worksheetId = Guid.CreateVersion7(DateTimeOffset.UtcNow);
+        var currentDateTimeOffset = DateTimeOffset.UtcNow;
+
+        Guid worksheetId = Guid.CreateVersion7(currentDateTimeOffset);
         var workoutDTO = new WorksheetDTO()
         {
             WorksheetId = worksheetId,
             Customer = customerDTO,
-            CreatedAt = new DateTimeOffset(DateTime.UtcNow, new TimeSpan(13,0, 0))
+            CreatedAt = currentDateTimeOffset
         };
         
         return new CreatedAtActionResult("Created Worksheet", nameof(CreateWorksheet), new {Id = worksheetId}, workoutDTO);
