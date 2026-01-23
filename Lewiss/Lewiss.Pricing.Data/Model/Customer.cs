@@ -14,6 +14,6 @@ public class Customer
     public required DateTimeOffset CreatedAt {get; set;}
 
     public ICollection<Worksheet> CurrentWorksheets {get; set;} = new List<Worksheet>();
-    public ICollection<Worksheet> PastWorksheets {get; set;} = new List<Worksheet>();
+   
 
 }

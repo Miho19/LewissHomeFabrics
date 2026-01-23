@@ -1,9 +1,8 @@
-using System.ComponentModel.DataAnnotations;
 
 namespace Lewiss.Pricing.Data.Model;
 public class OptionVariation
 {
-    [Key]
+
     public required Guid Id {get; set;}
 
     public decimal? Price {get; set;}
