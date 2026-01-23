@@ -1,10 +1,8 @@
-using DotNetEnv;
+using dotenv.net;
 using Lewiss.Pricing.Data.Context;
 using Microsoft.EntityFrameworkCore;
 
-
-Env.Load();
-
+DotEnv.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 

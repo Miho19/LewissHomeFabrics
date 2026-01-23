@@ -18,8 +18,6 @@ public class PricingDbContext : DbContext
 
         modelBuilder.Entity<Customer>().HasKey(c => c.Id);
         modelBuilder.Entity<Worksheet>().HasKey(w => w.Id);
-
-
         modelBuilder.Entity<Customer>().HasMany(c => c.CurrentWorksheets).WithOne(w => w.Customer).HasForeignKey(w => w.CustomerId);
 
     }
