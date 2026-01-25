@@ -16,11 +16,6 @@ public class PricingController : ControllerBase
     }
  
     [HttpPost("worksheet", Name = "CreateWorksheet")]
-
-    /** 
-        Add Customer To database / 
-        Request new Worksheet from Database
-    */
     public async Task<IActionResult> CreateWorksheet([FromBody] CustomerDTO customerDTO)
     {
         var currentDateTimeOffset = DateTimeOffset.UtcNow;
@@ -30,7 +25,8 @@ public class PricingController : ControllerBase
         {
             WorksheetId = worksheetId,
             Customer = customerDTO,
-            CreatedAt = currentDateTimeOffset
+            Price = 0.00m,
+            Additional = 0.00m,
         };
         
         return new CreatedAtActionResult("Created Worksheet", nameof(CreateWorksheet), new {Id = worksheetId}, workoutDTO);

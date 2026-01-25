@@ -6,7 +6,7 @@ public record WorksheetDTO
 {
     public required Guid WorksheetId {get; set;}
     public required CustomerDTO Customer {get; set;}
-
-    public required DateTimeOffset CreatedAt {get; set;}
+    public required decimal Price {get; set;}
+    public required decimal Additional {get; set;}
 
 }

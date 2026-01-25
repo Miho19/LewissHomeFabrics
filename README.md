@@ -1,111 +1,91 @@
-# Lewiss Home Fabrics
+# Lewiss Home Fabrics Pricing
 
 ## Current Task
 
-    - PricingController Branch
-        - Ability to create worksheets
+- Repositories for Worksheet and Customer
+- Unit of Work for repositories
+- Service layer for the Pricing Controller
 
-## Objects
+## Front-end Interface
 
-    Customer DTO
-        - Family Name
-        - Street
-        - Suburb
-        - Mobile
-        - Email
-        - Consultant
-        - Measurer
+### Staff DTO
 
-    Worksheet DTO
-        - WorksheetId
-        - Customer
-        - Products
-        - Additional
+```
+Name: string
+Role: string
+Mobile: string
+Email: string
+Department: string
+```
 
-    Product DTO
-        - ProductId
-        - WorksheetId
-        - Price
-        - Location
-        - Width
-        - Height
-        - Fit Type
-            - IN / OUT
-        - FixingTo
-            - TBC
-        - ProductType
+### Customer DTO
 
-        - Fabric
-        - OperationType
-        - OperationSide
+```
+Family Name: string
+Street: string
+Suburb: string
+Mobile: string
+Email: string
+```
 
-        Configuration
+### Worksheet DTO
 
-            - Kinetics Cellular
-               - Headrail Colour
-               - Side Channel Colour
-                - Butting
+```
+WorksheetId: string
+Customer: Customer DTO
+Price: decimal
+Discount: decimal
+NewBuild: bool
+CallOutFee: decimal
+Consultant: Staff DTO
+Measurer: Staff DTO
+```
 
-            - Kinetics Roller
-                - Chain Type
-                - Chain Length
-                - Bottom Rail Colour
-                - Bracket Type
-                    - Standard, Extra Large, Combo Bracket
-                - Bracket Colour
-                - Pelmet Type
-                - Pelmet Colour
-                - Butting
+### Product DTO
+
+```
+ProductId: string
+WorksheetId: string
+Price: decimal
+Location: string
+Width: integer
+Height: integer
+Reveal: integer
+FitType: string
+FixingTo: string
+AboveHeightConstraint: bool
+ProductType: string
+Fabric: string
+OperationType: string
+OperationSide: string
+RemoteNumber: integer
+RemoteChannel: integer
+Configuration: oneOf [Kinetics Cellular, Kinetics Roller]
+ButtingTo: string
+```
+
+### Kinetics Cellular
+
+```
+HeadrailColour: string
+SideChannelColour: string
+```
+
+### Kinetics Roller
+
+```
+RollType: string
+ChainColour: string
+ChainLength: integer
+BracketType: string
+BracketColour: string
+BottomRailType: string
+BottomRailColour: string
+PelmetType: string
+PelmetColour: string
+```
 
 ## Creating Worksheet
 
-1. Send Customer information in
-2. Send back a worksheet object
-
-## Database Tables
-
-    Customer Table
-    - CustomerId
-    - Family Name
-    - Street
-    - Suburb
-    - Mobile
-    - Email
-    - Consultant
-    - Measurer
-    - CreatedAt
-
-    - Current Worksheets
-        - One to Many
-    - Past Worksheets
-        - One to Many
-
-
-    Worksheet
-    - WorksheetId
-    - CreatedAt
-    - CustomerId
-        - One to One
-
-    Product
-    - ProductId
-    - Price
-    - Location
-    - Width
-    - Height
-    - WorksheetId
-        - One to One
-    OptionVariations
-        - Many to Many
-
-    Option
-    - OptionId
-    - Name
-    These are the available attributes that can change for a product
-
-    OptionVariations
-    - OptionVariationId
-    - Price
-    - OptionId
-        - many to One
-    - Value
+1. Send in Customer DTO
+2. Server responds with Worksheet DTO
