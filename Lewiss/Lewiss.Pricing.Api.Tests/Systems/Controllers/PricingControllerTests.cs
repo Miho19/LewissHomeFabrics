@@ -46,6 +46,26 @@ public class PricingControllerTests
         Assert.Equal(customerDTO.Id, worksheetDTO.CustomerId);
 
     }
+    
+    [Fact]
+    public async Task CreateCustomer_ShouldReturnOkCreated_OnSuccess()
+    {
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var pricingController = new PricingController(pricingServiceMock.Object);
+        var customerDTO = CustomerFixture.TestCustomer;
 
+        pricingServiceMock.Setup(p => p.CreateCustomer(It.IsAny<CustomerCreateDTO>())).ReturnsAsync(customerDTO);
+
+        var result = await pricingController.CreateCustomer(CustomerFixture.TestCustomerCreate);
+
+        Assert.NotNull(result);
+        var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
+        Assert.Equal(StatusCodes.Status201Created, createdAtActionResult.StatusCode);
+
+        var customerEntryDTO = Assert.IsType<CustomerEntryDTO>(result);
+        Assert.Equal(customerDTO.FamilyName,customerEntryDTO.FamilyName);
+
+    }
 
 }
