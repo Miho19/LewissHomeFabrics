@@ -1,4 +1,3 @@
-using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Shared.CustomerDTO;
 using Lewiss.Pricing.Shared.Worksheet;
 
@@ -15,7 +14,7 @@ public class PricingService
     }   
 
 
-    public virtual async Task<CustomerEntryDTO?> CreateCustomer(CustomerCreateDTO customerCreateDTO)
+    public virtual async Task<CustomerEntryDTO?> CreateCustomerAsync(CustomerCreateDTO customerCreateDTO, CancellationToken cancellationToken = default)
     {
 
         var customer = new Data.Model.Customer
@@ -47,8 +46,34 @@ public class PricingService
         return customerEntryDto;
     }
     
-    public virtual async Task<WorksheetDTO?> CreateWorksheet(CustomerEntryDTO customerEntryDTO)
+    public virtual async Task<WorksheetDTO?> CreateWorksheetAsync(CustomerEntryDTO customerEntryDTO, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(customerEntryDTO.Id, cancellationToken);
+        if(customer is null)
+        {
+            return null;
+        }
+
+        var worksheet = new Data.Model.Worksheet
+        {
+            ExternalId = Guid.CreateVersion7(DateTimeOffset.UtcNow),
+            CreatedAt = DateTimeOffset.UtcNow,
+            Customer = customer,
+            CustomerId = customer.Id
+
+        };
+
+        await _unitOfWork.Worksheet.AddAsync(worksheet);
+        await _unitOfWork.CommitAsync();
+
+        var worksheetDTO = new WorksheetDTO
+        {
+            Id = worksheet.ExternalId,
+            CustomerId = customer.ExternalId,
+            Price = 0.00m,
+            Additional = 0.00m
+        };
+
+        return worksheetDTO;
     }
 }

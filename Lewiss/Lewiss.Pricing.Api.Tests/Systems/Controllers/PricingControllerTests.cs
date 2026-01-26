@@ -27,7 +27,7 @@ public class PricingControllerTests
 
         var customerDTO = CustomerFixture.TestCustomer;
 
-        pricingServiceMock.Setup(p => p.CreateWorksheet(It.IsAny<CustomerEntryDTO>())).ReturnsAsync(new WorksheetDTO
+        pricingServiceMock.Setup(p => p.CreateWorksheetAsync(It.IsAny<CustomerEntryDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(new WorksheetDTO
         {
             Id = Guid.CreateVersion7(DateTimeOffset.UtcNow),
             CustomerId = customerDTO.Id,
@@ -57,7 +57,7 @@ public class PricingControllerTests
 
         var customerDTO = CustomerFixture.TestCustomer;
 
-        pricingServiceMock.Setup(p => p.CreateWorksheet(It.IsAny<CustomerEntryDTO>())).ReturnsAsync((WorksheetDTO) null!);
+        pricingServiceMock.Setup(p => p.CreateWorksheetAsync(It.IsAny<CustomerEntryDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync((WorksheetDTO) null!);
 
         var result = await pricingController.CreateWorksheet(customerDTO);
 
@@ -75,7 +75,7 @@ public class PricingControllerTests
         var pricingController = new PricingController(pricingServiceMock.Object);
         var customerDTO = CustomerFixture.TestCustomer;
 
-        pricingServiceMock.Setup(p => p.CreateCustomer(It.IsAny<CustomerCreateDTO>())).ReturnsAsync(customerDTO);
+        pricingServiceMock.Setup(p => p.CreateCustomerAsync(It.IsAny<CustomerCreateDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(customerDTO);
 
         var result = await pricingController.CreateCustomer(CustomerFixture.TestCustomerCreate);
 
@@ -97,7 +97,7 @@ public class PricingControllerTests
 
         var customerCreateDTO = CustomerFixture.TestCustomerCreate;
 
-        pricingServiceMock.Setup(p => p.CreateCustomer(It.IsAny<CustomerCreateDTO>())).ReturnsAsync((CustomerEntryDTO) null!);
+        pricingServiceMock.Setup(p => p.CreateCustomerAsync(It.IsAny<CustomerCreateDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync((CustomerEntryDTO) null!);
 
         var result = await pricingController.CreateCustomer(customerCreateDTO);
 

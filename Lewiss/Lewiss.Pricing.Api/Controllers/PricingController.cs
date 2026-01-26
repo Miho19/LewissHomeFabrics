@@ -17,9 +17,9 @@ public class PricingController : ControllerBase
     }
  
     [HttpPost("worksheet", Name = "CreateWorksheet")]
-    public async Task<IActionResult> CreateWorksheet([FromBody] CustomerEntryDTO customerDTO)
+    public async Task<IActionResult> CreateWorksheet([FromBody] CustomerEntryDTO customerDTO, CancellationToken cancellationToken = default)
     {
-        var worksheet = await _pricingService.CreateWorksheet(customerDTO);
+        var worksheet = await _pricingService.CreateWorksheetAsync(customerDTO, cancellationToken);
         if (worksheet is null)
         {
             return new ObjectResult(new ProblemDetails
@@ -34,9 +34,9 @@ public class PricingController : ControllerBase
     }
 
     [HttpPost("customer", Name = "CreateCustomer")]
-    public async Task<IActionResult> CreateCustomer([FromBody] CustomerCreateDTO customerCreateDTO)
+    public async Task<IActionResult> CreateCustomer([FromBody] CustomerCreateDTO customerCreateDTO, CancellationToken cancellationToken = default)
     {
-        var customerEntryDto = await _pricingService.CreateCustomer(customerCreateDTO);
+        var customerEntryDto = await _pricingService.CreateCustomerAsync(customerCreateDTO, cancellationToken);
         if (customerEntryDto is null)
         {
             return StatusCode(500, new ProblemDetails

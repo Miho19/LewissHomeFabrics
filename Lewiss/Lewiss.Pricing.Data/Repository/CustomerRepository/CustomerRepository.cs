@@ -11,4 +11,8 @@ public class CustomerRepository : Repository<Customer>, ICustomerRepository
     {
     }
 
+    public async Task<Customer?> GetCustomerByExternalIdAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
+    {
+        return await _dbSet.FirstOrDefaultAsync(c => c.ExternalId == externalCustomerId);
+    }
 }
