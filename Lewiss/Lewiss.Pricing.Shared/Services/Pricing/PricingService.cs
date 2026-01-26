@@ -130,4 +130,31 @@ public class PricingService
         };
         return worksheetDTO;
     }
+
+    public virtual async Task<List<WorksheetDTO>> GetCustomerWorksheetDTOListAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
+    {
+        var worksheet = await _unitOfWork.Worksheet.GetWorksheetByExternalIdAsync(externalCustomerId, cancellationToken);
+        if (worksheet is null)
+        {
+            return [];
+        }
+
+        var customer = await _unitOfWork.Customer.GetByIdAsync(worksheet.CustomerId);
+        if (customer is null)
+        {
+            return [];
+        }
+
+        var worksheetDTO = new WorksheetDTO
+        {
+            Id = worksheet.ExternalMapping,
+            CustomerId = customer.ExternalMapping,
+            CallOutFee = worksheet.CallOutFee,
+            Discount = worksheet.Discount,
+            NewBuild = worksheet.NewBuild,
+            Price = worksheet.Price
+        };
+
+        return [worksheetDTO];
+    }
 }

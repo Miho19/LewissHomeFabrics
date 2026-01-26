@@ -159,7 +159,7 @@ public class PricingControllerTests
     }
 
     [Fact]
-    public async Task GetWorksheet_ShouldReturn500_OnFailure()
+    public async Task GetWorksheet_ShouldReturn404_OnFailure()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
@@ -174,7 +174,28 @@ public class PricingControllerTests
         Assert.NotNull(result);
         var objectResult = Assert.IsType<ObjectResult>(result);
         var problemsDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
-        Assert.Equal(StatusCodes.Status500InternalServerError, problemsDetails.Status);
+        Assert.Equal(StatusCodes.Status404NotFound, problemsDetails.Status);
     }
 
+    // [Fact]
+    // public async Task GetCustomerWorksheet_ShouldReturnOK200_OnSuccess()
+    // {
+    //     var unitOfWorkMock = new Mock<IUnitOfWork>();
+    //     var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+    //     var testWorksheetDTO = WorksheetFixture.TestWorksheet;
+    //     var customerDTO = CustomerFixture.TestCustomer;
+
+
+    //     // pricingServiceMock.Setup(p => p.GetWorksheetDTOAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(testWorksheetDTO);
+
+    //     var pricingController = new PricingController(pricingServiceMock.Object);
+
+    //     var result = await pricingController.GetCustomerWorksheet(customerDTO.Id);
+
+    //     Assert.NotNull(result);
+    //     var okObjectResult = Assert.IsType<OkObjectResult>(result);
+    //     var worksheetDTOList = Assert.IsType<List<WorksheetDTO>>(okObjectResult.Value);
+    //     Assert.NotEmpty(worksheetDTOList);
+    //     Assert.Equal(testWorksheetDTO.Id, worksheetDTOList[0].Id);
+    // }
 }

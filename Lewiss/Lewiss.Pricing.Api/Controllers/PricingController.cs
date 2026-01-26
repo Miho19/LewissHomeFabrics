@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
 using Lewiss.Pricing.Shared.CustomerDTO;
-using Lewiss.Pricing.Shared.Services.Pricing;
 using Lewiss.Pricing.Shared.QueryParameters;
+using Lewiss.Pricing.Shared.Services.Pricing;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Lewiss.Pricing.Api.Controllers;
 
@@ -14,9 +14,9 @@ public class PricingController : ControllerBase
 
     public PricingController(PricingService pricingService)
     {
-        _pricingService = pricingService;    
+        _pricingService = pricingService;
     }
- 
+
     [HttpPost("worksheet", Name = "CreateWorksheet")]
     public async Task<IActionResult> CreateWorksheet([FromBody] CustomerEntryDTO customerDTO, CancellationToken cancellationToken = default)
     {
@@ -30,15 +30,32 @@ public class PricingController : ControllerBase
                 Detail = "Failed to create worksheet"
             });
         }
-        
-        return new CreatedAtActionResult("Created Worksheet", nameof(CreateWorksheet), new {Id = worksheet.Id}, worksheet);
+
+        return new CreatedAtActionResult("Created Worksheet", nameof(CreateWorksheet), new { Id = worksheet.Id }, worksheet);
     }
 
     [HttpGet("worksheet/{workoutId}", Name = "GetWorksheet")]
     public async Task<IActionResult> GetWorksheet(Guid workoutId, CancellationToken cancellationToken = default)
     {
         var worksheetDTO = await _pricingService.GetWorksheetDTOAsync(workoutId, cancellationToken);
-        if(worksheetDTO is null)
+        if (worksheetDTO is null)
+        {
+            return new ObjectResult(new ProblemDetails
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "Internal Server Error",
+                Detail = "Worksheet Not Found"
+            });
+        }
+
+        return new OkObjectResult(worksheetDTO);
+    }
+
+    [HttpGet("customer/{customerId}", Name = "GetCustomerWorksheet")]
+    public async Task<IActionResult> GetCustomerWorksheet(Guid customerId, CancellationToken cancellationToken = default)
+    {
+        var worksheetDTOList = await _pricingService.GetCustomerWorksheetDTOListAsync(customerId, cancellationToken);
+        if (worksheetDTOList is null)
         {
             return new ObjectResult(new ProblemDetails
             {
@@ -48,7 +65,7 @@ public class PricingController : ControllerBase
             });
         }
 
-        return new OkObjectResult(worksheetDTO);
+        return new OkObjectResult(worksheetDTOList);
     }
 
     [HttpPost("customer", Name = "CreateCustomer")]
@@ -65,14 +82,14 @@ public class PricingController : ControllerBase
             });
         }
 
-        return new CreatedAtActionResult("Created Customer", nameof(CreateCustomer), new {Id = customerEntryDto.Id}, customerEntryDto);
+        return new CreatedAtActionResult("Created Customer", nameof(CreateCustomer), new { Id = customerEntryDto.Id }, customerEntryDto);
     }
 
     [HttpGet("customer", Name = "GetCustomer")]
     public async Task<IActionResult> GetCustomer([FromQuery] GetCustomerQueryParameters getCustomerQueryParameters, CancellationToken cancellationToken = default)
     {
         var customerEntryDTOList = await _pricingService.GetCustomersAsync(getCustomerQueryParameters, cancellationToken);
-        if(customerEntryDTOList is null)
+        if (customerEntryDTOList is null)
         {
             return StatusCode(500, new ProblemDetails
             {
@@ -81,7 +98,7 @@ public class PricingController : ControllerBase
                 Detail = "Failed to retrieve customer",
             });
         }
-        
+
         return new OkObjectResult(customerEntryDTOList);
     }
 }
