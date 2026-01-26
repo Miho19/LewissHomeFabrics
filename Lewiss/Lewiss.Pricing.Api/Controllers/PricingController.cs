@@ -1,4 +1,5 @@
 using Lewiss.Pricing.Shared.CustomerDTO;
+using Lewiss.Pricing.Shared.Product;
 using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.Services.Pricing;
 using Microsoft.AspNetCore.Mvc;
@@ -45,6 +46,23 @@ public class PricingController : ControllerBase
                 Status = StatusCodes.Status404NotFound,
                 Title = "Internal Server Error",
                 Detail = "Worksheet Not Found"
+            });
+        }
+
+        return new OkObjectResult(worksheetDTO);
+    }
+
+    [HttpPost("worksheet/{workoutId}/product", Name = "CreateProduct")]
+    public async Task<IActionResult> CreateProduct(Guid workoutId, [FromBody] ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
+    {
+        var worksheetDTO = await _pricingService.GetWorksheetDTOAsync(workoutId, cancellationToken);
+        if (worksheetDTO is null)
+        {
+            return new ObjectResult(new ProblemDetails
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "Internal Server Error",
+                Detail = "Failed to create product"
             });
         }
 

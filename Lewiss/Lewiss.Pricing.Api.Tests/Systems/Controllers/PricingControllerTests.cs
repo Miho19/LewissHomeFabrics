@@ -1,6 +1,7 @@
 using Lewiss.Pricing.Api.Controllers;
 using Lewiss.Pricing.Api.Tests.Fixtures;
 using Lewiss.Pricing.Shared.CustomerDTO;
+using Lewiss.Pricing.Shared.Product;
 using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.Services.Pricing;
 using Lewiss.Pricing.Shared.Worksheet;
@@ -238,4 +239,27 @@ public class PricingControllerTests
         var workoutDTOList = Assert.IsType<List<WorksheetDTO>>(okObjectResult.Value);
         Assert.Empty(workoutDTOList);
     }
+
+    [Fact]
+    public async Task CreateProduct_ShouldReturnOK200_OnSuccess()
+    {
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+
+
+        var testWorksheetDTO = WorksheetFixture.TestWorksheet;
+
+        var newProductDTO = ProductFixture.TestProductCreateDTO;
+
+        var pricingController = new PricingController(pricingServiceMock.Object);
+
+        var result = await pricingController.CreateProduct(testWorksheetDTO.Id, newProductDTO);
+
+        Assert.NotNull(result);
+        var okObjectResult = Assert.IsType<OkObjectResult>(result);
+        var worksheetDTOList = Assert.IsType<List<WorksheetDTO>>(okObjectResult.Value);
+        Assert.NotEmpty(worksheetDTOList);
+        Assert.Equal(testWorksheetDTO.Id, worksheetDTOList[0].Id);
+    }
+
 }

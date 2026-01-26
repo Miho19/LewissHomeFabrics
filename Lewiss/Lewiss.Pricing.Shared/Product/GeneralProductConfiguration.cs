@@ -1,10 +1,7 @@
 namespace Lewiss.Pricing.Shared.Product;
 
-public class ProductDTO
+public class GeneralProductConfigration
 {
-    public required Guid Id { get; set; }
-    public required Guid WorksheetId { get; set; }
-
     public required decimal Price { get; set; }
     public required string Location { get; set; }
 
@@ -21,7 +18,4 @@ public class ProductDTO
     public required int RemoteNumber { get; set; }
     public required int RemoteChannel { get; set; }
     public int? ButtingToId { get; set; }
-
-    public required IConfiguration Configuration { get; set; }
-
 }
