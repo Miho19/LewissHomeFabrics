@@ -17,8 +17,17 @@ public class PricingDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Customer>().HasKey(c => c.Id);
+        modelBuilder.Entity<Customer>().Property(c => c.Id).ValueGeneratedOnAdd();
+        
         modelBuilder.Entity<Worksheet>().HasKey(w => w.Id);
+        modelBuilder.Entity<Worksheet>().Property(w => w.Id).ValueGeneratedOnAdd();
+
         modelBuilder.Entity<Customer>().HasMany(c => c.CurrentWorksheets).WithOne(w => w.Customer).HasForeignKey(w => w.CustomerId);
+    
+        modelBuilder.Entity<Customer>().HasIndex(c => c.Email).IsUnique();
+        modelBuilder.Entity<Customer>().HasIndex(c => c.Mobile).IsUnique();
+
+    
     }
 
 

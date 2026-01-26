@@ -11,8 +11,7 @@ public static class CustomerFixture
        Suburb = "Suburb",
        Mobile = "123 458 7891",
        Email = "email.address@domain",
-       Consultant = "Consultant",
-       Measurer = "Measurer",
+      
     };
 
 }
