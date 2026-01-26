@@ -36,7 +36,18 @@ public class PricingController : ControllerBase
     [HttpPost("customer", Name = "CreateCustomer")]
     public async Task<IActionResult> CreateCustomer([FromBody] CustomerCreateDTO customerCreateDTO)
     {
-        throw new NotImplementedException();
+        var customerEntryDto = await _pricingService.CreateCustomer(customerCreateDTO);
+        if (customerEntryDto is null)
+        {
+            return new ObjectResult(new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Internal Server Error",
+                Detail = "Failed to create customer"
+            });
+        }
+
+        return new CreatedAtActionResult("Created Customer", nameof(CreateCustomer), new {Id = customerEntryDto.Id}, customerEntryDto);
     } 
 
 }

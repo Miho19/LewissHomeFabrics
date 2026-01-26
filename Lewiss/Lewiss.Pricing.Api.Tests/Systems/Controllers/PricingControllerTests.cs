@@ -63,7 +63,7 @@ public class PricingControllerTests
         var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
         Assert.Equal(StatusCodes.Status201Created, createdAtActionResult.StatusCode);
 
-        var customerEntryDTO = Assert.IsType<CustomerEntryDTO>(result);
+        var customerEntryDTO = Assert.IsType<CustomerEntryDTO>(createdAtActionResult.Value);
         Assert.Equal(customerDTO.FamilyName,customerEntryDTO.FamilyName);
 
     }
