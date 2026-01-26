@@ -15,7 +15,7 @@ public class PricingService
     }   
 
 
-    public virtual async Task<CustomerEntryDTO> CreateCustomer(CustomerCreateDTO customerCreateDTO)
+    public virtual async Task<CustomerEntryDTO?> CreateCustomer(CustomerCreateDTO customerCreateDTO)
     {
 
         var customer = new Data.Model.Customer
@@ -47,7 +47,7 @@ public class PricingService
         return customerEntryDto;
     }
     
-    public virtual async Task<WorksheetDTO> CreateWorksheet(CustomerEntryDTO customerEntryDTO)
+    public virtual async Task<WorksheetDTO?> CreateWorksheet(CustomerEntryDTO customerEntryDTO)
     {
         throw new NotImplementedException();
     }

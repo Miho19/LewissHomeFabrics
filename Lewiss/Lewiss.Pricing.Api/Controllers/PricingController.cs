@@ -39,15 +39,16 @@ public class PricingController : ControllerBase
         var customerEntryDto = await _pricingService.CreateCustomer(customerCreateDTO);
         if (customerEntryDto is null)
         {
-            return new ObjectResult(new ProblemDetails
+            return StatusCode(500, new ProblemDetails
             {
-                Status = StatusCodes.Status500InternalServerError,
+                Status = 500,
                 Title = "Internal Server Error",
-                Detail = "Failed to create customer"
+                Detail = "Failed to create customer",
             });
         }
 
         return new CreatedAtActionResult("Created Customer", nameof(CreateCustomer), new {Id = customerEntryDto.Id}, customerEntryDto);
-    } 
+    }
+
 
 }

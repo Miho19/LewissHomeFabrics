@@ -4,6 +4,7 @@ using Lewiss.Pricing.Shared.Services.Pricing;
 using Lewiss.Pricing.Shared.Worksheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit.Abstractions;
 
@@ -46,6 +47,25 @@ public class PricingControllerTests
         Assert.Equal(customerDTO.Id, worksheetDTO.CustomerId);
 
     }
+
+        [Fact]
+    public async Task CreateWorksheet_ShouldReturnStatus500_OnFailure()
+    {   
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var pricingController = new PricingController(pricingServiceMock.Object);
+
+        var customerDTO = CustomerFixture.TestCustomer;
+
+        pricingServiceMock.Setup(p => p.CreateWorksheet(It.IsAny<CustomerEntryDTO>())).ReturnsAsync((WorksheetDTO) null!);
+
+        var result = await pricingController.CreateWorksheet(customerDTO);
+
+        Assert.NotNull(result);
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        var problemsDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
+        Assert.Equal(StatusCodes.Status500InternalServerError, problemsDetails.Status);
+    }
     
     [Fact]
     public async Task CreateCustomer_ShouldReturnOkCreated_OnSuccess()
@@ -67,5 +87,25 @@ public class PricingControllerTests
         Assert.Equal(customerDTO.FamilyName,customerEntryDTO.FamilyName);
 
     }
+
+    [Fact]
+    public async Task CreateCustomer_ShouldReturn500_OnFailure()
+    {   
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var pricingController = new PricingController(pricingServiceMock.Object);
+
+        var customerCreateDTO = CustomerFixture.TestCustomerCreate;
+
+        pricingServiceMock.Setup(p => p.CreateCustomer(It.IsAny<CustomerCreateDTO>())).ReturnsAsync((CustomerEntryDTO) null!);
+
+        var result = await pricingController.CreateCustomer(customerCreateDTO);
+
+        Assert.NotNull(result);
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        var problemsDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
+        Assert.Equal(StatusCodes.Status500InternalServerError, problemsDetails.Status);
+    }
+    
 
 }
