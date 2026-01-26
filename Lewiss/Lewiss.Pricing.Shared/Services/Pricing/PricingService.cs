@@ -1,4 +1,5 @@
 using Lewiss.Pricing.Shared.CustomerDTO;
+using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.Worksheet;
 
 namespace Lewiss.Pricing.Shared.Services.Pricing;
@@ -75,5 +76,10 @@ public class PricingService
         };
 
         return worksheetDTO;
+    }
+
+    public virtual async Task<List<CustomerEntryDTO>> GetCustomersAsync(GetCustomerQueryParameters queryParameters, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 }

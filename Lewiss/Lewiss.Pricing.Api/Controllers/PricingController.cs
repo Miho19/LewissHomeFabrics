@@ -52,8 +52,19 @@ public class PricingController : ControllerBase
     }
 
     [HttpGet("customer", Name = "GetCustomer")]
-    public async Task<IActionResult> GetCustomer([FromQuery] GetCustomerQueryParameters getCustomerQueryParameters)
+    public async Task<IActionResult> GetCustomer([FromQuery] GetCustomerQueryParameters getCustomerQueryParameters, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var customerEntryDTOList = await _pricingService.GetCustomersAsync(getCustomerQueryParameters, cancellationToken);
+        if(customerEntryDTOList is null)
+        {
+            return StatusCode(500, new ProblemDetails
+            {
+                Status = 500,
+                Title = "Internal Server Error",
+                Detail = "Failed to retrieve customer",
+            });
+        }
+        
+        return new OkObjectResult(customerEntryDTOList);
     }
 }

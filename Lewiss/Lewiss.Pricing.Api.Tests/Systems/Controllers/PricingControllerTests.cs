@@ -113,6 +113,9 @@ public class PricingControllerTests
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+
+        pricingServiceMock.Setup(p => p.GetCustomersAsync(It.IsAny<GetCustomerQueryParameters>(), It.IsAny<CancellationToken>())).ReturnsAsync([CustomerFixture.TestCustomer]);
+
         var pricingController = new PricingController(pricingServiceMock.Object);
         var customer = CustomerFixture.TestCustomer;
 
@@ -120,12 +123,15 @@ public class PricingControllerTests
         {
             FamilyName = "April"
         };
-        
+
         var result = await pricingController.GetCustomer(queryParameters);
         
         Assert.NotNull(result);
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
-        var returnedCustomer = Assert.IsType<CustomerEntryDTO>(okObjectResult.Value);
+        var returnedCustomerList = Assert.IsType<List<CustomerEntryDTO>>(okObjectResult.Value);
+
+        var returnedCustomer = returnedCustomerList[0];
+
         Assert.Equal(customer.FamilyName, returnedCustomer.FamilyName);
         Assert.Equal(customer.Id, returnedCustomer.Id);
     }
