@@ -181,7 +181,7 @@ public class PricingService
             Worksheet = worksheet
         };
 
-        product = await PopulateProductOptionVariationsList(product, productCreateDTO, cancellationToken);
+        product = await _productService.PopulateProductOptionVariationList(product, productCreateDTO, cancellationToken);
         if (product is null)
         {
             return null;
@@ -201,14 +201,5 @@ public class PricingService
         return productEntryDTO;
     }
 
-    private async Task<Data.Model.Product?> PopulateProductOptionVariationsList(Data.Model.Product product, ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
-    {
-        if (product.OptionVariations is null)
-        {
-            product.OptionVariations = new List<OptionVariation>();
-        }
 
-
-        return null;
-    }
 }
