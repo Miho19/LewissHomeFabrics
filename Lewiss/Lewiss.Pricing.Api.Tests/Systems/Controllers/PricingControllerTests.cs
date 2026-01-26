@@ -249,7 +249,7 @@ public class PricingControllerTests
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheet;
 
-        var newProductDTO = ProductFixture.TestProductCreateDTO;
+        var newProductDTO = ProductFixture.TestProductCreateDTOKineticsCellular;
 
         var pricingController = new PricingController(pricingServiceMock.Object);
 
