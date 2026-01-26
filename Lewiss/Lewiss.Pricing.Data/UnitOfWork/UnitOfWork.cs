@@ -1,14 +1,14 @@
 using Lewiss.Pricing.Data.Context;
-using Lewiss.Pricing.Data.Repository;
 using Lewiss.Pricing.Data.Repository.CustomerRepository;
+using Lewiss.Pricing.Data.Repository.WorksheetRepository;
 
 public class UnitOfWork : IUnitOfWork
 {
 
     private readonly PricingDbContext _pricingDbContext;
-    public IWorksheetRepository Worksheet {get; private set;}
+    public IWorksheetRepository Worksheet { get; private set; }
 
-    public ICustomerRepository Customer {get; private set;}
+    public ICustomerRepository Customer { get; private set; }
 
     private bool _disposed = false;
 
@@ -32,9 +32,9 @@ public class UnitOfWork : IUnitOfWork
 
     public void Dispose(bool disposing)
     {
-        if(!_disposed)
+        if (!_disposed)
         {
-            if(disposing)
+            if (disposing)
             {
                 _pricingDbContext.Dispose();
             }

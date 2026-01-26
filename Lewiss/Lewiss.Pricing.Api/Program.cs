@@ -1,23 +1,14 @@
 using dotenv.net;
 using Lewiss.Pricing.Data.Context;
-using Lewiss.Pricing.Data.Repository;
+using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Data.Repository.CustomerRepository;
+using Lewiss.Pricing.Data.Repository.Generic;
+using Lewiss.Pricing.Data.Repository.WorksheetRepository;
 using Microsoft.EntityFrameworkCore;
 
 DotEnv.Load();
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-builder.Services.AddScoped<IWorksheetRepository, WorksheetRepository>();
-builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
 
 var dbConnectionString = System.Environment.GetEnvironmentVariable("DatabaseConnectionString");
 
@@ -25,6 +16,21 @@ builder.Services.AddDbContext<PricingDbContext>(options =>
 {
     options.UseMySql(dbConnectionString, ServerVersion.AutoDetect(dbConnectionString));
 });
+
+// Add services to the container.
+// builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IWorksheetRepository, WorksheetRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+
+builder.Services.AddControllers();
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddOpenApi();
+
 
 var app = builder.Build();
 

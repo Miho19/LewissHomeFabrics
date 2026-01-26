@@ -79,3 +79,7 @@ PelmetColour: string
 ### Worksheet
 
 `CreateWorksheet` [Worksheet DTO](#worksheet-dto)
+
+`GetCustomerWorksheet` returns List of [Worksheet DTO](#worksheet-dto)
+
+`GetWorksheet` returns [Worksheet DTO](#worksheet-dto)

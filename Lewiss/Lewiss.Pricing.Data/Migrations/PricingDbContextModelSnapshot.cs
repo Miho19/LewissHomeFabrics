@@ -17,22 +17,20 @@ namespace Lewiss.Pricing.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.9")
+                .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("Lewiss.Pricing.Data.Model.Customer", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("CustomerId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("CustomerId"));
 
                     b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Consultant")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -41,19 +39,18 @@ namespace Lewiss.Pricing.Data.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<Guid>("ExternalMapping")
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("FamilyName")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Measurer")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Mobile")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Street")
                         .IsRequired()
@@ -63,24 +60,47 @@ namespace Lewiss.Pricing.Data.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("Id");
+                    b.HasKey("CustomerId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Mobile")
+                        .IsUnique();
 
                     b.ToTable("Customer");
                 });
 
             modelBuilder.Entity("Lewiss.Pricing.Data.Model.Worksheet", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("WorksheetId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("WorksheetId"));
+
+                    b.Property<decimal>("CallOutFee")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<Guid>("CustomerId")
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<Guid>("ExternalMapping")
                         .HasColumnType("char(36)");
 
-                    b.HasKey("Id");
+                    b.Property<bool>("NewBuild")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.HasKey("WorksheetId");
 
                     b.HasIndex("CustomerId");
 

@@ -9,11 +9,11 @@ public class PricingService
 {
     private readonly IUnitOfWork _unitOfWork;
 
-    
+
     public PricingService(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-    }   
+    }
 
 
     public virtual async Task<CustomerEntryDTO?> CreateCustomerAsync(CustomerCreateDTO customerCreateDTO, CancellationToken cancellationToken = default)
@@ -21,7 +21,7 @@ public class PricingService
 
         var customer = new Data.Model.Customer
         {
-            ExternalId = Guid.CreateVersion7(DateTimeOffset.UtcNow),
+            ExternalMapping = Guid.CreateVersion7(DateTimeOffset.UtcNow),
             FamilyName = customerCreateDTO.FamilyName,
             Street = customerCreateDTO.Street,
             City = customerCreateDTO.City,
@@ -36,32 +36,32 @@ public class PricingService
 
         var customerEntryDto = new CustomerEntryDTO
         {
-            Id = customer.ExternalId,
+            Id = customer.ExternalMapping,
             FamilyName = customer.FamilyName,
             Street = customer.Street,
             City = customer.City,
-             Suburb = customer.Suburb,
+            Suburb = customer.Suburb,
             Mobile = customer.Mobile,
             Email = customer.Email,
         };
 
         return customerEntryDto;
     }
-    
+
     public virtual async Task<WorksheetDTO?> CreateWorksheetAsync(CustomerEntryDTO customerEntryDTO, CancellationToken cancellationToken = default)
     {
         var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(customerEntryDTO.Id, cancellationToken);
-        if(customer is null)
+        if (customer is null)
         {
             return null;
         }
 
         var worksheet = new Data.Model.Worksheet
         {
-            ExternalId = Guid.CreateVersion7(DateTimeOffset.UtcNow),
+            ExternalMapping = Guid.CreateVersion7(DateTimeOffset.UtcNow),
             CreatedAt = DateTimeOffset.UtcNow,
             Customer = customer,
-            CustomerId = customer.Id,
+            CustomerId = customer.CustomerId,
             CallOutFee = 0.00m,
             Discount = 0.00m,
             NewBuild = false,
@@ -73,8 +73,8 @@ public class PricingService
 
         var worksheetDTO = new WorksheetDTO
         {
-            Id = worksheet.ExternalId,
-            CustomerId = customer.ExternalId,
+            Id = worksheet.ExternalMapping,
+            CustomerId = customer.ExternalMapping,
             Price = 0.00m,
             Discount = 0.00m,
             NewBuild = false,
@@ -88,11 +88,11 @@ public class PricingService
     {
         var (familyName, mobile, email) = queryParameters;
         var filteredCustomerList = await _unitOfWork.Customer.GetCustomerByQueryableParameters(familyName, mobile, email, cancellationToken);
-        if(filteredCustomerList is null) return null;
+        if (filteredCustomerList is null) return null;
 
         var filteredCustomerEntryDTOList = filteredCustomerList.Select(c => new CustomerEntryDTO
         {
-            Id = c.ExternalId,
+            Id = c.ExternalMapping,
             FamilyName = c.FamilyName,
             Street = c.Street,
             City = c.City,
@@ -107,22 +107,22 @@ public class PricingService
     public virtual async Task<WorksheetDTO?> GetWorksheetDTOAsync(Guid externalWorksheetId, CancellationToken cancellationToken = default)
     {
         var worksheet = await _unitOfWork.Worksheet.GetWorksheetByExternalIdAsync(externalWorksheetId, cancellationToken);
-        if(worksheet is null)
+        if (worksheet is null)
         {
             return null;
         }
 
 
         var customer = await _unitOfWork.Customer.GetByIdAsync(worksheet.CustomerId);
-        if(customer is null) 
+        if (customer is null)
         {
             return null;
         }
 
         var worksheetDTO = new WorksheetDTO
         {
-            Id = worksheet.ExternalId,
-            CustomerId = customer.ExternalId,
+            Id = worksheet.ExternalMapping,
+            CustomerId = customer.ExternalMapping,
             CallOutFee = worksheet.CallOutFee,
             Discount = worksheet.Discount,
             NewBuild = worksheet.NewBuild,

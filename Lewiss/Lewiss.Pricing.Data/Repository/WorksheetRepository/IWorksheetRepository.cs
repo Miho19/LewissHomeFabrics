@@ -1,7 +1,7 @@
 using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Data.Repository.Generic;
 
-namespace Lewiss.Pricing.Data.Repository;
+namespace Lewiss.Pricing.Data.Repository.WorksheetRepository;
 
 public interface IWorksheetRepository : IRepository<Worksheet>
 {

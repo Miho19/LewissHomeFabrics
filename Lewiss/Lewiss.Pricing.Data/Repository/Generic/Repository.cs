@@ -1,14 +1,15 @@
 // https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application
+using Lewiss.Pricing.Data.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lewiss.Pricing.Data.Repository.Generic;
 
 public class Repository<T> : IRepository<T> where T : class
 {
-    protected readonly DbContext _dbContext;
+    protected readonly PricingDbContext _dbContext;
     protected readonly DbSet<T> _dbSet;
 
-    public Repository(DbContext dbContext)
+    public Repository(PricingDbContext dbContext)
     {
         _dbContext = dbContext;
         _dbSet = dbContext.Set<T>();
