@@ -177,25 +177,65 @@ public class PricingControllerTests
         Assert.Equal(StatusCodes.Status404NotFound, problemsDetails.Status);
     }
 
-    // [Fact]
-    // public async Task GetCustomerWorksheet_ShouldReturnOK200_OnSuccess()
-    // {
-    //     var unitOfWorkMock = new Mock<IUnitOfWork>();
-    //     var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
-    //     var testWorksheetDTO = WorksheetFixture.TestWorksheet;
-    //     var customerDTO = CustomerFixture.TestCustomer;
+    [Fact]
+    public async Task GetCustomerWorksheet_ShouldReturnOK200_OnSuccess()
+    {
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var testWorksheetDTO = WorksheetFixture.TestWorksheet;
+        var customerDTO = CustomerFixture.TestCustomer;
 
+        pricingServiceMock.Setup(p => p.GetCustomerWorksheetDTOListAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync([testWorksheetDTO]);
 
-    //     // pricingServiceMock.Setup(p => p.GetWorksheetDTOAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(testWorksheetDTO);
+        var pricingController = new PricingController(pricingServiceMock.Object);
 
-    //     var pricingController = new PricingController(pricingServiceMock.Object);
+        var result = await pricingController.GetCustomerWorksheet(customerDTO.Id);
 
-    //     var result = await pricingController.GetCustomerWorksheet(customerDTO.Id);
+        Assert.NotNull(result);
+        var okObjectResult = Assert.IsType<OkObjectResult>(result);
+        var worksheetDTOList = Assert.IsType<List<WorksheetDTO>>(okObjectResult.Value);
+        Assert.NotEmpty(worksheetDTOList);
+        Assert.Equal(testWorksheetDTO.Id, worksheetDTOList[0].Id);
+    }
 
-    //     Assert.NotNull(result);
-    //     var okObjectResult = Assert.IsType<OkObjectResult>(result);
-    //     var worksheetDTOList = Assert.IsType<List<WorksheetDTO>>(okObjectResult.Value);
-    //     Assert.NotEmpty(worksheetDTOList);
-    //     Assert.Equal(testWorksheetDTO.Id, worksheetDTOList[0].Id);
-    // }
+    [Fact]
+    public async Task GetCustomerWorksheet_ShouldReturn500_OnFailure()
+    {
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var testWorksheetDTO = WorksheetFixture.TestWorksheet;
+        var customerDTO = CustomerFixture.TestCustomer;
+
+        pricingServiceMock.Setup(p => p.GetCustomerWorksheetDTOListAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync((List<WorksheetDTO>)null!);
+
+        var pricingController = new PricingController(pricingServiceMock.Object);
+
+        var result = await pricingController.GetCustomerWorksheet(customerDTO.Id);
+
+        Assert.NotNull(result);
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        var problemsDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
+        Assert.Equal(StatusCodes.Status500InternalServerError, problemsDetails.Status);
+    }
+
+    [Fact]
+    public async Task GetCustomerWorksheet_ShouldReturn200Ok_OnSuccess_WhenEmptyListIsReturned()
+    {
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var testWorksheetDTO = WorksheetFixture.TestWorksheet;
+        var customerDTO = CustomerFixture.TestCustomer;
+
+        pricingServiceMock.Setup(p => p.GetCustomerWorksheetDTOListAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync([]);
+
+        var pricingController = new PricingController(pricingServiceMock.Object);
+
+        var result = await pricingController.GetCustomerWorksheet(customerDTO.Id);
+
+        Assert.NotNull(result);
+        var okObjectResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(StatusCodes.Status200OK, okObjectResult.StatusCode);
+        var workoutDTOList = Assert.IsType<List<WorksheetDTO>>(okObjectResult.Value);
+        Assert.Empty(workoutDTOList);
+    }
 }
