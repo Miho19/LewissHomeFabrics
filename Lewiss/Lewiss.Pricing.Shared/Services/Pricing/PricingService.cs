@@ -1,4 +1,6 @@
+using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Shared.CustomerDTO;
+using Lewiss.Pricing.Shared.Worksheet;
 
 namespace Lewiss.Pricing.Shared.Services.Pricing;
 
@@ -42,5 +44,9 @@ public class PricingService
 
         return customerEntryDto;
     }
-
+    
+    public async Task<WorksheetDTO> CreateWorksheet(CustomerEntryDTO customerEntryDTO)
+    {
+        throw new NotImplementedException();
+    }
 }
