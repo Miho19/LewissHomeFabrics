@@ -1,11 +1,5 @@
 # Lewiss Home Fabrics Pricing
 
-## Current Task
-
-- Repositories for Worksheet and Customer
-- Unit of Work for repositories
-- Service layer for the Pricing Controller
-
 ## Front-end Interface
 
 ### Customer DTO
