@@ -1,18 +1,26 @@
 
 namespace Lewiss.Pricing.Data.Model;
+
 public class Product
 {
-    public int Id {get; set;}
+    public int Id { get; set; }
 
-    public decimal Price {get; set;} = 0M;
+    public decimal Price { get; set; } = 0M;
 
-    public required string Location {get; set;}
+    public required string Location { get; set; }
 
-    public required int Width {get; set;}
-    public required int Height {get; set;}
+    public required int Width { get; set; }
+    public required int Height { get; set; }
 
-    public required int WorksheetId {get; set;}
-    public required Worksheet Worksheet {get; set;}
+    public required bool AboveHeightConstraint { get; set; }
 
-    public ICollection<OptionVariation> OptionVariations {get; set;} = new List<OptionVariation>();
+    public required int RemoteNumber { get; set; }
+    public required int RemoteChannel { get; set; }
+
+    public required int WorksheetId { get; set; }
+    public required Worksheet Worksheet { get; set; }
+
+    public ICollection<int> ButtingToBlinds { get; set; } = new List<int>();
+
+    public ICollection<OptionVariation> OptionVariations { get; set; } = new List<OptionVariation>();
 }
