@@ -55,8 +55,8 @@ public class PricingController : ControllerBase
     [HttpPost("worksheet/{workoutId}/product", Name = "CreateProduct")]
     public async Task<IActionResult> CreateProduct(Guid workoutId, [FromBody] ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
-        var worksheetDTO = await _pricingService.GetWorksheetDTOAsync(workoutId, cancellationToken);
-        if (worksheetDTO is null)
+        var productEntryDTO = await _pricingService.CreateProductAsync(workoutId, productCreateDTO, cancellationToken);
+        if (productEntryDTO is null)
         {
             return new ObjectResult(new ProblemDetails
             {
@@ -66,7 +66,7 @@ public class PricingController : ControllerBase
             });
         }
 
-        return new OkObjectResult(worksheetDTO);
+        return new OkObjectResult(productEntryDTO);
     }
 
     [HttpGet("customer/{customerId}", Name = "GetCustomerWorksheet")]

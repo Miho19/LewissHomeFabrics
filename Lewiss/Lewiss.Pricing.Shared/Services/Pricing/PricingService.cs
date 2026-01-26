@@ -1,5 +1,6 @@
 using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Shared.CustomerDTO;
+using Lewiss.Pricing.Shared.Product;
 using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.Worksheet;
 
@@ -156,5 +157,10 @@ public class PricingService
         };
 
         return [worksheetDTO];
+    }
+
+    public virtual async Task<ProductEntryDTO?> CreateProductAsync(Guid externalWorksheetId, ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 }
