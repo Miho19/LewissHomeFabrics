@@ -7,13 +7,15 @@ namespace Lewiss.Pricing.Shared.Services.Pricing;
 public class PricingService
 {
     private readonly IUnitOfWork _unitOfWork;
+
+    
     public PricingService(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }   
 
 
-    public async Task<CustomerEntryDTO> CreateCustomer(CustomerCreateDTO customerCreateDTO)
+    public virtual async Task<CustomerEntryDTO> CreateCustomer(CustomerCreateDTO customerCreateDTO)
     {
 
         var customer = new Data.Model.Customer
@@ -45,7 +47,7 @@ public class PricingService
         return customerEntryDto;
     }
     
-    public async Task<WorksheetDTO> CreateWorksheet(CustomerEntryDTO customerEntryDTO)
+    public virtual async Task<WorksheetDTO> CreateWorksheet(CustomerEntryDTO customerEntryDTO)
     {
         throw new NotImplementedException();
     }

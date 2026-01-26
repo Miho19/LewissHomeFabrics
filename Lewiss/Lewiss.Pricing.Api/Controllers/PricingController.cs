@@ -1,7 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Lewiss.Pricing.Shared.Worksheet;
-using Lewiss.Pricing.Shared.Customer;
-using System;
 using Lewiss.Pricing.Shared.CustomerDTO;
 using Lewiss.Pricing.Shared.Services.Pricing;
 
@@ -39,7 +36,7 @@ public class PricingController : ControllerBase
     [HttpPost("customer", Name = "CreateCustomer")]
     public async Task<IActionResult> CreateCustomer([FromBody] CustomerCreateDTO customerCreateDTO)
     {
-        
+        throw new NotImplementedException();
     } 
 
 }

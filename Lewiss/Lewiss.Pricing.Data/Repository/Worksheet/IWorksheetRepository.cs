@@ -5,5 +5,5 @@ namespace Lewiss.Pricing.Data.Repository;
 
 public interface IWorksheetRepository : IRepository<Worksheet>
 {
-    Task<List<Worksheet>> GetWorksheetsByCustomerId(Guid customerId);
+    Task<List<Worksheet>> GetWorksheetsByExternalCustomerId(Guid externalCustomerId);
 }

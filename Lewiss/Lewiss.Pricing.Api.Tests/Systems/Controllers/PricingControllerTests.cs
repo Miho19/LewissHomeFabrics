@@ -1,7 +1,10 @@
 using Lewiss.Pricing.Api.Controllers;
+using Lewiss.Pricing.Shared.CustomerDTO;
+using Lewiss.Pricing.Shared.Services.Pricing;
 using Lewiss.Pricing.Shared.Worksheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using Xunit.Abstractions;
 
 namespace Lewiss.Pricing.Api.Tests.Systems.Controllers;
@@ -17,9 +20,22 @@ public class PricingControllerTests
     [Fact]
     public async Task CreateWorksheet_ShouldReturnOkCreated_OnSuccess()
     {   
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var pricingController = new PricingController(pricingServiceMock.Object);
+
         var customerDTO = CustomerFixture.TestCustomer;
+
+        pricingServiceMock.Setup(p => p.CreateWorksheet(It.IsAny<CustomerEntryDTO>())).ReturnsAsync(new WorksheetDTO
+        {
+            Id = Guid.CreateVersion7(DateTimeOffset.UtcNow),
+            CustomerId = customerDTO.Id,
+            Price = 0.00m,
+            Additional = 0.00m
+        });
+
+
         
-        var pricingController = new PricingController();
         var result = await pricingController.CreateWorksheet(customerDTO);
 
         Assert.NotNull(result);
@@ -27,7 +43,7 @@ public class PricingControllerTests
         Assert.Equal(StatusCodes.Status201Created, createdAtActionResult.StatusCode);
         
         var worksheetDTO = Assert.IsType<WorksheetDTO>(createdAtActionResult.Value);
-        Assert.Equal(customerDTO.FamilyName, worksheetDTO.Customer.FamilyName);
+        Assert.Equal(customerDTO.Id, worksheetDTO.CustomerId);
 
     }
 

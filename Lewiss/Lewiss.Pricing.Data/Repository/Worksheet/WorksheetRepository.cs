@@ -9,8 +9,10 @@ public class WorksheetRepository : Repository<Worksheet>, IWorksheetRepository
     {
     }
 
-    public async Task<List<Worksheet>> GetWorksheetsByCustomerId(Guid customerId)
+    public async Task<List<Worksheet>> GetWorksheetsByExternalCustomerId(Guid externalCustomerId)
     {
-        return await _dbSet.Where(w => w.CustomerId == customerId).ToListAsync();
+        var customer = _dbContext.Set<Customer>().FirstOrDefaultAsync(c => c.ExternalId == externalCustomerId);
+
+        return await _dbSet.Where(w => w.CustomerId == customer.Id).ToListAsync();
     }
 }

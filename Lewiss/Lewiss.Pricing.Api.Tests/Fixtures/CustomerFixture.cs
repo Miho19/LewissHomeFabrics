@@ -1,9 +1,9 @@
-using Lewiss.Pricing.Shared.Customer;
+using Lewiss.Pricing.Shared.CustomerDTO;
 
 public static class CustomerFixture
 {
-    private static readonly TimeSpan NZDTimeSpanOffset = new TimeSpan(13, 0, 0);
-    public static CustomerDTO TestCustomer {get;} = new CustomerDTO()
+    
+    public static CustomerEntryDTO TestCustomer {get;} = new CustomerEntryDTO()
     {
        FamilyName = "April",
        Street = "Street Address",
@@ -11,7 +11,7 @@ public static class CustomerFixture
        Suburb = "Suburb",
        Mobile = "123 458 7891",
        Email = "email.address@domain",
-      
+       Id = Guid.CreateVersion7(DateTimeOffset.UtcNow)
     };
 
 }
