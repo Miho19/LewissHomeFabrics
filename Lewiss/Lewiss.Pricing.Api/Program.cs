@@ -1,5 +1,7 @@
 using dotenv.net;
 using Lewiss.Pricing.Data.Context;
+using Lewiss.Pricing.Data.Repository;
+using Lewiss.Pricing.Data.Repository.CustomerRepository;
 using Microsoft.EntityFrameworkCore;
 
 DotEnv.Load();
@@ -7,6 +9,11 @@ DotEnv.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddScoped<IWorksheetRepository, WorksheetRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
