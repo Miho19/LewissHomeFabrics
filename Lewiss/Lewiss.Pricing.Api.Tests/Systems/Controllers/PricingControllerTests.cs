@@ -1,5 +1,6 @@
 using Lewiss.Pricing.Api.Controllers;
 using Lewiss.Pricing.Shared.CustomerDTO;
+using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.Services.Pricing;
 using Lewiss.Pricing.Shared.Worksheet;
 using Microsoft.AspNetCore.Http;
@@ -105,6 +106,28 @@ public class PricingControllerTests
         var objectResult = Assert.IsType<ObjectResult>(result);
         var problemsDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
         Assert.Equal(StatusCodes.Status500InternalServerError, problemsDetails.Status);
+    }
+
+    [Fact]
+    public async Task GetCustomer_ShouldReturnOK200_OnSuccess_WhenSuppliedFamilyName()
+    {
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var pricingController = new PricingController(pricingServiceMock.Object);
+        var customer = CustomerFixture.TestCustomer;
+
+        var queryParameters = new GetCustomerQueryParameters
+        {
+            FamilyName = "April"
+        };
+        
+        var result = await pricingController.GetCustomer(queryParameters);
+        
+        Assert.NotNull(result);
+        var okObjectResult = Assert.IsType<OkObjectResult>(result);
+        var returnedCustomer = Assert.IsType<CustomerEntryDTO>(okObjectResult.Value);
+        Assert.Equal(customer.FamilyName, returnedCustomer.FamilyName);
+        Assert.Equal(customer.Id, returnedCustomer.Id);
     }
     
 

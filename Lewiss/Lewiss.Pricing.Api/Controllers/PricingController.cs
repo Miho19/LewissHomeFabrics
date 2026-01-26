@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Lewiss.Pricing.Shared.CustomerDTO;
 using Lewiss.Pricing.Shared.Services.Pricing;
+using Lewiss.Pricing.Shared.QueryParameters;
 
 namespace Lewiss.Pricing.Api.Controllers;
 
@@ -50,5 +51,9 @@ public class PricingController : ControllerBase
         return new CreatedAtActionResult("Created Customer", nameof(CreateCustomer), new {Id = customerEntryDto.Id}, customerEntryDto);
     }
 
-
+    [HttpGet("customer", Name = "GetCustomer")]
+    public async Task<IActionResult> GetCustomer([FromQuery] GetCustomerQueryParameters getCustomerQueryParameters)
+    {
+        throw new NotImplementedException();
+    }
 }
