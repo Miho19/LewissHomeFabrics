@@ -34,6 +34,12 @@ public class PricingController : ControllerBase
         return new CreatedAtActionResult("Created Worksheet", nameof(CreateWorksheet), new {Id = worksheet.Id}, worksheet);
     }
 
+    [HttpGet("worksheet/{workoutId}", Name = "GetWorksheet")]
+    public async Task<IActionResult> GetWorksheet(string workoutId)
+    {
+        throw new NotImplementedException();
+    }
+
     [HttpPost("customer", Name = "CreateCustomer")]
     public async Task<IActionResult> CreateCustomer([FromBody] CustomerCreateDTO customerCreateDTO, CancellationToken cancellationToken = default)
     {
