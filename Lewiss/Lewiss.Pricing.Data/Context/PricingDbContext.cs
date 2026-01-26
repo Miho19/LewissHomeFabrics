@@ -27,7 +27,6 @@ public class PricingDbContext : DbContext
         modelBuilder.Entity<Customer>().HasIndex(c => c.Email).IsUnique();
         modelBuilder.Entity<Customer>().HasIndex(c => c.Mobile).IsUnique();
 
-    
     }
 
 

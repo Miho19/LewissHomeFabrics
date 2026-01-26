@@ -1,5 +1,5 @@
-namespace Lewiss.Pricing.Shared.Customer;
-public record CustomerDTO
+namespace Lewiss.Pricing.Shared.CustomerDTO;
+public record CustomerCreateDTO
 {
     public required string FamilyName {get; set;}
     public required string Street {get; set;}
