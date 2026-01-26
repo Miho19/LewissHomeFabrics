@@ -15,4 +15,26 @@ public class CustomerRepository : Repository<Customer>, ICustomerRepository
     {
         return await _dbSet.FirstOrDefaultAsync(c => c.ExternalId == externalCustomerId);
     }
+
+    public async Task<List<Customer>> GetCustomerByQueryableParameters(string? familyName, string? mobile, string? email, CancellationToken cancellationToken = default)
+    {
+        IQueryable<Customer> query = _dbSet;
+        
+        if(!string.IsNullOrEmpty(familyName))
+        {
+            query = query.Where(c => c.FamilyName == familyName);
+        }
+
+        if(!string.IsNullOrEmpty(mobile))
+        {
+            query = query.Where(c => c.Mobile == mobile);
+        }
+
+        if(!string.IsNullOrEmpty(email))
+        {
+            query = query.Where(c => c.Email == email);
+        }
+
+        return await query.ToListAsync();
+    }
 }

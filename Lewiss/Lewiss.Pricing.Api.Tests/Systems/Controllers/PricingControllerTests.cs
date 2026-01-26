@@ -33,7 +33,9 @@ public class PricingControllerTests
             Id = Guid.CreateVersion7(DateTimeOffset.UtcNow),
             CustomerId = customerDTO.Id,
             Price = 0.00m,
-            Additional = 0.00m
+            Discount = 0.00m,
+            NewBuild = false,
+            CallOutFee = 0.00m
         });
 
 

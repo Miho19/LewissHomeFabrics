@@ -1,3 +1,4 @@
+using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Shared.CustomerDTO;
 using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.Worksheet;
@@ -72,14 +73,31 @@ public class PricingService
             Id = worksheet.ExternalId,
             CustomerId = customer.ExternalId,
             Price = 0.00m,
-            Additional = 0.00m
+            Discount = 0.00m,
+            NewBuild = false,
+            CallOutFee = 0.00m
         };
 
         return worksheetDTO;
     }
 
-    public virtual async Task<List<CustomerEntryDTO>> GetCustomersAsync(GetCustomerQueryParameters queryParameters, CancellationToken cancellationToken = default)
+    public virtual async Task<List<CustomerEntryDTO>?> GetCustomersAsync(GetCustomerQueryParameters queryParameters, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var (familyName, mobile, email) = queryParameters;
+        var filteredCustomerList = await _unitOfWork.Customer.GetCustomerByQueryableParameters(familyName, mobile, email, cancellationToken);
+        if(filteredCustomerList is null) return null;
+
+        var filteredCustomerEntryDTOList = filteredCustomerList.Select(c => new CustomerEntryDTO
+        {
+            Id = c.ExternalId,
+            FamilyName = c.FamilyName,
+            Street = c.Street,
+            City = c.City,
+            Suburb = c.Suburb,
+            Mobile = c.Mobile,
+            Email = c.Email
+        }).ToList();
+
+        return filteredCustomerEntryDTOList;
     }
 }

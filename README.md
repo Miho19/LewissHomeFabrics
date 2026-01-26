@@ -8,19 +8,10 @@
 
 ## Front-end Interface
 
-### Staff DTO
-
-```
-Name: string
-Role: string
-Mobile: string
-Email: string
-Department: string
-```
-
 ### Customer DTO
 
 ```
+Id: string
 Family Name: string
 Street: string
 Suburb: string
@@ -31,14 +22,12 @@ Email: string
 ### Worksheet DTO
 
 ```
-WorksheetId: string
-Customer: Customer DTO
+Id: string
+CustomerId: string
 Price: decimal
 Discount: decimal
 NewBuild: bool
 CallOutFee: decimal
-Consultant: Staff DTO
-Measurer: Staff DTO
 ```
 
 ### Product DTO
@@ -85,7 +74,12 @@ PelmetType: string
 PelmetColour: string
 ```
 
-## Creating Worksheet
+## API
 
-1. Send in Customer DTO
-2. Server responds with Worksheet DTO
+### Customer
+
+`CreateCustomer` returns [Customer DTO](#customer-dto)
+
+### Worksheet
+
+`CreateWorksheet` [Worksheet DTO](#worksheet-dto)
