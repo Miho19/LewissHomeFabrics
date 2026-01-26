@@ -1,29 +1,41 @@
-using Lewiss.Pricing.Data.Repository;
+// https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application
+using Microsoft.EntityFrameworkCore;
+
+namespace Lewiss.Pricing.Data.Repository;
 
 public class Repository<T> : IRepository<T> where T : class
 {
-    public Task AddAsync(T entity)
+    protected readonly DbContext _dbContext;
+    protected readonly DbSet<T> _dbSet;
+
+    public Repository(DbContext dbContext)
     {
-        throw new NotImplementedException();
+        _dbContext = dbContext;
+        _dbSet = dbContext.Set<T>();
+    }
+
+    public async Task AddAsync(T entity)
+    {
+        await _dbSet.AddAsync(entity);
     }
 
     public void Delete(T entity)
     {
-        throw new NotImplementedException();
+        _dbSet.Remove(entity);
     }
 
-    public Task<List<T>> GetAllAsync()
+    public async Task<List<T>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await _dbSet.ToListAsync();
     }
 
-    public Task<T> GetByIdAsync(Guid id)
+    public async Task<T?> GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await _dbSet.FindAsync(id);
     }
 
     public void Update(T entity)
     {
-        throw new NotImplementedException();
+        _dbSet.Update(entity);
     }
 }
