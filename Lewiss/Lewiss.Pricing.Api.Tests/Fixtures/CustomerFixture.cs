@@ -1,5 +1,6 @@
 using Lewiss.Pricing.Shared.CustomerDTO;
 
+namespace Lewiss.Pricing.Api.Tests.Fixtures;
 public static class CustomerFixture
 {
     

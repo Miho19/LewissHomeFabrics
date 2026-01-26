@@ -1,4 +1,5 @@
 using Lewiss.Pricing.Api.Controllers;
+using Lewiss.Pricing.Api.Tests.Fixtures;
 using Lewiss.Pricing.Shared.CustomerDTO;
 using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.Services.Pricing;
@@ -138,5 +139,42 @@ public class PricingControllerTests
         Assert.Equal(customer.Id, returnedCustomer.Id);
     }
     
+    [Fact]
+    public async Task GetWorksheet_ShouldReturnOK200_OnSuccess()
+    {
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var testWorksheetDTO = WorksheetFixture.TestWorksheet;
+
+        pricingServiceMock.Setup(p => p.GetWorksheetDTOAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(testWorksheetDTO);
+        
+        var pricingController = new PricingController(pricingServiceMock.Object);
+    
+        var result = await pricingController.GetWorksheet(testWorksheetDTO.Id);
+        
+        Assert.NotNull(result);
+        var okObjectResult = Assert.IsType<OkObjectResult>(result);
+        var worksheetDTO = Assert.IsType<WorksheetDTO>(okObjectResult.Value);
+        Assert.Equal(testWorksheetDTO.Id, worksheetDTO.Id); 
+    }
+
+    [Fact]
+    public async Task GetWorksheet_ShouldReturn500_OnFailure()
+    {
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var testWorksheetDTO = WorksheetFixture.TestWorksheet;
+
+        pricingServiceMock.Setup(p => p.GetWorksheetDTOAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync((WorksheetDTO)null!);
+        
+        var pricingController = new PricingController(pricingServiceMock.Object);
+    
+        var result = await pricingController.GetWorksheet(testWorksheetDTO.Id);
+        
+        Assert.NotNull(result);
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        var problemsDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
+        Assert.Equal(StatusCodes.Status500InternalServerError, problemsDetails.Status);
+    }
 
 }

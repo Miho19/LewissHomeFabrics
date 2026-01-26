@@ -35,9 +35,20 @@ public class PricingController : ControllerBase
     }
 
     [HttpGet("worksheet/{workoutId}", Name = "GetWorksheet")]
-    public async Task<IActionResult> GetWorksheet(string workoutId)
+    public async Task<IActionResult> GetWorksheet(Guid workoutId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var worksheetDTO = await _pricingService.GetWorksheetDTOAsync(workoutId, cancellationToken);
+        if(worksheetDTO is null)
+        {
+            return new ObjectResult(new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Internal Server Error",
+                Detail = "Failed to retrieve worksheet"
+            });
+        }
+
+        return new OkObjectResult(worksheetDTO);
     }
 
     [HttpPost("customer", Name = "CreateCustomer")]

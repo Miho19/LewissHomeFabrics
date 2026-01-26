@@ -9,7 +9,12 @@ public class WorksheetRepository : Repository<Worksheet>, IWorksheetRepository
     {
     }
 
-    public async Task<List<Worksheet>> GetWorksheetsByExternalCustomerId(Guid externalCustomerId)
+    public Task<Worksheet?> GetWorksheetByExternalIdAsync(Guid externalWorksheetId, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<List<Worksheet>?> GetWorksheetsByExternalCustomerIdAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
     {
         var customer = _dbContext.Set<Customer>().FirstOrDefaultAsync(c => c.ExternalId == externalCustomerId);
 

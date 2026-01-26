@@ -61,8 +61,11 @@ public class PricingService
             ExternalId = Guid.CreateVersion7(DateTimeOffset.UtcNow),
             CreatedAt = DateTimeOffset.UtcNow,
             Customer = customer,
-            CustomerId = customer.Id
-
+            CustomerId = customer.Id,
+            CallOutFee = 0.00m,
+            Discount = 0.00m,
+            NewBuild = false,
+            Price = 0.00m,
         };
 
         await _unitOfWork.Worksheet.AddAsync(worksheet);
@@ -99,5 +102,32 @@ public class PricingService
         }).ToList();
 
         return filteredCustomerEntryDTOList;
+    }
+
+    public virtual async Task<WorksheetDTO?> GetWorksheetDTOAsync(Guid externalWorksheetId, CancellationToken cancellationToken = default)
+    {
+        var worksheet = await _unitOfWork.Worksheet.GetWorksheetByExternalIdAsync(externalWorksheetId, cancellationToken);
+        if(worksheet is null)
+        {
+            return null;
+        }
+
+
+        var customer = await _unitOfWork.Customer.GetByIdAsync(worksheet.CustomerId);
+        if(customer is null) 
+        {
+            return null;
+        }
+
+        var worksheetDTO = new WorksheetDTO
+        {
+            Id = worksheet.ExternalId,
+            CustomerId = customer.ExternalId,
+            CallOutFee = worksheet.CallOutFee,
+            Discount = worksheet.Discount,
+            NewBuild = worksheet.NewBuild,
+            Price = worksheet.Price
+        };
+        return worksheetDTO;
     }
 }
