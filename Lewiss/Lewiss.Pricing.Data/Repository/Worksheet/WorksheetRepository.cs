@@ -9,8 +9,8 @@ public class WorksheetRepository : Repository<Worksheet>, IWorksheetRepository
     {
     }
 
-    public Task<List<Worksheet>> GetWorksheetsByCustomerId(Guid customerId)
+    public async Task<List<Worksheet>> GetWorksheetsByCustomerId(Guid customerId)
     {
-        throw new NotImplementedException();
+        return await _dbSet.Where(w => w.CustomerId == customerId).ToListAsync();
     }
 }
