@@ -10,15 +10,27 @@ public class WorksheetRepository : Repository<Worksheet>, IWorksheetRepository
     {
     }
 
-    public Task<Worksheet?> GetWorksheetByExternalIdAsync(Guid externalWorksheetId, CancellationToken cancellationToken)
+    public async Task<Worksheet?> GetWorksheetByExternalIdAsync(Guid externalWorksheetId, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var worksheet = await _dbContext.Set<Worksheet>().FirstOrDefaultAsync(w => w.ExternalMapping == externalWorksheetId);
+        return worksheet;
     }
 
     public async Task<List<Worksheet>?> GetWorksheetsByExternalCustomerIdAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
     {
         var customer = _dbContext.Set<Customer>().FirstOrDefaultAsync(c => c.ExternalMapping == externalCustomerId);
+        if (customer is null)
+        {
+            return null;
+        }
 
-        return await _dbSet.Where(w => w.CustomerId == customer.Id).ToListAsync();
+        var worksheets = await _dbContext.Set<Worksheet>().Where(w => w.CustomerId == customer.Id).ToListAsync();
+
+        if (worksheets is null || worksheets.Count == 0)
+        {
+            return [];
+        }
+
+        return worksheets;
     }
 }

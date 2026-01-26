@@ -132,31 +132,25 @@ public class PricingService
         return worksheetDTO;
     }
 
-    public virtual async Task<List<WorksheetDTO>> GetCustomerWorksheetDTOListAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
+    public virtual async Task<List<WorksheetDTO>?> GetCustomerWorksheetDTOListAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
     {
-        var worksheet = await _unitOfWork.Worksheet.GetWorksheetByExternalIdAsync(externalCustomerId, cancellationToken);
-        if (worksheet is null)
+        var worksheetList = await _unitOfWork.Worksheet.GetWorksheetsByExternalCustomerIdAsync(externalCustomerId, cancellationToken);
+        if (worksheetList is null)
         {
-            return [];
+            return null;
         }
 
-        var customer = await _unitOfWork.Customer.GetByIdAsync(worksheet.CustomerId);
-        if (customer is null)
+        var worksheetDTOList = worksheetList.Select(w => new WorksheetDTO
         {
-            return [];
-        }
+            Id = w.ExternalMapping,
+            CustomerId = externalCustomerId,
+            CallOutFee = w.CallOutFee,
+            Discount = w.Discount,
+            NewBuild = w.NewBuild,
+            Price = w.Price
+        }).ToList();
 
-        var worksheetDTO = new WorksheetDTO
-        {
-            Id = worksheet.ExternalMapping,
-            CustomerId = customer.ExternalMapping,
-            CallOutFee = worksheet.CallOutFee,
-            Discount = worksheet.Discount,
-            NewBuild = worksheet.NewBuild,
-            Price = worksheet.Price
-        };
-
-        return [worksheetDTO];
+        return worksheetDTOList;
     }
 
     public virtual async Task<ProductEntryDTO?> CreateProductAsync(Guid externalWorksheetId, ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)

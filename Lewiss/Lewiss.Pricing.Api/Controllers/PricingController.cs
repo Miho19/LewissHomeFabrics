@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Lewiss.Pricing.Shared.CustomerDTO;
 using Lewiss.Pricing.Shared.Product;
 using Lewiss.Pricing.Shared.QueryParameters;
