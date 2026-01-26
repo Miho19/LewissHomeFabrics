@@ -7,7 +7,5 @@ public record CustomerDTO
     public required string Suburb {get; set;}
     public required string Mobile {get; set;}
     public required string Email {get; set;}
-    public required string Consultant {get; set;}
-    public required string Measurer {get; set;}
    
 }
