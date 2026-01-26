@@ -3,7 +3,7 @@ using Lewiss.Pricing.Api.Tests.Fixtures;
 using Lewiss.Pricing.Shared.CustomerDTO;
 using Lewiss.Pricing.Shared.Product;
 using Lewiss.Pricing.Shared.QueryParameters;
-using Lewiss.Pricing.Shared.Services.Pricing;
+using Lewiss.Pricing.Shared.Services;
 using Lewiss.Pricing.Shared.Worksheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

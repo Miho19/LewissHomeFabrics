@@ -3,7 +3,9 @@ using Lewiss.Pricing.Data.Context;
 using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Data.Repository.CustomerRepository;
 using Lewiss.Pricing.Data.Repository.Generic;
+using Lewiss.Pricing.Data.Repository.ProductRepository;
 using Lewiss.Pricing.Data.Repository.WorksheetRepository;
+using Lewiss.Pricing.Shared.Services;
 using Microsoft.EntityFrameworkCore;
 
 DotEnv.Load();
@@ -18,10 +20,11 @@ builder.Services.AddDbContext<PricingDbContext>(options =>
 });
 
 // Add services to the container.
-// builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IWorksheetRepository, WorksheetRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<PricingService>();
+builder.Services.AddScoped<ProductService>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 

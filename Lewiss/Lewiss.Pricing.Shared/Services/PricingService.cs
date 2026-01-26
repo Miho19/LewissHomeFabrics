@@ -4,16 +4,18 @@ using Lewiss.Pricing.Shared.Product;
 using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.Worksheet;
 
-namespace Lewiss.Pricing.Shared.Services.Pricing;
+namespace Lewiss.Pricing.Shared.Services;
 
 public class PricingService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ProductService _productService;
 
 
-    public PricingService(IUnitOfWork unitOfWork)
+    public PricingService(IUnitOfWork unitOfWork, ProductService productService)
     {
         _unitOfWork = unitOfWork;
+        _productService = productService;
     }
 
 
@@ -179,6 +181,12 @@ public class PricingService
             Worksheet = worksheet
         };
 
+        product = await PopulateProductOptionVariationsList(product, productCreateDTO, cancellationToken);
+        if (product is null)
+        {
+            return null;
+        }
+
         await _unitOfWork.Product.AddAsync(product);
         await _unitOfWork.CommitAsync();
 
@@ -191,5 +199,16 @@ public class PricingService
         };
 
         return productEntryDTO;
+    }
+
+    private async Task<Data.Model.Product?> PopulateProductOptionVariationsList(Data.Model.Product product, ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
+    {
+        if (product.OptionVariations is null)
+        {
+            product.OptionVariations = new List<OptionVariation>();
+        }
+
+
+        return null;
     }
 }

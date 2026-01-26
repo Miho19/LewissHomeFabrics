@@ -2,7 +2,7 @@ using System.Collections.Immutable;
 using Lewiss.Pricing.Shared.CustomerDTO;
 using Lewiss.Pricing.Shared.Product;
 using Lewiss.Pricing.Shared.QueryParameters;
-using Lewiss.Pricing.Shared.Services.Pricing;
+using Lewiss.Pricing.Shared.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lewiss.Pricing.Api.Controllers;
