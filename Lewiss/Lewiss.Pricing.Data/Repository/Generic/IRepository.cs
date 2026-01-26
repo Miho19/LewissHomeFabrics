@@ -1,4 +1,4 @@
-namespace Lewiss.Pricing.Data.Repository;
+namespace Lewiss.Pricing.Data.Repository.Generic;
 public interface IRepository<T> where T : class
 {
     Task<List<T>> GetAllAsync();
