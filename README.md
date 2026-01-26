@@ -80,6 +80,8 @@ PelmetColour: string
 
 `CreateCustomer` returns [Customer DTO](#customer-dto)
 
+`GetCustomer` returns List of [Customer DTO](#customer-dto) filtered with query parameters
+
 ### Worksheet
 
 `CreateWorksheet` [Worksheet DTO](#worksheet-dto)
