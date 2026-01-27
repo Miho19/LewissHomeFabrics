@@ -26,12 +26,14 @@ public class PricingControllerTests
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
-        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object, productServiceMock.Object);
-        var pricingController = new PricingController(pricingServiceMock.Object);
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
 
         var customerDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        pricingServiceMock.Setup(p => p.CreateWorksheetAsync(It.IsAny<CustomerEntryDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(WorksheetFixture.TestWorksheetDTO);
+        worksheetServiceMock.Setup(p => p.CreateWorksheetAsync(It.IsAny<CustomerEntryDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(WorksheetFixture.TestWorksheetDTO);
 
         var result = await pricingController.CreateWorksheet(customerDTO);
 
@@ -49,12 +51,14 @@ public class PricingControllerTests
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
-        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object, productServiceMock.Object);
-        var pricingController = new PricingController(pricingServiceMock.Object);
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
 
         var customerDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        pricingServiceMock.Setup(p => p.CreateWorksheetAsync(It.IsAny<CustomerEntryDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync((WorksheetDTO)null!);
+        worksheetServiceMock.Setup(p => p.CreateWorksheetAsync(It.IsAny<CustomerEntryDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync((WorksheetDTO)null!);
 
         var result = await pricingController.CreateWorksheet(customerDTO);
 
@@ -69,12 +73,14 @@ public class PricingControllerTests
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
-        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object, productServiceMock.Object);
-        var pricingController = new PricingController(pricingServiceMock.Object);
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
 
         var customerDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        pricingServiceMock.Setup(p => p.CreateCustomerAsync(It.IsAny<CustomerCreateDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(customerDTO);
+        customerServiceMock.Setup(p => p.CreateCustomerAsync(It.IsAny<CustomerCreateDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(customerDTO);
 
         var result = await pricingController.CreateCustomer(CustomerFixture.TestCustomerCreate);
 
@@ -92,12 +98,14 @@ public class PricingControllerTests
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
-        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object, productServiceMock.Object);
-        var pricingController = new PricingController(pricingServiceMock.Object);
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
 
         var customerCreateDTO = CustomerFixture.TestCustomerCreate;
 
-        pricingServiceMock.Setup(p => p.CreateCustomerAsync(It.IsAny<CustomerCreateDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync((CustomerEntryDTO)null!);
+        customerServiceMock.Setup(p => p.CreateCustomerAsync(It.IsAny<CustomerCreateDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync((CustomerEntryDTO)null!);
 
         var result = await pricingController.CreateCustomer(customerCreateDTO);
 
@@ -112,11 +120,14 @@ public class PricingControllerTests
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
-        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object, productServiceMock.Object);
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
 
-        pricingServiceMock.Setup(p => p.GetCustomersAsync(It.IsAny<GetCustomerQueryParameters>(), It.IsAny<CancellationToken>())).ReturnsAsync([CustomerFixture.TestCustomerEntryDTO]);
+        customerServiceMock.Setup(p => p.GetCustomersAsync(It.IsAny<GetCustomerQueryParameters>(), It.IsAny<CancellationToken>())).ReturnsAsync([CustomerFixture.TestCustomerEntryDTO]);
 
-        var pricingController = new PricingController(pricingServiceMock.Object);
+
         var customer = CustomerFixture.TestCustomerEntryDTO;
 
         var queryParameters = new GetCustomerQueryParameters
@@ -141,12 +152,15 @@ public class PricingControllerTests
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
-        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object, productServiceMock.Object);
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
-        pricingServiceMock.Setup(p => p.GetWorksheetDTOAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(testWorksheetDTO);
+        worksheetServiceMock.Setup(p => p.GetWorksheetDTOAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(testWorksheetDTO);
 
-        var pricingController = new PricingController(pricingServiceMock.Object);
+
 
         var result = await pricingController.GetWorksheet(testWorksheetDTO.Id);
 
@@ -161,13 +175,16 @@ public class PricingControllerTests
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
-        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object, productServiceMock.Object);
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
 
-        pricingServiceMock.Setup(p => p.GetWorksheetDTOAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync((WorksheetDTO)null!);
+        worksheetServiceMock.Setup(p => p.GetWorksheetDTOAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync((WorksheetDTO)null!);
 
-        var pricingController = new PricingController(pricingServiceMock.Object);
+
 
         var result = await pricingController.GetWorksheet(testWorksheetDTO.Id);
 
@@ -182,14 +199,15 @@ public class PricingControllerTests
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
-        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object, productServiceMock.Object);
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
         var customerDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        pricingServiceMock.Setup(p => p.GetCustomerWorksheetDTOListAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync([testWorksheetDTO]);
-
-        var pricingController = new PricingController(pricingServiceMock.Object);
+        customerServiceMock.Setup(p => p.GetCustomerWorksheetDTOListAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync([testWorksheetDTO]);
 
         var result = await pricingController.GetCustomerWorksheet(customerDTO.Id);
 
@@ -205,14 +223,16 @@ public class PricingControllerTests
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
-        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object, productServiceMock.Object);
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
         var customerDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        pricingServiceMock.Setup(p => p.GetCustomerWorksheetDTOListAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync((List<WorksheetDTO>)null!);
+        customerServiceMock.Setup(p => p.GetCustomerWorksheetDTOListAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync((List<WorksheetDTO>)null!);
 
-        var pricingController = new PricingController(pricingServiceMock.Object);
 
         var result = await pricingController.GetCustomerWorksheet(customerDTO.Id);
 
@@ -227,14 +247,15 @@ public class PricingControllerTests
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
-        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object, productServiceMock.Object);
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
         var customerDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        pricingServiceMock.Setup(p => p.GetCustomerWorksheetDTOListAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync([]);
-
-        var pricingController = new PricingController(pricingServiceMock.Object);
+        customerServiceMock.Setup(p => p.GetCustomerWorksheetDTOListAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync([]);
 
         var result = await pricingController.GetCustomerWorksheet(customerDTO.Id);
 

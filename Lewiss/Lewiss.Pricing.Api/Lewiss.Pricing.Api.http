@@ -1,9 +1,8 @@
-@Lewiss.Pricing.Api_HostAddress = http://localhost:5085
+@HostAddress = http://localhost:5085/api/v1
 
 # @name CreateCustomerRequest
-POST http://localhost:5085/customer/
+POST {{{{HostAddress}}}}/customer
 Content-Type: application/json
-Accept: application/json
 
 {
     "familyname" : "April",
@@ -12,7 +11,8 @@ Accept: application/json
     "suburb" : "suburb",
     "mobile" : "123 345 67543",
     "email" : "email.address@hotmail.com",
-
 }
 
 ###
+
+
