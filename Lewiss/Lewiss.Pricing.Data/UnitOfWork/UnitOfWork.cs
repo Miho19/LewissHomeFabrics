@@ -15,6 +15,11 @@ public class UnitOfWork : IUnitOfWork
 
     private bool _disposed = false;
 
+    public UnitOfWork()
+    {
+
+    }
+
     public UnitOfWork(PricingDbContext pricingDbContext, IWorksheetRepository worksheetRepository, ICustomerRepository customerRepository, IProductRepository productRepository)
     {
         _pricingDbContext = pricingDbContext;

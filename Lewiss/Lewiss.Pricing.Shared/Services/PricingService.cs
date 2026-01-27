@@ -195,7 +195,8 @@ public class PricingService
             Id = product.ExternalMapping,
             WorksheetId = externalWorksheetId,
             Configuration = productCreateDTO.Configuration,
-            GeneralConfiguration = productCreateDTO.GeneralProductConfigration
+            GeneralConfiguration = productCreateDTO.GeneralProductConfigration,
+            VariationProductConfiguration = productCreateDTO.VariationProductConfiguration
         };
 
         return productEntryDTO;

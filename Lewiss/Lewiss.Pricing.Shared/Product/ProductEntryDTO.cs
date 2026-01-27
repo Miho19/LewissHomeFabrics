@@ -7,6 +7,8 @@ public class ProductEntryDTO
 
     public required GeneralProductConfigration GeneralConfiguration { get; set; }
 
+    public required VariationProductConfiguration VariationProductConfiguration { get; set; }
+
     public required ISpecificConfiguration Configuration { get; set; }
 
 }
