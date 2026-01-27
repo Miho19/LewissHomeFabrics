@@ -2,30 +2,31 @@ using Lewiss.Pricing.Data.Model;
 
 namespace Lewiss.Pricing.Data.OptionData;
 
-public static class FitTypeOption
+public static class BracketTypeOption
 {
     public static readonly ProductOption ProductOption = new ProductOption
     {
         ProductOptionId = OptionDataUtility.GetOptionId(),
-        Name = "FitType"
+        Name = "BracketType"
     };
 
-    public static readonly ProductOptionVariation FitTypeVariationInside = new ProductOptionVariation
+    public static readonly ProductOptionVariation Standard = new ProductOptionVariation
     {
         ProductOptionVariationId = OptionDataUtility.GetOptionVariationId(),
         ProductOptionId = ProductOption.ProductOptionId,
-        Value = "Inside",
-        Price = 0.0m,
+        Value = "Standard",
+        Price = 0.00m,
     };
 
-    public static readonly ProductOptionVariation FitTypeVariationOutside = new ProductOptionVariation
+    public static readonly ProductOptionVariation ExtraLarge = new ProductOptionVariation
     {
         ProductOptionVariationId = OptionDataUtility.GetOptionVariationId(),
         ProductOptionId = ProductOption.ProductOptionId,
-        Value = "Outside",
-        Price = 0.0m,
+        Value = "Extra Large",
+        Price = 0.00m,
     };
 
-
-    public static readonly List<ProductOptionVariation> ProductOptionVariations = [FitTypeVariationInside, FitTypeVariationOutside];
+    public static readonly List<ProductOptionVariation> ProductOptionVariations = [
+        Standard, ExtraLarge,
+    ];
 }

@@ -26,7 +26,7 @@ public static class FabricOption
         Price = 0.0m,
     };
 
-    public static readonly List<ProductOptionVariation> OptionVariations = [
+    public static readonly List<ProductOptionVariation> ProductOptionVariations = [
         TranslucentWhite, EverydayVinylCollectionPolar
     ];
 }

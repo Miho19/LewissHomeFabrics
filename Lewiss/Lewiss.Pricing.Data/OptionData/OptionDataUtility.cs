@@ -17,31 +17,45 @@ public static class OptionDataUtility
     {
         return ++OptionVariationId;
     }
+
     public static List<ProductOption> OptionList = [
         FitTypeOption.ProductOption,
         FixingToOption.ProductOption,
         ProductTypeOption.ProductOption,
         FabricOption.ProductOption,
-        // OperationType,
-        // OperationSide,
-        // HeadRailColour,
-        // SideChannelColour,
-        // RollType,
-        // ChainColour,
-        // ChainLength,
-        // BracketType,
-        // BracketColour,
-        // BottomRailType,
-        // BottomRailColour,
-        // PelmetType,
-        // PelmetColour
+        OperationTypeOption.ProductOption,
+        OperationSideOption.ProductOption,
+        HeadRailColourOption.ProductOption,
+        SideChannelColourOption.ProductOption,
+        RollTypeOption.ProductOption,
+        ChainColourOption.ProductOption,
+        ChainLengthOption.ProductOption,
+        BracketTypeOption.ProductOption,
+        BracketColourOption.ProductOption,
+        BottomRailTypeOption.ProductOption,
+        BottomRailColourOption.ProductOption,
+        PelmetTypeOption.ProductOption,
+        PelmetColourOption.ProductOption
     ];
 
     public static List<ProductOptionVariation> OptionVariationList = [
-        ..FitTypeOption.OptionVariations,
-        ..FixingToOption.OptionVariations,
-        ..ProductTypeOption.OptionVariations,
-        ..FabricOption.OptionVariations,
+        ..FitTypeOption.ProductOptionVariations,
+        ..FixingToOption.ProductOptionVariations,
+        ..ProductTypeOption.ProductOptionVariations,
+        ..FabricOption.ProductOptionVariations,
+        ..OperationTypeOption.ProductOptionVariations,
+        ..OperationSideOption.ProductOptionVariations,
+        ..HeadRailColourOption.ProductOptionVariations,
+        ..SideChannelColourOption.ProductOptionVariations,
+        ..RollTypeOption.ProductOptionVariations,
+        ..ChainColourOption.ProductOptionVariations,
+        ..ChainLengthOption.ProductOptionVariations,
+        ..BracketTypeOption.ProductOptionVariations,
+        ..BracketColourOption.ProductOptionVariations,
+        ..BottomRailTypeOption.ProductOptionVariations,
+        ..BottomRailColourOption.ProductOptionVariations,
+        ..PelmetTypeOption.ProductOptionVariations,
+        ..PelmetColourOption.ProductOptionVariations
     ];
 }
 

@@ -2,30 +2,32 @@ using Lewiss.Pricing.Data.Model;
 
 namespace Lewiss.Pricing.Data.OptionData;
 
-public static class FitTypeOption
+public static class OperationSideOption
 {
     public static readonly ProductOption ProductOption = new ProductOption
     {
         ProductOptionId = OptionDataUtility.GetOptionId(),
-        Name = "FitType"
+        Name = "OpertionSide"
     };
 
-    public static readonly ProductOptionVariation FitTypeVariationInside = new ProductOptionVariation
+    public static readonly ProductOptionVariation Left = new ProductOptionVariation
     {
         ProductOptionVariationId = OptionDataUtility.GetOptionVariationId(),
         ProductOptionId = ProductOption.ProductOptionId,
-        Value = "Inside",
-        Price = 0.0m,
+        Value = "Left",
+        Price = 0.00m,
     };
 
-    public static readonly ProductOptionVariation FitTypeVariationOutside = new ProductOptionVariation
+    public static readonly ProductOptionVariation Right = new ProductOptionVariation
     {
         ProductOptionVariationId = OptionDataUtility.GetOptionVariationId(),
         ProductOptionId = ProductOption.ProductOptionId,
-        Value = "Outside",
-        Price = 0.0m,
+        Value = "Right",
+        Price = 0.00m,
     };
 
 
-    public static readonly List<ProductOptionVariation> ProductOptionVariations = [FitTypeVariationInside, FitTypeVariationOutside];
+    public static readonly List<ProductOptionVariation> ProductOptionVariations = [
+        Left, Right
+    ];
 }

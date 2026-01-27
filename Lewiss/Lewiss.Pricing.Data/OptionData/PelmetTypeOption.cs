@@ -2,24 +2,23 @@ using Lewiss.Pricing.Data.Model;
 
 namespace Lewiss.Pricing.Data.OptionData;
 
-public static class FixingToOption
+public static class PelmetTypeOption
 {
     public static readonly ProductOption ProductOption = new ProductOption
     {
         ProductOptionId = OptionDataUtility.GetOptionId(),
-        Name = "FixingTo"
+        Name = "PelmetType"
     };
 
-    public static readonly ProductOptionVariation FixingToWood = new ProductOptionVariation
+    public static readonly ProductOptionVariation None = new ProductOptionVariation
     {
         ProductOptionVariationId = OptionDataUtility.GetOptionVariationId(),
         ProductOptionId = ProductOption.ProductOptionId,
-        Value = "Wood",
-        Price = 0.0m,
+        Value = "None",
+        Price = 0.00m,
     };
 
     public static readonly List<ProductOptionVariation> ProductOptionVariations = [
-        FixingToWood
+        None,
     ];
-
 }
