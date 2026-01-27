@@ -1,11 +1,8 @@
 
-using System.ComponentModel.DataAnnotations;
-
 namespace Lewiss.Pricing.Data.Model;
 
 public class Worksheet
 {
-    [Key]
     public int WorksheetId { get; set; }
     public required Guid ExternalMapping { get; set; }
     public required DateTimeOffset CreatedAt { get; set; }

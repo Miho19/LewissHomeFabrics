@@ -8,7 +8,6 @@ public static class ProductOptions
 {
 
 
-
     public static readonly Option ProductType = new Option
     {
         Name = "ProductType"

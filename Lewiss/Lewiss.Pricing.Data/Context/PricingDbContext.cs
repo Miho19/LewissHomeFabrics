@@ -7,56 +7,89 @@ namespace Lewiss.Pricing.Data.Context;
 
 public class PricingDbContext : DbContext
 {
-    public PricingDbContext(DbContextOptions<PricingDbContext> options) : base(options) { }
-
     public DbSet<Worksheet> Worksheet { get; set; }
     public DbSet<Customer> Customer { get; set; }
-
     public DbSet<Product> Product { get; set; }
+    public DbSet<ProductOption> ProductOption { get; set; }
+    public DbSet<ProductOptionVariation> ProductOptionVariation { get; set; }
 
-    public DbSet<Option> Option { get; set; }
-    public DbSet<OptionVariation> OptionVariation { get; set; }
-
+    public PricingDbContext(DbContextOptions<PricingDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Customer>().HasKey(c => c.CustomerId);
-        modelBuilder.Entity<Customer>().Property(c => c.CustomerId).ValueGeneratedOnAdd();
-        modelBuilder.Entity<Customer>().Property(c => c.ExternalMapping);
+        modelBuilder.Entity<Customer>()
+        .HasKey(c => c.CustomerId);
+
+        modelBuilder.Entity<Customer>()
+        .Property(c => c.CustomerId)
+        .ValueGeneratedOnAdd();
+
+        modelBuilder.Entity<Customer>()
+        .Property(c => c.ExternalMapping);
 
 
-        modelBuilder.Entity<Worksheet>().HasKey(w => w.WorksheetId);
-        modelBuilder.Entity<Worksheet>().Property(w => w.WorksheetId).ValueGeneratedOnAdd();
-        modelBuilder.Entity<Worksheet>().Property(w => w.ExternalMapping);
+        modelBuilder.Entity<Worksheet>()
+        .HasKey(w => w.WorksheetId);
+
+        modelBuilder.Entity<Worksheet>()
+        .Property(w => w.WorksheetId)
+        .ValueGeneratedOnAdd();
+
+        modelBuilder.Entity<Worksheet>()
+        .Property(w => w.ExternalMapping);
+
+        modelBuilder.Entity<Worksheet>()
+        .HasOne(w => w.Customer)
+        .WithMany(c => c.CurrentWorksheets)
+        .HasForeignKey(c => c.CustomerId);
+
+        modelBuilder.Entity<Customer>()
+        .HasIndex(c => c.Email).IsUnique();
+
+        modelBuilder.Entity<Customer>()
+        .HasIndex(c => c.Mobile).IsUnique();
 
 
-        modelBuilder.Entity<Worksheet>().HasOne(w => w.Customer).WithMany(c => c.CurrentWorksheets).HasForeignKey(c => c.CustomerId);
+        modelBuilder.Entity<Product>()
+        .HasKey(p => p.ProductId);
 
-        modelBuilder.Entity<Customer>().HasIndex(c => c.Email).IsUnique();
-        modelBuilder.Entity<Customer>().HasIndex(c => c.Mobile).IsUnique();
+        modelBuilder.Entity<Product>()
+        .Property(c => c.ProductId).ValueGeneratedOnAdd();
 
+        modelBuilder.Entity<Product>()
+        .Property(c => c.ExternalMapping);
 
-        modelBuilder.Entity<Product>().HasKey(p => p.Id);
-        modelBuilder.Entity<Product>().Property(c => c.Id).ValueGeneratedOnAdd();
-        modelBuilder.Entity<Product>().Property(c => c.ExternalMapping);
+        modelBuilder.Entity<Product>()
+        .HasMany(p => p.OptionVariations)
+        .WithMany(ov => ov.Products);
 
-        modelBuilder.Entity<Product>().HasMany(p => p.OptionVariations).WithMany(ov => ov.Products);
+        modelBuilder.Entity<ProductOption>()
+        .HasKey(o => o.ProductOptionId);
 
-        modelBuilder.Entity<Option>().HasKey(o => o.Id);
-        modelBuilder.Entity<Option>().Property(o => o.Id).ValueGeneratedOnAdd();
+        modelBuilder.Entity<ProductOption>()
+        .Property(o => o.ProductOptionId)
+        .ValueGeneratedOnAdd();
 
-        modelBuilder.Entity<OptionVariation>().HasKey(ov => ov.Id);
-        modelBuilder.Entity<OptionVariation>().Property(ov => ov.Id).ValueGeneratedOnAdd();
+        modelBuilder.Entity<ProductOptionVariation>()
+        .HasKey(ov => ov.ProductOptionVariationId);
 
-        modelBuilder.Entity<Option>().HasMany(o => o.OptionVariation).WithOne(ov => ov.Option).HasForeignKey(ov => ov.OptionId);
+        modelBuilder.Entity<ProductOptionVariation>()
+        .Property(ov => ov.ProductOptionVariationId)
+        .ValueGeneratedOnAdd();
 
-        modelBuilder.Entity<Option>().HasData(
+        modelBuilder.Entity<ProductOption>()
+        .HasMany(o => o.ProductOptionVariation)
+        .WithOne(ov => ov.ProductOption)
+        .HasForeignKey(ov => ov.ProductOptionId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ProductOption>().HasData(
             OptionDataUtility.OptionList
         );
 
-        modelBuilder.Entity<OptionVariation>().HasData(
+        modelBuilder.Entity<ProductOptionVariation>().HasData(
             OptionDataUtility.OptionVariationList
         );
 

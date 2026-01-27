@@ -1,32 +1,32 @@
 using Lewiss.Pricing.Data.Model;
-using Lewiss.Pricing.Data.SeedData;
 
 namespace Lewiss.Pricing.Data.OptionData;
 
-public static class FitTypeOption
+public static class FabricOption
 {
     public static readonly Option Option = new Option
     {
         OptionId = OptionDataUtility.GetOptionId(),
-        Name = "FitType"
+        Name = "Fabric"
     };
 
-    public static readonly OptionVariation FitTypeVariationInside = new OptionVariation
+    public static readonly OptionVariation TranslucentWhite = new OptionVariation
     {
         OptionVariationId = OptionDataUtility.GetOptionVariationId(),
         OptionId = Option.OptionId,
-        Value = "Inside",
+        Value = "Translucent White",
         Price = 0.0m,
     };
 
-    public static readonly OptionVariation FitTypeVariationOutside = new OptionVariation
+    public static readonly OptionVariation EverydayVinylCollectionPolar = new OptionVariation
     {
         OptionVariationId = OptionDataUtility.GetOptionVariationId(),
         OptionId = Option.OptionId,
-        Value = "Outside",
+        Value = "Everyday Vinyl Collection - Polar",
         Price = 0.0m,
     };
 
-
-    public static readonly List<OptionVariation> OptionVariations = [FitTypeVariationInside, FitTypeVariationOutside];
+    public static readonly List<OptionVariation> OptionVariations = [
+        TranslucentWhite, EverydayVinylCollectionPolar
+    ];
 }

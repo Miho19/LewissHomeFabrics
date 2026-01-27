@@ -1,14 +1,14 @@
 
 namespace Lewiss.Pricing.Data.Model;
 
-public class OptionVariation
+public class ProductOptionVariation
 {
 
-    public int Id { get; set; }
+    public int ProductOptionVariationId { get; set; }
 
     public decimal? Price { get; set; }
-    public int OptionId { get; set; }
-    public required Option Option { get; set; } // delete on cascade
+    public int? ProductOptionId { get; set; }
+    public ProductOption? ProductOption { get; set; } // delete on cascade
 
     public required string Value { get; set; }
 

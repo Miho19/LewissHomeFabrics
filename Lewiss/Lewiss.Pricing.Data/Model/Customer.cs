@@ -1,10 +1,7 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Lewiss.Pricing.Data.Model;
 
 public class Customer
 {
-    [Key]
     public int CustomerId { get; set; }
     public required Guid ExternalMapping { get; set; }
     public required string FamilyName { get; set; }

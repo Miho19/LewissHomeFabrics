@@ -3,7 +3,7 @@ namespace Lewiss.Pricing.Data.Model;
 
 public class Product
 {
-    public int Id { get; set; }
+    public int ProductId { get; set; }
 
     public required Guid ExternalMapping { get; set; }
 
@@ -24,5 +24,5 @@ public class Product
     public required int WorksheetId { get; set; }
     public required Worksheet Worksheet { get; set; }
 
-    public ICollection<OptionVariation> OptionVariations { get; set; } = new List<OptionVariation>();
+    public ICollection<ProductOptionVariation> OptionVariations { get; set; } = new List<ProductOptionVariation>();
 }

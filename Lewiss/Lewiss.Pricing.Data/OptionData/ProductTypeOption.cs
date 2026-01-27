@@ -1,32 +1,32 @@
 using Lewiss.Pricing.Data.Model;
-using Lewiss.Pricing.Data.SeedData;
 
 namespace Lewiss.Pricing.Data.OptionData;
 
-public static class FitTypeOption
+public static class ProductTypeOption
 {
     public static readonly Option Option = new Option
     {
         OptionId = OptionDataUtility.GetOptionId(),
-        Name = "FitType"
+        Name = "ProductType"
     };
 
-    public static readonly OptionVariation FitTypeVariationInside = new OptionVariation
+    public static readonly OptionVariation KineticsCellular = new OptionVariation
     {
         OptionVariationId = OptionDataUtility.GetOptionVariationId(),
         OptionId = Option.OptionId,
-        Value = "Inside",
+        Value = "Kinetics Cellular",
         Price = 0.0m,
     };
 
-    public static readonly OptionVariation FitTypeVariationOutside = new OptionVariation
+    public static readonly OptionVariation KineticsRoller = new OptionVariation
     {
         OptionVariationId = OptionDataUtility.GetOptionVariationId(),
         OptionId = Option.OptionId,
-        Value = "Outside",
+        Value = "Kinetics Roller",
         Price = 0.0m,
     };
 
-
-    public static readonly List<OptionVariation> OptionVariations = [FitTypeVariationInside, FitTypeVariationOutside];
+    public static readonly List<OptionVariation> OptionVariations = [
+        KineticsCellular, KineticsRoller
+    ];
 }

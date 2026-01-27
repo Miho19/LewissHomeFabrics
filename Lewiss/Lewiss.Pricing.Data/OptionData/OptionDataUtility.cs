@@ -5,11 +5,23 @@ namespace Lewiss.Pricing.Data.OptionData;
 
 public static class OptionDataUtility
 {
+    private static int OptionId = 0;
+    private static int OptionVariationId = 0;
+
+    public static int GetOptionId()
+    {
+        return ++OptionId;
+    }
+
+    public static int GetOptionVariationId()
+    {
+        return ++OptionVariationId;
+    }
     public static List<Option> OptionList = [
         FitTypeOption.Option,
         FixingToOption.Option,
-        // ProductType,
-        // Fabric,
+        ProductTypeOption.Option,
+        FabricOption.Option,
         // OperationType,
         // OperationSide,
         // HeadRailColour,
@@ -28,7 +40,8 @@ public static class OptionDataUtility
     public static List<OptionVariation> OptionVariationList = [
         ..FitTypeOption.OptionVariations,
         ..FixingToOption.OptionVariations,
-
+        ..ProductTypeOption.OptionVariations,
+        ..FabricOption.OptionVariations,
     ];
 }
 
