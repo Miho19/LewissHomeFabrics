@@ -26,8 +26,8 @@ public class PricingController : ControllerBase
 
     }
 
-    [HttpPost("worksheet", Name = "CreateWorksheet")]
-    public async Task<IActionResult> CreateWorksheet([FromBody] CustomerEntryDTO customerDTO, CancellationToken cancellationToken = default)
+    [HttpPost("customer/{customerId}/worksheet", Name = "CreateWorksheet")]
+    public async Task<IActionResult> CreateWorksheet([FromBody] CustomerEntryDTO customerDTO, Guid customerId, CancellationToken cancellationToken = default)
     {
         var worksheet = await _worksheetService.CreateWorksheetAsync(customerDTO, cancellationToken);
         if (worksheet is null)
@@ -43,8 +43,8 @@ public class PricingController : ControllerBase
         return new CreatedAtActionResult("Created Worksheet", nameof(CreateWorksheet), new { Id = worksheet.Id }, worksheet);
     }
 
-    [HttpGet("worksheet/{workoutId}", Name = "GetWorksheet")]
-    public async Task<IActionResult> GetWorksheet(Guid workoutId, CancellationToken cancellationToken = default)
+    [HttpGet("customer/{customerId}/worksheet/{workoutId}", Name = "GetWorksheet")]
+    public async Task<IActionResult> GetWorksheet(Guid customerId, Guid workoutId, CancellationToken cancellationToken = default)
     {
         var worksheetDTO = await _worksheetService.GetWorksheetDTOAsync(workoutId, cancellationToken);
         if (worksheetDTO is null)
@@ -60,8 +60,8 @@ public class PricingController : ControllerBase
         return new OkObjectResult(worksheetDTO);
     }
 
-    [HttpPost("worksheet/{workoutId}/product", Name = "CreateProduct")]
-    public async Task<IActionResult> CreateProduct(Guid workoutId, [FromBody] ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
+    [HttpPost("customer/{customerId}/worksheet/{workoutId}/product", Name = "CreateProduct")]
+    public async Task<IActionResult> CreateProduct(Guid customerId, Guid workoutId, [FromBody] ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
         var productEntryDTO = await _productService.CreateProductAsync(workoutId, productCreateDTO, cancellationToken);
         if (productEntryDTO is null)
@@ -77,7 +77,7 @@ public class PricingController : ControllerBase
         return new OkObjectResult(productEntryDTO);
     }
 
-    [HttpGet("customer/{customerId}", Name = "GetCustomerWorksheet")]
+    [HttpGet("customer/{customerId}/worksheet", Name = "GetCustomerWorksheet")]
     public async Task<IActionResult> GetCustomerWorksheet(Guid customerId, CancellationToken cancellationToken = default)
     {
         var worksheetDTOList = await _customerService.GetCustomerWorksheetDTOListAsync(customerId, cancellationToken);
@@ -94,6 +94,12 @@ public class PricingController : ControllerBase
         return new OkObjectResult(worksheetDTOList);
     }
 
+    [HttpGet("customer/{customerId}", Name = "GetCustomer")]
+    public async Task<IActionResult> GetCustomer(Guid customerId, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     [HttpPost("customer", Name = "CreateCustomer")]
     public async Task<IActionResult> CreateCustomer([FromBody] CustomerCreateDTO customerCreateDTO, CancellationToken cancellationToken = default)
     {
@@ -108,11 +114,11 @@ public class PricingController : ControllerBase
             });
         }
 
-        return new CreatedAtActionResult("Created Customer", nameof(CreateCustomer), new { Id = customerEntryDto.Id }, customerEntryDto);
+        return new CreatedAtActionResult(actionName: "GetCustomer", controllerName: "Pricing", routeValues: new { customerId = customerEntryDto.Id }, value: customerEntryDto);
     }
 
-    [HttpGet("customer", Name = "GetCustomer")]
-    public async Task<IActionResult> GetCustomer([FromQuery] GetCustomerQueryParameters getCustomerQueryParameters, CancellationToken cancellationToken = default)
+    [HttpGet("customer", Name = "GetCustomers")]
+    public async Task<IActionResult> GetCustomers([FromQuery] GetCustomerQueryParameters getCustomerQueryParameters, CancellationToken cancellationToken = default)
     {
         var customerEntryDTOList = await _customerService.GetCustomersAsync(getCustomerQueryParameters, cancellationToken);
         if (customerEntryDTOList is null)
@@ -127,4 +133,6 @@ public class PricingController : ControllerBase
 
         return new OkObjectResult(customerEntryDTOList);
     }
+
+
 }
