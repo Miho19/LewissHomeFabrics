@@ -38,7 +38,7 @@ public static class BottomRailColourOption
     {
         ProductOptionVariationId = OptionDataUtility.GetOptionVariationId(),
         ProductOptionId = ProductOption.ProductOptionId,
-        Value = "OffWhite",
+        Value = "Off White",
         Price = 0.00m,
     };
 
