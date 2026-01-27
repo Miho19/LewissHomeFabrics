@@ -19,11 +19,14 @@ builder.Services.AddDbContext<PricingDbContext>(options =>
     options.UseMySql(dbConnectionString, ServerVersion.AutoDetect(dbConnectionString));
 });
 
-// Add services to the container.
+// Repositories
 builder.Services.AddScoped<IWorksheetRepository, WorksheetRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+// Services
 builder.Services.AddScoped<PricingService>();
+builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<ProductService>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

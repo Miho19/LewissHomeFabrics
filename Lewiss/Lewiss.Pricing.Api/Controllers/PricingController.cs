@@ -13,10 +13,12 @@ namespace Lewiss.Pricing.Api.Controllers;
 public class PricingController : ControllerBase
 {
     private readonly PricingService _pricingService;
+    private readonly CustomerService _customerService;
 
-    public PricingController(PricingService pricingService)
+    public PricingController(PricingService pricingService, CustomerService customerService)
     {
         _pricingService = pricingService;
+        _customerService = customerService;
     }
 
     [HttpPost("worksheet", Name = "CreateWorksheet")]
@@ -90,7 +92,7 @@ public class PricingController : ControllerBase
     [HttpPost("customer", Name = "CreateCustomer")]
     public async Task<IActionResult> CreateCustomer([FromBody] CustomerCreateDTO customerCreateDTO, CancellationToken cancellationToken = default)
     {
-        var customerEntryDto = await _pricingService.CreateCustomerAsync(customerCreateDTO, cancellationToken);
+        var customerEntryDto = await _customerService.CreateCustomerAsync(customerCreateDTO, cancellationToken);
         if (customerEntryDto is null)
         {
             return StatusCode(500, new ProblemDetails
@@ -107,7 +109,7 @@ public class PricingController : ControllerBase
     [HttpGet("customer", Name = "GetCustomer")]
     public async Task<IActionResult> GetCustomer([FromQuery] GetCustomerQueryParameters getCustomerQueryParameters, CancellationToken cancellationToken = default)
     {
-        var customerEntryDTOList = await _pricingService.GetCustomersAsync(getCustomerQueryParameters, cancellationToken);
+        var customerEntryDTOList = await _customerService.GetCustomersAsync(getCustomerQueryParameters, cancellationToken);
         if (customerEntryDTOList is null)
         {
             return StatusCode(500, new ProblemDetails
