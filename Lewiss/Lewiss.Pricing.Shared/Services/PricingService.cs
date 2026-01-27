@@ -1,155 +1,18 @@
-using Lewiss.Pricing.Data.Model;
-using Lewiss.Pricing.Shared.CustomerDTO;
+
 using Lewiss.Pricing.Shared.Product;
-using Lewiss.Pricing.Shared.QueryParameters;
-using Lewiss.Pricing.Shared.Worksheet;
 
 namespace Lewiss.Pricing.Shared.Services;
 
 public class PricingService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ProductService _productService;
-
-    private readonly CustomerService _customerService;
 
 
-    public PricingService(IUnitOfWork unitOfWork, ProductService productService, CustomerService customerService)
+    public PricingService(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-        _productService = productService;
-        _customerService = customerService;
-    }
-
-    public virtual async Task<WorksheetDTO?> CreateWorksheetAsync(CustomerEntryDTO customerEntryDTO, CancellationToken cancellationToken = default)
-    {
-        var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(customerEntryDTO.Id, cancellationToken);
-        if (customer is null)
-        {
-            return null;
-        }
-
-        var worksheet = new Data.Model.Worksheet
-        {
-            ExternalMapping = Guid.CreateVersion7(DateTimeOffset.UtcNow),
-            CreatedAt = DateTimeOffset.UtcNow,
-            Customer = customer,
-            CustomerId = customer.CustomerId,
-            CallOutFee = 0.00m,
-            Discount = 0.00m,
-            NewBuild = false,
-            Price = 0.00m,
-        };
-
-        await _unitOfWork.Worksheet.AddAsync(worksheet);
-        await _unitOfWork.CommitAsync();
-
-        var worksheetDTO = new WorksheetDTO
-        {
-            Id = worksheet.ExternalMapping,
-            CustomerId = customer.ExternalMapping,
-            Price = 0.00m,
-            Discount = 0.00m,
-            NewBuild = false,
-            CallOutFee = 0.00m
-        };
-
-        return worksheetDTO;
-    }
-
-    public virtual async Task<WorksheetDTO?> GetWorksheetDTOAsync(Guid externalWorksheetId, CancellationToken cancellationToken = default)
-    {
-        var worksheet = await _unitOfWork.Worksheet.GetWorksheetByExternalIdAsync(externalWorksheetId, cancellationToken);
-        if (worksheet is null)
-        {
-            return null;
-        }
 
 
-        var customer = await _unitOfWork.Customer.GetByIdAsync(worksheet.CustomerId);
-        if (customer is null)
-        {
-            return null;
-        }
-
-        var worksheetDTO = new WorksheetDTO
-        {
-            Id = worksheet.ExternalMapping,
-            CustomerId = customer.ExternalMapping,
-            CallOutFee = worksheet.CallOutFee,
-            Discount = worksheet.Discount,
-            NewBuild = worksheet.NewBuild,
-            Price = worksheet.Price
-        };
-        return worksheetDTO;
-    }
-
-    public virtual async Task<List<WorksheetDTO>?> GetCustomerWorksheetDTOListAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
-    {
-        var worksheetList = await _unitOfWork.Worksheet.GetWorksheetsByExternalCustomerIdAsync(externalCustomerId, cancellationToken);
-        if (worksheetList is null)
-        {
-            return null;
-        }
-
-        var worksheetDTOList = worksheetList.Select(w => new WorksheetDTO
-        {
-            Id = w.ExternalMapping,
-            CustomerId = externalCustomerId,
-            CallOutFee = w.CallOutFee,
-            Discount = w.Discount,
-            NewBuild = w.NewBuild,
-            Price = w.Price
-        }).ToList();
-
-        return worksheetDTOList;
-    }
-
-    public virtual async Task<ProductEntryDTO?> CreateProductAsync(Guid externalWorksheetId, ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
-    {
-
-        var worksheet = await _unitOfWork.Worksheet.GetWorksheetByExternalIdAsync(externalWorksheetId, cancellationToken);
-        if (worksheet is null)
-        {
-            return null;
-        }
-
-        var generalConfiguration = productCreateDTO.GeneralProductConfigration;
-
-        var product = new Data.Model.Product
-        {
-            ExternalMapping = Guid.CreateVersion7(DateTimeOffset.UtcNow),
-            Price = generalConfiguration.Price,
-            Location = generalConfiguration.Location,
-            Width = generalConfiguration.Width,
-            Height = generalConfiguration.Height,
-            Reveal = generalConfiguration.Reveal,
-            AboveHeightConstraint = generalConfiguration.AboveHeightConstraint,
-            RemoteNumber = generalConfiguration.RemoteNumber,
-            RemoteChannel = generalConfiguration.RemoteChannel,
-            WorksheetId = worksheet.WorksheetId,
-            Worksheet = worksheet
-        };
-
-        product = await _productService.PopulateProductOptionVariationList(product, productCreateDTO, cancellationToken);
-        if (product is null)
-        {
-            return null;
-        }
-
-        await _unitOfWork.Product.AddAsync(product);
-        await _unitOfWork.CommitAsync();
-
-        var productEntryDTO = new ProductEntryDTO
-        {
-            Id = product.ExternalMapping,
-            WorksheetId = externalWorksheetId,
-            Configuration = productCreateDTO.Configuration,
-            GeneralConfiguration = productCreateDTO.GeneralProductConfigration,
-            VariationProductConfiguration = productCreateDTO.VariationProductConfiguration
-        };
-
-        return productEntryDTO;
     }
 
 

@@ -1,6 +1,7 @@
 using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Shared.CustomerDTO;
 using Lewiss.Pricing.Shared.QueryParameters;
+using Lewiss.Pricing.Shared.Worksheet;
 
 namespace Lewiss.Pricing.Shared.Services;
 
@@ -97,5 +98,25 @@ public class CustomerService
         return filteredCustomerEntryDTOList;
     }
 
+    public virtual async Task<List<WorksheetDTO>?> GetCustomerWorksheetDTOListAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
+    {
+        var worksheetList = await _unitOfWork.Worksheet.GetWorksheetsByExternalCustomerIdAsync(externalCustomerId, cancellationToken);
+        if (worksheetList is null)
+        {
+            return null;
+        }
+
+        var worksheetDTOList = worksheetList.Select(w => new WorksheetDTO
+        {
+            Id = w.ExternalMapping,
+            CustomerId = externalCustomerId,
+            CallOutFee = w.CallOutFee,
+            Discount = w.Discount,
+            NewBuild = w.NewBuild,
+            Price = w.Price
+        }).ToList();
+
+        return worksheetDTOList;
+    }
 
 }
