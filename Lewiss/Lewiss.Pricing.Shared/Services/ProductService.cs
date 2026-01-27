@@ -20,17 +20,7 @@ public class ProductService
         return null;
     }
 
-    private async Task<bool> FitTypeOption(Data.Model.Product product, ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
-    {
-        var fitType = productCreateDTO.GeneralProductConfigration.FitType;
 
-        if (string.IsNullOrEmpty(fitType))
-        {
-            return false;
-        }
-
-
-        return true;
-    }
 
 }
+

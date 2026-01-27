@@ -5,6 +5,26 @@ namespace Lewiss.Pricing.Api.Tests.Fixtures;
 public static class ProductFixture
 {
 
+    private static readonly VariationProductConfiguration TestKineticsCellularVariationProductConfiguration = new VariationProductConfiguration
+    {
+        FitType = "IN",
+        FixingTo = "Wood",
+        ProductType = "kineticscellular",
+        Fabric = "Translucent White",
+        OperationType = "Cord",
+        OperationSide = "Left",
+    };
+
+    private static readonly VariationProductConfiguration TestKineticsRollerVariationProductConfiguration = new VariationProductConfiguration
+    {
+        FitType = "IN",
+        FixingTo = "Wood",
+        ProductType = "kineticsroller",
+        Fabric = "Everyday Vinyl Collection - Polar",
+        OperationType = "Lithium-ion",
+        OperationSide = "Left",
+    };
+
     private static readonly GeneralProductConfigration TestKineticsCellularGeneralProductConfigration = new GeneralProductConfigration
     {
         Price = 0.00m,
@@ -12,17 +32,11 @@ public static class ProductFixture
         Width = 1200,
         Height = 900,
         Reveal = 80,
-        FitType = "IN",
-        FixingTo = "Wood",
         AboveHeightConstraint = false,
-        ProductType = "kineticscellular",
-        Fabric = "Translucent White",
-        OperationType = "Cord",
-        OperationSide = "Left",
         RemoteNumber = 0,
         RemoteChannel = 0,
-        ButtingToId = null,
     };
+
     private static readonly GeneralProductConfigration TestKineticsRollerGeneralProductConfigration = new GeneralProductConfigration
     {
         Price = 0.00m,
@@ -30,16 +44,9 @@ public static class ProductFixture
         Width = 1200,
         Height = 900,
         Reveal = 80,
-        FitType = "IN",
-        FixingTo = "Wood",
         AboveHeightConstraint = false,
-        ProductType = "kineticsroller",
-        Fabric = "Everyday Vinyl Collection - Polar",
-        OperationType = "Lithium-ion",
-        OperationSide = "Left",
         RemoteNumber = 1,
         RemoteChannel = 1,
-        ButtingToId = null,
     };
 
     private static readonly ISpecificConfiguration TestKineticsCellularConfiguration = new KineticsCellularDTO
@@ -64,6 +71,7 @@ public static class ProductFixture
     {
         WorksheetId = WorksheetFixture.TestWorksheet.Id,
         GeneralProductConfigration = TestKineticsCellularGeneralProductConfigration,
+        VariationProductConfiguration = TestKineticsCellularVariationProductConfiguration,
         Configuration = TestKineticsCellularConfiguration,
 
     };
@@ -72,6 +80,7 @@ public static class ProductFixture
     {
         WorksheetId = WorksheetFixture.TestWorksheet.Id,
         GeneralProductConfigration = TestKineticsRollerGeneralProductConfigration,
+        VariationProductConfiguration = TestKineticsRollerVariationProductConfiguration,
         Configuration = TestKineticsRollerConfiguration,
 
     };

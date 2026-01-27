@@ -1,8 +1,9 @@
 using Lewiss.Pricing.Data.Context;
 using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Data.Repository.Generic;
-using Lewiss.Pricing.Data.Repository.WorksheetRepository;
 using Microsoft.EntityFrameworkCore;
+
+namespace Lewiss.Pricing.Data.Repository.WorksheetRepository;
 
 public class WorksheetRepository : Repository<Worksheet>, IWorksheetRepository
 {
