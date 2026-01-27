@@ -1,4 +1,5 @@
 using Lewiss.Pricing.Data.Model;
+using Lewiss.Pricing.Data.OptionData;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -51,16 +52,16 @@ public class PricingDbContext : DbContext
 
         modelBuilder.Entity<Option>().HasMany(o => o.OptionVariation).WithOne(ov => ov.Option).HasForeignKey(ov => ov.OptionId);
 
-        SeedOptions(modelBuilder);
-
-    }
-
-
-    private void SeedOptions(ModelBuilder modelBuilder)
-    {
         modelBuilder.Entity<Option>().HasData(
-
+            OptionDataUtility.OptionList
         );
+
+        modelBuilder.Entity<OptionVariation>().HasData(
+            OptionDataUtility.OptionVariationList
+        );
+
     }
+
+
 
 }

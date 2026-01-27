@@ -1,19 +1,13 @@
 
 using Lewiss.Pricing.Data.Model;
+using Lewiss.Pricing.Data.OptionData;
 
 namespace Lewiss.Pricing.Data.SeedData;
 
 public static class ProductOptions
 {
-    public static readonly Option FitType = new Option
-    {
-        Name = "FitType"
-    };
 
-    public static readonly Option FixingTo = new Option
-    {
-        Name = "FixingTo"
-    };
+
 
     public static readonly Option ProductType = new Option
     {
@@ -90,14 +84,23 @@ public static class ProductOptions
         Name = "PelmetColour"
     };
 
-    public static List<Option> ProductOptionsList = [
-        FitType, FixingTo, ProductType,
-        Fabric, OperationType, OperationSide,
-        HeadRailColour, SideChannelColour, RollType,
-        ChainColour, ChainLength, BracketType, BracketColour,
-        BottomRailType, BottomRailColour, PelmetType,
-        PelmetColour
-    ];
+    public static readonly OptionVariation ProductTypeKineticsCellular = new OptionVariation
+    {
+        Option = ProductType,
+        Value = "Kinetics Cellular",
+        Price = 0.0m,
+    };
+
+    public static readonly OptionVariation ProductTypeKineticsRoller = new OptionVariation
+    {
+        Option = ProductType,
+        Value = "Kinetics Roller",
+        Price = 0.0m,
+    };
+
+
+
+
 
 
 
