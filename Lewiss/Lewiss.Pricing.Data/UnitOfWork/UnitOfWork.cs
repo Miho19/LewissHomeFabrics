@@ -1,5 +1,6 @@
 using Lewiss.Pricing.Data.Context;
 using Lewiss.Pricing.Data.Repository.CustomerRepository;
+using Lewiss.Pricing.Data.Repository.ProductOptionRepository;
 using Lewiss.Pricing.Data.Repository.ProductRepository;
 using Lewiss.Pricing.Data.Repository.WorksheetRepository;
 
@@ -13,19 +14,17 @@ public class UnitOfWork : IUnitOfWork
 
     public IProductRepository Product { get; private set; }
 
+    public IProductOptionRepository ProductOption { get; set; }
+
     private bool _disposed = false;
 
-    public UnitOfWork()
-    {
-
-    }
-
-    public UnitOfWork(PricingDbContext pricingDbContext, IWorksheetRepository worksheetRepository, ICustomerRepository customerRepository, IProductRepository productRepository)
+    public UnitOfWork(PricingDbContext pricingDbContext, IWorksheetRepository worksheetRepository, ICustomerRepository customerRepository, IProductRepository productRepository, IProductOptionRepository productOptionRepository)
     {
         _pricingDbContext = pricingDbContext;
         Worksheet = worksheetRepository;
         Customer = customerRepository;
         Product = productRepository;
+        ProductOption = productOptionRepository;
     }
 
     public async Task<int> CommitAsync()
