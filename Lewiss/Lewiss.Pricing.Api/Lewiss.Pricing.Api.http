@@ -1,6 +1,18 @@
 @Lewiss.Pricing.Api_HostAddress = http://localhost:5085
 
-GET {{Lewiss.Pricing.Api_HostAddress}}/weatherforecast/
+# @name CreateCustomerRequest
+POST http://localhost:5085/customer/
+Content-Type: application/json
 Accept: application/json
+
+{
+    "familyname" : "April",
+    "street" : "12 street",
+    "city" : "city",
+    "suburb" : "suburb",
+    "mobile" : "123 345 67543",
+    "email" : "email.address@hotmail.com",
+
+}
 
 ###

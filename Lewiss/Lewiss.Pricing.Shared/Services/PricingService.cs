@@ -3,6 +3,7 @@ using Lewiss.Pricing.Shared.CustomerDTO;
 using Lewiss.Pricing.Shared.Product;
 using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.Worksheet;
+using Microsoft.EntityFrameworkCore;
 
 namespace Lewiss.Pricing.Shared.Services;
 
@@ -18,24 +19,54 @@ public class PricingService
         _productService = productService;
     }
 
-
+    /// <summary>
+    /// Persists a new customer to the database asynchronously.
+    /// </summary>
+    /// <param name="customerCreateDTO">The customer details to persist</param>
+    /// <param name="cancellationToken">
+    /// A token that can be used to propagate notification that the operation should be canceled.
+    /// </param>
+    /// <remarks>
+    /// Adds the new customer to the database if it is not already present.
+    /// Changes are tracked and committed by the injected <see cref="IUnitOfWork"/>
+    /// </remarks>
+    /// <returns>
+    /// A <see cref="Task"/> representing the asynchronous operation, returning the CustomerEntryDTO.
+    /// </returns>
+    /// Needs to be updated to try catch instead of using any to check for duplication
     public virtual async Task<CustomerEntryDTO?> CreateCustomerAsync(CustomerCreateDTO customerCreateDTO, CancellationToken cancellationToken = default)
     {
 
-        var customer = new Data.Model.Customer
-        {
-            ExternalMapping = Guid.CreateVersion7(DateTimeOffset.UtcNow),
-            FamilyName = customerCreateDTO.FamilyName,
-            Street = customerCreateDTO.Street,
-            City = customerCreateDTO.City,
-            Suburb = customerCreateDTO.Suburb,
-            Mobile = customerCreateDTO.Mobile,
-            Email = customerCreateDTO.Email,
-            CreatedAt = DateTimeOffset.UtcNow
-        };
+        Customer customer;
 
-        await _unitOfWork.Customer.AddAsync(customer);
-        await _unitOfWork.CommitAsync();
+        var queryDuplicatedCustomerList = await _unitOfWork.Customer.GetCustomerByQueryableParameters(
+            customerCreateDTO.FamilyName,
+            customerCreateDTO.Mobile,
+            customerCreateDTO.Email,
+            cancellationToken
+        );
+
+        if (queryDuplicatedCustomerList is not null && queryDuplicatedCustomerList.Count > 0)
+        {
+            customer = queryDuplicatedCustomerList[0];
+        }
+        else
+        {
+            customer = new Data.Model.Customer
+            {
+                ExternalMapping = Guid.CreateVersion7(DateTimeOffset.UtcNow),
+                FamilyName = customerCreateDTO.FamilyName,
+                Street = customerCreateDTO.Street,
+                City = customerCreateDTO.City,
+                Suburb = customerCreateDTO.Suburb,
+                Mobile = customerCreateDTO.Mobile,
+                Email = customerCreateDTO.Email,
+                CreatedAt = DateTimeOffset.UtcNow
+            };
+
+            await _unitOfWork.Customer.AddAsync(customer);
+            await _unitOfWork.CommitAsync();
+        }
 
         var customerEntryDto = new CustomerEntryDTO
         {
@@ -49,6 +80,8 @@ public class PricingService
         };
 
         return customerEntryDto;
+
+
     }
 
     public virtual async Task<WorksheetDTO?> CreateWorksheetAsync(CustomerEntryDTO customerEntryDTO, CancellationToken cancellationToken = default)
