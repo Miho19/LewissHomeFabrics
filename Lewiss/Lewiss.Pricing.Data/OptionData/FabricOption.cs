@@ -4,29 +4,29 @@ namespace Lewiss.Pricing.Data.OptionData;
 
 public static class FabricOption
 {
-    public static readonly Option Option = new Option
+    public static readonly ProductOption ProductOption = new ProductOption
     {
-        OptionId = OptionDataUtility.GetOptionId(),
+        ProductOptionId = OptionDataUtility.GetOptionId(),
         Name = "Fabric"
     };
 
-    public static readonly OptionVariation TranslucentWhite = new OptionVariation
+    public static readonly ProductOptionVariation TranslucentWhite = new ProductOptionVariation
     {
-        OptionVariationId = OptionDataUtility.GetOptionVariationId(),
-        OptionId = Option.OptionId,
+        ProductOptionVariationId = OptionDataUtility.GetOptionVariationId(),
+        ProductOptionId = ProductOption.ProductOptionId,
         Value = "Translucent White",
         Price = 0.0m,
     };
 
-    public static readonly OptionVariation EverydayVinylCollectionPolar = new OptionVariation
+    public static readonly ProductOptionVariation EverydayVinylCollectionPolar = new ProductOptionVariation
     {
-        OptionVariationId = OptionDataUtility.GetOptionVariationId(),
-        OptionId = Option.OptionId,
+        ProductOptionVariationId = OptionDataUtility.GetOptionVariationId(),
+        ProductOptionId = ProductOption.ProductOptionId,
         Value = "Everyday Vinyl Collection - Polar",
         Price = 0.0m,
     };
 
-    public static readonly List<OptionVariation> OptionVariations = [
+    public static readonly List<ProductOptionVariation> OptionVariations = [
         TranslucentWhite, EverydayVinylCollectionPolar
     ];
 }

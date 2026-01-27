@@ -4,29 +4,29 @@ namespace Lewiss.Pricing.Data.OptionData;
 
 public static class ProductTypeOption
 {
-    public static readonly Option Option = new Option
+    public static readonly ProductOption ProductOption = new ProductOption
     {
-        OptionId = OptionDataUtility.GetOptionId(),
+        ProductOptionId = OptionDataUtility.GetOptionId(),
         Name = "ProductType"
     };
 
-    public static readonly OptionVariation KineticsCellular = new OptionVariation
+    public static readonly ProductOptionVariation KineticsCellular = new ProductOptionVariation
     {
-        OptionVariationId = OptionDataUtility.GetOptionVariationId(),
-        OptionId = Option.OptionId,
+        ProductOptionVariationId = OptionDataUtility.GetOptionVariationId(),
+        ProductOptionId = ProductOption.ProductOptionId,
         Value = "Kinetics Cellular",
         Price = 0.0m,
     };
 
-    public static readonly OptionVariation KineticsRoller = new OptionVariation
+    public static readonly ProductOptionVariation KineticsRoller = new ProductOptionVariation
     {
-        OptionVariationId = OptionDataUtility.GetOptionVariationId(),
-        OptionId = Option.OptionId,
+        ProductOptionVariationId = OptionDataUtility.GetOptionVariationId(),
+        ProductOptionId = ProductOption.ProductOptionId,
         Value = "Kinetics Roller",
         Price = 0.0m,
     };
 
-    public static readonly List<OptionVariation> OptionVariations = [
+    public static readonly List<ProductOptionVariation> OptionVariations = [
         KineticsCellular, KineticsRoller
     ];
 }

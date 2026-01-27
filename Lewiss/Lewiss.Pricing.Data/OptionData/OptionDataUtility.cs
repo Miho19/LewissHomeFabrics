@@ -17,11 +17,11 @@ public static class OptionDataUtility
     {
         return ++OptionVariationId;
     }
-    public static List<Option> OptionList = [
-        FitTypeOption.Option,
-        FixingToOption.Option,
-        ProductTypeOption.Option,
-        FabricOption.Option,
+    public static List<ProductOption> OptionList = [
+        FitTypeOption.ProductOption,
+        FixingToOption.ProductOption,
+        ProductTypeOption.ProductOption,
+        FabricOption.ProductOption,
         // OperationType,
         // OperationSide,
         // HeadRailColour,
@@ -37,7 +37,7 @@ public static class OptionDataUtility
         // PelmetColour
     ];
 
-    public static List<OptionVariation> OptionVariationList = [
+    public static List<ProductOptionVariation> OptionVariationList = [
         ..FitTypeOption.OptionVariations,
         ..FixingToOption.OptionVariations,
         ..ProductTypeOption.OptionVariations,

@@ -1,32 +1,31 @@
 using Lewiss.Pricing.Data.Model;
-using Lewiss.Pricing.Data.SeedData;
 
 namespace Lewiss.Pricing.Data.OptionData;
 
 public static class FitTypeOption
 {
-    public static readonly Option Option = new Option
+    public static readonly ProductOption ProductOption = new ProductOption
     {
-        OptionId = OptionDataUtility.GetOptionId(),
+        ProductOptionId = OptionDataUtility.GetOptionId(),
         Name = "FitType"
     };
 
-    public static readonly OptionVariation FitTypeVariationInside = new OptionVariation
+    public static readonly ProductOptionVariation FitTypeVariationInside = new ProductOptionVariation
     {
-        OptionVariationId = OptionDataUtility.GetOptionVariationId(),
-        OptionId = Option.OptionId,
+        ProductOptionVariationId = OptionDataUtility.GetOptionVariationId(),
+        ProductOptionId = ProductOption.ProductOptionId,
         Value = "Inside",
         Price = 0.0m,
     };
 
-    public static readonly OptionVariation FitTypeVariationOutside = new OptionVariation
+    public static readonly ProductOptionVariation FitTypeVariationOutside = new ProductOptionVariation
     {
-        OptionVariationId = OptionDataUtility.GetOptionVariationId(),
-        OptionId = Option.OptionId,
+        ProductOptionVariationId = OptionDataUtility.GetOptionVariationId(),
+        ProductOptionId = ProductOption.ProductOptionId,
         Value = "Outside",
         Price = 0.0m,
     };
 
 
-    public static readonly List<OptionVariation> OptionVariations = [FitTypeVariationInside, FitTypeVariationOutside];
+    public static readonly List<ProductOptionVariation> OptionVariations = [FitTypeVariationInside, FitTypeVariationOutside];
 }

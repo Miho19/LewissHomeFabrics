@@ -1,25 +1,24 @@
 using Lewiss.Pricing.Data.Model;
-using Lewiss.Pricing.Data.SeedData;
 
 namespace Lewiss.Pricing.Data.OptionData;
 
 public static class FixingToOption
 {
-    public static readonly Option Option = new Option
+    public static readonly ProductOption ProductOption = new ProductOption
     {
-        OptionId = OptionDataUtility.GetOptionId(),
+        ProductOptionId = OptionDataUtility.GetOptionId(),
         Name = "FixingTo"
     };
 
-    public static readonly OptionVariation FixingToWood = new OptionVariation
+    public static readonly ProductOptionVariation FixingToWood = new ProductOptionVariation
     {
-        OptionVariationId = OptionDataUtility.GetOptionVariationId(),
-        OptionId = Option.OptionId,
+        ProductOptionVariationId = OptionDataUtility.GetOptionVariationId(),
+        ProductOptionId = ProductOption.ProductOptionId,
         Value = "Wood",
         Price = 0.0m,
     };
 
-    public static readonly List<OptionVariation> OptionVariations = [
+    public static readonly List<ProductOptionVariation> OptionVariations = [
         FixingToWood
     ];
 
