@@ -11,8 +11,14 @@ public class ProductService
         _unitOfWork = unitOfWork;
     }
 
-    public virtual async Task<ProductEntryDTO?> CreateProductAsync(Guid externalWorksheetId, ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
+    public virtual async Task<ProductEntryDTO?> CreateProductAsync(Guid externalCustomerId, Guid externalWorksheetId, ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
+        // This will eventually be replaced by function in PricingService and Result pattern; currently this check is duplicated
+        var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
+        if (customer is null)
+        {
+            return null;
+        }
 
         var worksheet = await _unitOfWork.Worksheet.GetWorksheetByExternalIdAsync(externalWorksheetId, cancellationToken);
         if (worksheet is null)
@@ -20,22 +26,12 @@ public class ProductService
             return null;
         }
 
-        var generalConfiguration = productCreateDTO.GeneralProductConfigration;
-
-        var product = new Data.Model.Product
+        if (worksheet.CustomerId != customer.CustomerId)
         {
-            ExternalMapping = Guid.CreateVersion7(DateTimeOffset.UtcNow),
-            Price = generalConfiguration.Price,
-            Location = generalConfiguration.Location,
-            Width = generalConfiguration.Width,
-            Height = generalConfiguration.Height,
-            Reveal = generalConfiguration.Reveal,
-            AboveHeightConstraint = generalConfiguration.AboveHeightConstraint,
-            RemoteNumber = generalConfiguration.RemoteNumber,
-            RemoteChannel = generalConfiguration.RemoteChannel,
-            WorksheetId = worksheet.WorksheetId,
-            Worksheet = worksheet
-        };
+            return null;
+        }
+
+        var product = productCreateDTO.ToProductEntity(worksheet);
 
         product = await PopulateProductOptionVariationList(product, productCreateDTO, cancellationToken);
         if (product is null)

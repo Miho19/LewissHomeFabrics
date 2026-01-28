@@ -136,7 +136,7 @@ public class PricingController : ControllerBase
     [HttpPost("customer/{customerId}/worksheet/{workoutId}/product", Name = "CreateProduct")]
     public async Task<IActionResult> CreateProduct(Guid customerId, Guid workoutId, [FromBody] ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
-        var productEntryDTO = await _productService.CreateProductAsync(workoutId, productCreateDTO, cancellationToken);
+        var productEntryDTO = await _productService.CreateProductAsync(customerId, workoutId, productCreateDTO, cancellationToken);
         if (productEntryDTO is null)
         {
             return new ObjectResult(new ProblemDetails
