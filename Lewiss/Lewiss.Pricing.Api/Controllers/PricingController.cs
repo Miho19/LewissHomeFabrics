@@ -26,6 +26,47 @@ public class PricingController : ControllerBase
 
     }
 
+    [HttpGet("customer/{customerId}", Name = "GetCustomer")]
+    public async Task<IActionResult> GetCustomer(Guid customerId, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    [HttpPost("customer", Name = "CreateCustomer")]
+    public async Task<IActionResult> CreateCustomer([FromBody] CustomerCreateDTO customerCreateDTO, CancellationToken cancellationToken = default)
+    {
+        var customerEntryDto = await _customerService.CreateCustomerAsync(customerCreateDTO, cancellationToken);
+        if (customerEntryDto is null)
+        {
+            return StatusCode(500, new ProblemDetails
+            {
+                Status = 500,
+                Title = "Internal Server Error",
+                Detail = "Failed to create customer",
+            });
+        }
+
+        return new CreatedAtActionResult(actionName: "GetCustomer", controllerName: "Pricing", routeValues: new { customerId = customerEntryDto.Id }, value: customerEntryDto);
+    }
+
+    [HttpGet("customer", Name = "GetCustomers")]
+    public async Task<IActionResult> GetCustomers([FromQuery] GetCustomerQueryParameters getCustomerQueryParameters, CancellationToken cancellationToken = default)
+    {
+        var customerEntryDTOList = await _customerService.GetCustomersAsync(getCustomerQueryParameters, cancellationToken);
+        if (customerEntryDTOList is null)
+        {
+            return StatusCode(500, new ProblemDetails
+            {
+                Status = 500,
+                Title = "Internal Server Error",
+                Detail = "Failed to retrieve customer",
+            });
+        }
+
+        return new OkObjectResult(customerEntryDTOList);
+    }
+
+
     [HttpPost("customer/{customerId}/worksheet", Name = "CreateWorksheet")]
     public async Task<IActionResult> CreateWorksheet([FromBody] CustomerEntryDTO customerDTO, Guid customerId, CancellationToken cancellationToken = default)
     {
@@ -94,45 +135,7 @@ public class PricingController : ControllerBase
         return new OkObjectResult(worksheetDTOList);
     }
 
-    [HttpGet("customer/{customerId}", Name = "GetCustomer")]
-    public async Task<IActionResult> GetCustomer(Guid customerId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
 
-    [HttpPost("customer", Name = "CreateCustomer")]
-    public async Task<IActionResult> CreateCustomer([FromBody] CustomerCreateDTO customerCreateDTO, CancellationToken cancellationToken = default)
-    {
-        var customerEntryDto = await _customerService.CreateCustomerAsync(customerCreateDTO, cancellationToken);
-        if (customerEntryDto is null)
-        {
-            return StatusCode(500, new ProblemDetails
-            {
-                Status = 500,
-                Title = "Internal Server Error",
-                Detail = "Failed to create customer",
-            });
-        }
-
-        return new CreatedAtActionResult(actionName: "GetCustomer", controllerName: "Pricing", routeValues: new { customerId = customerEntryDto.Id }, value: customerEntryDto);
-    }
-
-    [HttpGet("customer", Name = "GetCustomers")]
-    public async Task<IActionResult> GetCustomers([FromQuery] GetCustomerQueryParameters getCustomerQueryParameters, CancellationToken cancellationToken = default)
-    {
-        var customerEntryDTOList = await _customerService.GetCustomersAsync(getCustomerQueryParameters, cancellationToken);
-        if (customerEntryDTOList is null)
-        {
-            return StatusCode(500, new ProblemDetails
-            {
-                Status = 500,
-                Title = "Internal Server Error",
-                Detail = "Failed to retrieve customer",
-            });
-        }
-
-        return new OkObjectResult(customerEntryDTOList);
-    }
 
 
 }

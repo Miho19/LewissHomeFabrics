@@ -46,33 +46,12 @@ public class CustomerService
         }
         else
         {
-            customer = new Customer
-            {
-                ExternalMapping = Guid.CreateVersion7(DateTimeOffset.UtcNow),
-                FamilyName = customerCreateDTO.FamilyName,
-                Street = customerCreateDTO.Street,
-                City = customerCreateDTO.City,
-                Suburb = customerCreateDTO.Suburb,
-                Mobile = customerCreateDTO.Mobile,
-                Email = customerCreateDTO.Email,
-                CreatedAt = DateTimeOffset.UtcNow
-            };
-
+            customer = customerCreateDTO.ToCustomerEntity();
             await _unitOfWork.Customer.AddAsync(customer);
             await _unitOfWork.CommitAsync();
         }
 
-        var customerEntryDto = new CustomerEntryDTO
-        {
-            Id = customer.ExternalMapping,
-            FamilyName = customer.FamilyName,
-            Street = customer.Street,
-            City = customer.City,
-            Suburb = customer.Suburb,
-            Mobile = customer.Mobile,
-            Email = customer.Email,
-        };
-
+        var customerEntryDto = customer.ToEntryDTO();
         return customerEntryDto;
 
     }
@@ -84,16 +63,7 @@ public class CustomerService
         var filteredCustomerList = await _unitOfWork.Customer.GetCustomerByQueryableParameters(familyName, mobile, email, cancellationToken);
         if (filteredCustomerList is null) return null;
 
-        var filteredCustomerEntryDTOList = filteredCustomerList.Select(c => new CustomerEntryDTO
-        {
-            Id = c.ExternalMapping,
-            FamilyName = c.FamilyName,
-            Street = c.Street,
-            City = c.City,
-            Suburb = c.Suburb,
-            Mobile = c.Mobile,
-            Email = c.Email
-        }).ToList();
+        var filteredCustomerEntryDTOList = filteredCustomerList.Select(c => c.ToEntryDTO()).ToList();
 
         return filteredCustomerEntryDTOList;
     }
@@ -117,6 +87,17 @@ public class CustomerService
         }).ToList();
 
         return worksheetDTOList;
+    }
+
+    public virtual async Task<CustomerEntryDTO?> GetCustomerByExternalIdAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
+    {
+        var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
+        if (customer is null)
+        {
+            return null;
+        }
+
+
     }
 
 }
