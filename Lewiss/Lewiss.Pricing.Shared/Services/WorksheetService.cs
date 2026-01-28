@@ -34,15 +34,7 @@ public class WorksheetService
         await _unitOfWork.Worksheet.AddAsync(worksheet);
         await _unitOfWork.CommitAsync();
 
-        var worksheetDTO = new WorksheetDTO
-        {
-            Id = worksheet.ExternalMapping,
-            CustomerId = customer.ExternalMapping,
-            Price = 0.00m,
-            Discount = 0.00m,
-            NewBuild = false,
-            CallOutFee = 0.00m
-        };
+        var worksheetDTO = worksheet.ToWorksheetDTO(externalCustomerId);
 
         return worksheetDTO;
     }

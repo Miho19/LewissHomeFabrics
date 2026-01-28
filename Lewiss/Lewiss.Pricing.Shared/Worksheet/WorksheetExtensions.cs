@@ -17,5 +17,6 @@ public static class WorksheetExtensions
             NewBuild = worksheet.NewBuild,
             Price = worksheet.Price
         };
+
     }
 }

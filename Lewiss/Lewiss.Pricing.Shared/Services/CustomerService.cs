@@ -76,15 +76,7 @@ public class CustomerService
             return null;
         }
 
-        var worksheetDTOList = worksheetList.Select(w => new WorksheetDTO
-        {
-            Id = w.ExternalMapping,
-            CustomerId = externalCustomerId,
-            CallOutFee = w.CallOutFee,
-            Discount = w.Discount,
-            NewBuild = w.NewBuild,
-            Price = w.Price
-        }).ToList();
+        var worksheetDTOList = worksheetList.Select(w => w.ToWorksheetDTO(externalCustomerId)).ToList();
 
         return worksheetDTOList;
     }

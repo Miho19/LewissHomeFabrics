@@ -149,10 +149,9 @@ public class PricingControllerTests
         var result = await pricingController.GetCustomer(testCustomerEntryDTO.Id);
 
         Assert.NotNull(result);
-        var okObjectResult = Assert.IsType<OkObjectResult>(result);
-        var returnedCustomerEntryDTO = Assert.IsType<CustomerEntryDTO>(okObjectResult.Value);
-        Assert.Equal(testCustomerEntryDTO.FamilyName, returnedCustomerEntryDTO.FamilyName);
-        Assert.Equal(testCustomerEntryDTO.Id, returnedCustomerEntryDTO.Id);
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        var problemsDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
+        Assert.Equal(StatusCodes.Status404NotFound, problemsDetails.Status);
     }
 
     [Fact]

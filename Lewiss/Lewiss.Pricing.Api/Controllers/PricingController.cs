@@ -77,6 +77,23 @@ public class PricingController : ControllerBase
         return new OkObjectResult(customerEntryDTOList);
     }
 
+    [HttpGet("customer/{customerId}/worksheet", Name = "GetCustomerWorksheet")]
+    public async Task<IActionResult> GetCustomerWorksheet(Guid customerId, CancellationToken cancellationToken = default)
+    {
+        var worksheetDTOList = await _customerService.GetCustomerWorksheetDTOListAsync(customerId, cancellationToken);
+        if (worksheetDTOList is null)
+        {
+            return new ObjectResult(new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Internal Server Error",
+                Detail = "Failed to retrieve worksheet"
+            });
+        }
+
+        return new OkObjectResult(worksheetDTOList);
+    }
+
 
 
     [HttpGet("customer/{customerId}/worksheet/{worksheetId}", Name = "GetWorksheet")]
@@ -133,22 +150,7 @@ public class PricingController : ControllerBase
         return new OkObjectResult(productEntryDTO);
     }
 
-    [HttpGet("customer/{customerId}/worksheet", Name = "GetCustomerWorksheet")]
-    public async Task<IActionResult> GetCustomerWorksheet(Guid customerId, CancellationToken cancellationToken = default)
-    {
-        var worksheetDTOList = await _customerService.GetCustomerWorksheetDTOListAsync(customerId, cancellationToken);
-        if (worksheetDTOList is null)
-        {
-            return new ObjectResult(new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Internal Server Error",
-                Detail = "Failed to retrieve worksheet"
-            });
-        }
 
-        return new OkObjectResult(worksheetDTOList);
-    }
 
 
 
