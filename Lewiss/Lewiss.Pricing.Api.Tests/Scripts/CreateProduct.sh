@@ -11,13 +11,12 @@ if ! command -v jq &> /dev/null; then
 fi
 
 SCRIPT_DIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+
+
 JSON_FILE_PATH="${SCRIPT_DIR}/ProductCreateDTOKineticsCellular.json"
-
-
+# JSON_FILE_PATH="${SCRIPT_DIR}/ProductCreateDTOKineticsRoller.json"
 
 temp=$(mktemp)
-
-
 
 jq '.worksheetid = "'"$2"'"' "$JSON_FILE_PATH" > "$temp" && mv "$temp" "$JSON_FILE_PATH"
 

@@ -55,7 +55,7 @@ customerId=$(create_customer)
 # worksheetId=$(create_worksheet "$customerId")
 worksheetId="019c0300-bcce-7a1f-b6f4-8151b86e2bfb"
 
-# create_product "$customerId" "$worksheetId"
+create_product "$customerId" "$worksheetId"
 
 productId="019c040b-129f-7cbf-a9bf-5dd644486282"
 

@@ -1,0 +1,29 @@
+{
+  "worksheetid": "019c0300-bcce-7a1f-b6f4-8151b86e2bfb",
+  "variableconfiguration": {
+    "location": "Lounge",
+    "width": 1200,
+    "height": 900,
+    "reveal": 0,
+    "installheight": 1200,
+    "remotenumber": 0,
+    "remotechannel": 0
+  },
+  "fixedconfiguration": {
+    "fittype": "inside",
+    "fixingto": "wood",
+    "producttype": "Kinetics Roller",
+    "fabric": "Everyday Vinyl Collection - Polar",
+    "operationtype": "Chain",
+    "operationside": "Left"
+  },
+  "kineticsroller": {
+    "rolltype": "Front",
+    "ChainColour": "black",
+    "ChainLength": 1500,
+    "BracketType": "Standard",
+    "BracketColour": "White",
+    "BottomRailType": "Flat",
+    "BottomRailColour": "White"
+  }
+}

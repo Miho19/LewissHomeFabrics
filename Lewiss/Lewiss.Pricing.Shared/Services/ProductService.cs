@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Lewiss.Pricing.Shared.Product;
 using Microsoft.Extensions.Logging;
 
@@ -92,13 +93,9 @@ public class ProductService
                     continue;
                 }
 
-                Type propertyType = property.PropertyType;
-                object value = Convert.ChangeType(propertyValue, propertyType);
-
                 var productVariation = productOption.ProductOptionVariation.FirstOrDefault(pv => pv.Value.ToString().ToUpper() == propertyValue?.ToString()?.ToUpper());
                 if (productVariation is null)
                 {
-                    _logger.LogCritical($"option failure: {productOption.Name} Value: {value}");
                     return null;
                 }
 
@@ -106,9 +103,9 @@ public class ProductService
 
 
             }
-            catch (Exception ex)
+            catch
             {
-                _logger.LogCritical($"exception: {ex.Message}");
+
                 return null;
             }
 
