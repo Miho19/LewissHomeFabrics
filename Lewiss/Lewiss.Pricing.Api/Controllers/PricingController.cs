@@ -29,7 +29,18 @@ public class PricingController : ControllerBase
     [HttpGet("customer/{customerId}", Name = "GetCustomer")]
     public async Task<IActionResult> GetCustomer(Guid customerId, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var customerEntryDTO = await _customerService.GetCustomerByExternalIdAsync(customerId, cancellationToken);
+        if (customerEntryDTO is null)
+        {
+            return StatusCode(404, new ProblemDetails
+            {
+                Status = 404,
+                Title = "Not Found",
+                Detail = "Customer not found.",
+            });
+        }
+
+        return new OkObjectResult(customerEntryDTO);
     }
 
     [HttpPost("customer", Name = "CreateCustomer")]
