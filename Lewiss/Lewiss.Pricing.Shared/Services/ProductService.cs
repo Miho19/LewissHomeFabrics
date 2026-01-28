@@ -7,13 +7,14 @@ namespace Lewiss.Pricing.Shared.Services;
 public class ProductService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<ProductService> _logger;
+    // private readonly ILogger<ProductService> _logger;
 
-    public ProductService(IUnitOfWork unitOfWork, ILogger<ProductService> logger)
+    public ProductService(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-        _logger = logger;
+        // _logger = logger;
     }
+
 
     // This will eventually be replaced by function in PricingService and Result pattern; currently this check is duplicated
     private async Task<(Data.Model.Customer?, Data.Model.Worksheet?)> GetCustomerAndWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
@@ -72,7 +73,6 @@ public class ProductService
     {
         if (obj is null)
         {
-            _logger.LogCritical($"typeof {type} is null");
             return null;
         }
 
