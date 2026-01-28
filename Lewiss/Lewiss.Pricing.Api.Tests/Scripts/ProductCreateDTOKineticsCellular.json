@@ -1,16 +1,15 @@
 {
   "worksheetid": "019c0300-bcce-7a1f-b6f4-8151b86e2bfb",
-  "generalproductconfigration": {
-    "price": 0,
+  "variableconfiguration": {
     "location": "Kitchen",
     "width": 1200,
     "height": 900,
     "reveal": 0,
-    "aboveheightconstraint": false,
+    "installheight": 1,
     "remotenumber": 0,
     "remotechannel": 0
   },
-  "variationproductconfiguration": {
+  "fixedconfiguration": {
     "fittype": "inside",
     "fixingto": "wood",
     "producttype": "Kinetics Cellular",
