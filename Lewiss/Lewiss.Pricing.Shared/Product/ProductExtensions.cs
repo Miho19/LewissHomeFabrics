@@ -7,7 +7,7 @@ public static class ProductExtensions
     {
         if (productCreateDTO is null || worksheet is null)
         {
-            throw new Exception("Inputs were null");
+            throw new Exception("Inputs are null");
         }
 
         var generalConfiguration = productCreateDTO.GeneralProductConfigration;
@@ -25,6 +25,23 @@ public static class ProductExtensions
             RemoteChannel = generalConfiguration.RemoteChannel,
             WorksheetId = worksheet.WorksheetId,
             Worksheet = worksheet
+        };
+    }
+
+    public static ProductEntryDTO ToProductEntryDTO(this Product product, ProductCreateDTO productCreateDTO)
+    {
+        if (product is null || productCreateDTO is null)
+        {
+            throw new Exception("Inputs are null");
+        }
+
+        return new ProductEntryDTO
+        {
+            Id = product.ExternalMapping,
+            WorksheetId = productCreateDTO.WorksheetId,
+            Configuration = productCreateDTO.Configuration,
+            GeneralConfiguration = productCreateDTO.GeneralProductConfigration,
+            VariationProductConfiguration = productCreateDTO.VariationProductConfiguration
         };
     }
 }

@@ -42,14 +42,7 @@ public class ProductService
         await _unitOfWork.Product.AddAsync(product);
         await _unitOfWork.CommitAsync();
 
-        var productEntryDTO = new ProductEntryDTO
-        {
-            Id = product.ExternalMapping,
-            WorksheetId = externalWorksheetId,
-            Configuration = productCreateDTO.Configuration,
-            GeneralConfiguration = productCreateDTO.GeneralProductConfigration,
-            VariationProductConfiguration = productCreateDTO.VariationProductConfiguration
-        };
+        var productEntryDTO = product.ToProductEntryDTO(productCreateDTO);
 
         return productEntryDTO;
     }
