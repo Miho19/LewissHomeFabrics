@@ -17,7 +17,7 @@
     "operationtype": "Cord",
     "operationside": "Left"
   },
-  "kineticscellulardto": {
+  "KineticsCellular": {
     "producttype": "Kinetics Cellular",
     "headrailcolour": "White",
     "sidechannelcolour": "White"

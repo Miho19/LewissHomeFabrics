@@ -48,17 +48,16 @@ public class ProductService
         var product = productCreateDTO.ToProductEntity(worksheet);
 
         product = await PopulateProductOptionVariationListByType(product, productCreateDTO.FixedConfiguration, typeof(FixedConfiguration), cancellationToken);
-        // product = await PopulateProductOptionVariationList_FixedConfigurationAsync(product, productCreateDTO, cancellationToken);
         if (product is null)
         {
             return null;
         }
 
-        // product = await PopulateProductOptionVariationList_ProductTypeSpecificConfigurationAsync(product, productCreateDTO, cancellationToken);
-        // if (product is null)
-        // {
-        //     return null;
-        // }
+        product = await PopulateProductOptionVariationList_ProductTypeSpecificConfigurationAsync(product, productCreateDTO, cancellationToken);
+        if (product is null)
+        {
+            return null;
+        }
 
         await _unitOfWork.Product.AddAsync(product);
         await _unitOfWork.CommitAsync();
@@ -68,8 +67,14 @@ public class ProductService
         return productEntryDTO;
     }
 
-    private async Task<Data.Model.Product?> PopulateProductOptionVariationListByType(Data.Model.Product product, object obj, Type type, CancellationToken cancellationToken = default)
+    private async Task<Data.Model.Product?> PopulateProductOptionVariationListByType(Data.Model.Product product, object? obj, Type type, CancellationToken cancellationToken = default)
     {
+        if (obj is null)
+        {
+            _logger.LogCritical($"typeof {type} is null");
+            return null;
+        }
+
         var typeProperties = type.GetProperties();
         foreach (var property in typeProperties)
         {
@@ -90,12 +95,10 @@ public class ProductService
                 Type propertyType = property.PropertyType;
                 object value = Convert.ChangeType(propertyValue, propertyType);
 
-#pragma warning disable CS0253 // Possible unintended reference comparison; right hand side needs cast
                 var productVariation = productOption.ProductOptionVariation.FirstOrDefault(pv => pv.Value.ToString().ToUpper() == propertyValue?.ToString()?.ToUpper());
-                _logger.LogCritical($"product variation: {productVariation is null} value: {value}");
-#pragma warning restore CS0253 // Possible unintended reference comparison; right hand side needs cast
                 if (productVariation is null)
                 {
+                    _logger.LogCritical($"option failure: {productOption.Name} Value: {value}");
                     return null;
                 }
 
@@ -103,8 +106,9 @@ public class ProductService
 
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogCritical($"exception: {ex.Message}");
                 return null;
             }
 
@@ -112,42 +116,6 @@ public class ProductService
 
         return product;
     }
-
-    private async Task<Data.Model.Product?> PopulateProductOptionVariationList_FixedConfigurationAsync(Data.Model.Product product, ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
-    {
-
-        Type fixedConfigurationType = typeof(FixedConfiguration);
-        var fixedConfigurationTypeProperties = fixedConfigurationType.GetProperties();
-
-        foreach (var property in fixedConfigurationTypeProperties)
-        {
-            var productOption = await _unitOfWork.ProductOption.GetProductOptionByNameAsync(property.Name, cancellationToken);
-            if (productOption is null)
-            {
-                continue;
-            }
-
-            var propertyType = property.PropertyType;
-            var propertyValue = property.GetValue(productCreateDTO.VariableConfiguration) as string;
-
-            if (string.IsNullOrEmpty(propertyValue))
-            {
-                continue;
-            }
-
-            var productVariation = productOption.ProductOptionVariation.FirstOrDefault(pv => pv.Value.ToUpper() == propertyValue.ToUpper());
-            if (productVariation is null)
-            {
-                return null;
-            }
-
-            product.OptionVariations.Add(productVariation);
-
-        }
-
-        return product;
-    }
-
 
     private async Task<Data.Model.Product?> PopulateProductOptionVariationList_ProductTypeSpecificConfigurationAsync(Data.Model.Product product, ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
@@ -156,8 +124,8 @@ public class ProductService
 
         var result = productType switch
         {
-            "KINETICSCELLULAR" => await PopulateProductOptionVariationList_KineticsCellularAsync(product, productCreateDTO, cancellationToken),
-            "KINETICSROLLER" => await PopulateProductOptionVariationList_KineticsRollerAsync(product, productCreateDTO, cancellationToken),
+            "KINETICSCELLULAR" => await PopulateProductOptionVariationListByType(product, productCreateDTO.KineticsCellular, typeof(KineticsCellular), cancellationToken),
+            "KINETICSROLLER" => await PopulateProductOptionVariationListByType(product, productCreateDTO.KineticsRoller, typeof(KineticsRoller), cancellationToken),
             _ => null,
         };
 
@@ -169,17 +137,6 @@ public class ProductService
         return product;
     }
 
-
-    private async Task<Data.Model.Product?> PopulateProductOptionVariationList_KineticsCellularAsync(Data.Model.Product product, ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
-    {
-
-        return null;
-    }
-
-    private async Task<Data.Model.Product?> PopulateProductOptionVariationList_KineticsRollerAsync(Data.Model.Product product, ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
-    {
-        return null;
-    }
 
 }
 
