@@ -7,7 +7,7 @@ public static class OperationSideOption
     public static readonly ProductOption ProductOption = new ProductOption
     {
         ProductOptionId = OptionDataUtility.GetOptionId(),
-        Name = "OpertionSide"
+        Name = "OperationSide"
     };
 
     public static readonly ProductOptionVariation Left = new ProductOptionVariation

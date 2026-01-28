@@ -19,7 +19,7 @@ public class WorksheetRepository : Repository<Worksheet>, IWorksheetRepository
 
     public async Task<List<Worksheet>?> GetWorksheetsByExternalCustomerIdAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
     {
-        var customer = _dbContext.Set<Customer>().FirstOrDefaultAsync(c => c.ExternalMapping == externalCustomerId);
+        var customer = _dbContext.Set<Customer>().FirstOrDefaultAsync(c => c.ExternalMapping == externalCustomerId, cancellationToken);
         if (customer is null)
         {
             return null;

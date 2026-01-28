@@ -36,6 +36,6 @@ public class CustomerRepository : Repository<Customer>, ICustomerRepository
             query = query.Where(c => c.Email == email);
         }
 
-        return await query.ToListAsync();
+        return await query.ToListAsync(cancellationToken);
     }
 }

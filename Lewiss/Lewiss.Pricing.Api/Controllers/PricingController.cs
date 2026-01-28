@@ -144,9 +144,26 @@ public class PricingController : ControllerBase
         {
             return new ObjectResult(new ProblemDetails
             {
-                Status = StatusCodes.Status404NotFound,
+                Status = StatusCodes.Status500InternalServerError,
                 Title = "Internal Server Error",
                 Detail = "Failed to create product"
+            });
+        }
+
+        return new OkObjectResult(productEntryDTO);
+    }
+
+    [HttpGet("customer/{customerId}/worksheet/{workoutId}/product/{productId}", Name = "GetProduct")]
+    public async Task<IActionResult> GetProduct(Guid customerId, Guid workoutId, Guid productId, CancellationToken cancellationToken = default)
+    {
+        var productEntryDTO = await _productService.GetProductAsync(customerId, workoutId, productId, cancellationToken);
+        if (productEntryDTO is null)
+        {
+            return new ObjectResult(new ProblemDetails
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "Not Found",
+                Detail = "Product not found"
             });
         }
 

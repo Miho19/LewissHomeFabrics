@@ -1,4 +1,6 @@
 using System.ComponentModel;
+using System.Dynamic;
+using System.Text.Json;
 using Lewiss.Pricing.Shared.Product;
 using Microsoft.Extensions.Logging;
 
@@ -7,12 +9,12 @@ namespace Lewiss.Pricing.Shared.Services;
 public class ProductService
 {
     private readonly IUnitOfWork _unitOfWork;
-    // private readonly ILogger<ProductService> _logger;
+    private readonly ILogger<ProductService> _logger;
 
-    public ProductService(IUnitOfWork unitOfWork)
+    public ProductService(IUnitOfWork unitOfWork, ILogger<ProductService> logger)
     {
         _unitOfWork = unitOfWork;
-        // _logger = logger;
+        _logger = logger;
     }
 
 
@@ -82,6 +84,7 @@ public class ProductService
             var productOption = await _unitOfWork.ProductOption.GetProductOptionByNameAsync(property.Name, cancellationToken);
             if (productOption is null)
             {
+                _logger.LogCritical($"option not added: {property.Name}");
                 continue;
             }
 
@@ -96,11 +99,11 @@ public class ProductService
                 var productVariation = productOption.ProductOptionVariation.FirstOrDefault(pv => pv.Value.ToString().ToUpper() == propertyValue?.ToString()?.ToUpper());
                 if (productVariation is null)
                 {
+                    _logger.LogCritical($"option variation not found: {property.Name} : {propertyValue}");
                     return null;
                 }
 
                 product.OptionVariations.Add(productVariation);
-
 
             }
             catch
@@ -134,6 +137,152 @@ public class ProductService
         return product;
     }
 
+
+    public virtual async Task<ProductEntryDTO?> GetProductAsync(Guid externalCustomerId, Guid externalWorksheetId, Guid externalProductId, CancellationToken cancellationToken = default)
+    {
+        var (customer, worksheet) = await GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId, cancellationToken);
+        if (customer is null || worksheet is null)
+        {
+            return null;
+        }
+
+        var product = await _unitOfWork.Product.GetProductByExternalIdAsync(externalProductId, cancellationToken);
+        if (product is null)
+        {
+            return null;
+        }
+
+
+
+        var productEntryDTO = ProductToEntryDTO(product, externalWorksheetId);
+        if (productEntryDTO is null)
+        {
+            return null;
+        }
+        return productEntryDTO;
+    }
+
+    private Dictionary<string, object> ProductOptionsToDictionary(Data.Model.Product product)
+    {
+        var optionsDictionary = new Dictionary<string, object>();
+
+        foreach (var op in product.OptionVariations)
+        {
+            if (op.ProductOption is null)
+                continue;
+
+            optionsDictionary.Add(op.ProductOption.Name, op.Value);
+        }
+
+        return optionsDictionary;
+    }
+
+    private FixedConfiguration? ProductOptionsDictionaryToFixedConfiguration(Dictionary<string, object> optionsDictionary)
+    {
+        var optionsDictionaryJsonString = JsonSerializer.Serialize(optionsDictionary);
+        var fixedConfiguration = JsonSerializer.Deserialize<FixedConfiguration>(optionsDictionaryJsonString);
+
+        return fixedConfiguration;
+    }
+
+    private VariableConfiguration ProductToVariableConfiguration(Data.Model.Product product)
+    {
+        var variableConfiguration = new VariableConfiguration()
+        {
+            Location = product.Location,
+            Width = product.Width,
+            Height = product.Height,
+            Reveal = product.Reveal,
+            RemoteNumber = product.RemoteNumber,
+            RemoteChannel = product.RemoteChannel,
+            InstallHeight = product.InstallHeight,
+        };
+
+        return variableConfiguration;
+    }
+
+    private ProductEntryDTO? ProductToEntryDTO(Data.Model.Product product, Guid externalWorksheetId)
+    {
+
+        var optionsDictionary = ProductOptionsToDictionary(product);
+
+        var fixedConfiguration = ProductOptionsDictionaryToFixedConfiguration(optionsDictionary);
+        if (fixedConfiguration is null)
+        {
+            return null;
+        }
+
+
+        var variableConfiguration = ProductToVariableConfiguration(product);
+        if (variableConfiguration is null)
+        {
+            return null;
+        }
+
+        var productEntryDTO = new ProductEntryDTO
+        {
+            Id = product.ExternalMapping,
+            WorksheetId = externalWorksheetId,
+            Price = product.Price,
+            VariableConfiguration = variableConfiguration,
+            FixedConfiguration = fixedConfiguration,
+        };
+
+        productEntryDTO = ProductEntryDTOPopulateSpecificConfiguration(productEntryDTO, optionsDictionary);
+        if (productEntryDTO is null)
+        {
+            return null;
+        }
+
+        return productEntryDTO;
+
+    }
+
+    private ProductEntryDTO? ProductEntryDTOPopulateSpecificConfiguration(ProductEntryDTO productEntryDTO, Dictionary<string, object> optionsDictionary)
+    {
+
+        var productType = productEntryDTO.FixedConfiguration.ProductType.ToUpper();
+        productType = String.Concat(productType.Where(c => !Char.IsWhiteSpace(c)));
+
+
+        var result = productType switch
+        {
+            "KINETICSCELLULAR" => ProductEntryDTOPopulateKineticsCellular(productEntryDTO, optionsDictionary),
+            "KINETICSROLLER" => ProductEntryDTOPopulateKineticsRoller(productEntryDTO, optionsDictionary),
+            _ => null,
+        };
+
+        if (result is null)
+        {
+            return null;
+        }
+
+        return result;
+    }
+
+    private ProductEntryDTO? ProductEntryDTOPopulateKineticsCellular(ProductEntryDTO productEntryDTO, Dictionary<string, object> optionsDictionary)
+    {
+        var optionsDictionaryJsonString = JsonSerializer.Serialize(optionsDictionary);
+        var kineticsCellular = JsonSerializer.Deserialize<KineticsCellular>(optionsDictionaryJsonString);
+        if (kineticsCellular is null)
+        {
+            return null;
+        }
+
+        productEntryDTO.KineticsCellular = kineticsCellular;
+        return productEntryDTO;
+    }
+    private ProductEntryDTO? ProductEntryDTOPopulateKineticsRoller(ProductEntryDTO productEntryDTO, Dictionary<string, object> optionsDictionary)
+    {
+        var optionsDictionaryJsonString = JsonSerializer.Serialize(optionsDictionary);
+        var kineticsRoller = JsonSerializer.Deserialize<KineticsRoller>(optionsDictionaryJsonString);
+        if (kineticsRoller is null)
+        {
+            return null;
+        }
+        productEntryDTO.KineticsRoller = kineticsRoller;
+        return productEntryDTO;
+    }
 
 }
 
