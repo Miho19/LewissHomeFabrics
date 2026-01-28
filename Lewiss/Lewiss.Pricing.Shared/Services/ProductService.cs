@@ -9,14 +9,18 @@ namespace Lewiss.Pricing.Shared.Services;
 public class ProductService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<ProductService> _logger;
+    // private readonly ILogger<ProductService> _logger;
 
-    public ProductService(IUnitOfWork unitOfWork, ILogger<ProductService> logger)
+    // public ProductService(IUnitOfWork unitOfWork, ILogger<ProductService> logger)
+    // {
+    //     _unitOfWork = unitOfWork;
+    //     _logger = logger;
+    // }
+
+    public ProductService(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-        _logger = logger;
     }
-
 
     // This will eventually be replaced by function in PricingService and Result pattern; currently this check is duplicated
     private async Task<(Data.Model.Customer?, Data.Model.Worksheet?)> GetCustomerAndWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
@@ -84,7 +88,6 @@ public class ProductService
             var productOption = await _unitOfWork.ProductOption.GetProductOptionByNameAsync(property.Name, cancellationToken);
             if (productOption is null)
             {
-                _logger.LogCritical($"option not added: {property.Name}");
                 continue;
             }
 
@@ -99,7 +102,6 @@ public class ProductService
                 var productVariation = productOption.ProductOptionVariation.FirstOrDefault(pv => pv.Value.ToString().ToUpper() == propertyValue?.ToString()?.ToUpper());
                 if (productVariation is null)
                 {
-                    _logger.LogCritical($"option variation not found: {property.Name} : {propertyValue}");
                     return null;
                 }
 

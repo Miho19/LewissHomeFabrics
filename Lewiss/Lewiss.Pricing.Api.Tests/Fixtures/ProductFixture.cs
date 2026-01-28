@@ -32,7 +32,7 @@ public static class ProductFixture
 
     private static readonly KineticsCellular TestKineticsCellularConfiguration = new KineticsCellular
     {
-        HeadRailColour = "Black",
+        HeadrailColour = "Black",
         SideChannelColour = "None",
     };
 
