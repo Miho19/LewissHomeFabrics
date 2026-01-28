@@ -166,11 +166,11 @@ public class PricingControllerTests
         var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
-        worksheetServiceMock.Setup(p => p.GetWorksheetDTOAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(testWorksheetDTO);
+        worksheetServiceMock.Setup(p => p.GetWorksheetAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(testWorksheetDTO);
 
+        var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-
-        var result = await pricingController.GetWorksheet(testWorksheetDTO.Id);
+        var result = await pricingController.GetWorksheet(testCustomerEntryDTO.Id, testWorksheetDTO.Id);
 
         Assert.NotNull(result);
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
@@ -190,11 +190,10 @@ public class PricingControllerTests
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
 
-        worksheetServiceMock.Setup(p => p.GetWorksheetDTOAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync((WorksheetDTO)null!);
+        worksheetServiceMock.Setup(p => p.GetWorksheetAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync((WorksheetDTO)null!);
 
-
-
-        var result = await pricingController.GetWorksheet(testWorksheetDTO.Id);
+        var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
+        var result = await pricingController.GetWorksheet(testCustomerEntryDTO.Id, testWorksheetDTO.Id);
 
         Assert.NotNull(result);
         var objectResult = Assert.IsType<ObjectResult>(result);

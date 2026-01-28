@@ -47,30 +47,27 @@ public class WorksheetService
         return worksheetDTO;
     }
 
-    public virtual async Task<WorksheetDTO?> GetWorksheetDTOAsync(Guid externalWorksheetId, CancellationToken cancellationToken = default)
+    public virtual async Task<WorksheetDTO?> GetWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
     {
+
+        var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
+        if (customer is null)
+        {
+            return null;
+        }
+
         var worksheet = await _unitOfWork.Worksheet.GetWorksheetByExternalIdAsync(externalWorksheetId, cancellationToken);
         if (worksheet is null)
         {
             return null;
         }
 
-
-        var customer = await _unitOfWork.Customer.GetByIdAsync(worksheet.CustomerId);
-        if (customer is null)
+        if (worksheet.CustomerId != customer.CustomerId)
         {
             return null;
         }
 
-        var worksheetDTO = new WorksheetDTO
-        {
-            Id = worksheet.ExternalMapping,
-            CustomerId = customer.ExternalMapping,
-            CallOutFee = worksheet.CallOutFee,
-            Discount = worksheet.Discount,
-            NewBuild = worksheet.NewBuild,
-            Price = worksheet.Price
-        };
+        var worksheetDTO = worksheet.ToWorksheetDTO(externalCustomerId);
         return worksheetDTO;
     }
 

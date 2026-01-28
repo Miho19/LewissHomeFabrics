@@ -78,6 +78,25 @@ public class PricingController : ControllerBase
     }
 
 
+
+    [HttpGet("customer/{customerId}/worksheet/{worksheetId}", Name = "GetWorksheet")]
+    public async Task<IActionResult> GetWorksheet(Guid customerId, Guid worksheetId, CancellationToken cancellationToken = default)
+    {
+        var worksheetDTO = await _worksheetService.GetWorksheetAsync(customerId, worksheetId, cancellationToken);
+        if (worksheetDTO is null)
+        {
+            return new ObjectResult(new ProblemDetails
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "Internal Server Error",
+                Detail = "Worksheet Not Found"
+            });
+        }
+
+        return new OkObjectResult(worksheetDTO);
+    }
+
+
     [HttpPost("customer/{customerId}/worksheet", Name = "CreateWorksheet")]
     public async Task<IActionResult> CreateWorksheet(Guid customerId, CancellationToken cancellationToken = default)
     {
@@ -95,22 +114,7 @@ public class PricingController : ControllerBase
         return new CreatedAtActionResult("GetWorksheet", "Pricing", new { worksheetId = worksheetDTO.Id }, worksheetDTO);
     }
 
-    [HttpGet("customer/{customerId}/worksheet/{worksheetId}", Name = "GetWorksheet")]
-    public async Task<IActionResult> GetWorksheet(Guid customerId, Guid worksheetId, CancellationToken cancellationToken = default)
-    {
-        var worksheetDTO = await _worksheetService.GetWorksheetDTOAsync(worksheetId, cancellationToken);
-        if (worksheetDTO is null)
-        {
-            return new ObjectResult(new ProblemDetails
-            {
-                Status = StatusCodes.Status404NotFound,
-                Title = "Internal Server Error",
-                Detail = "Worksheet Not Found"
-            });
-        }
 
-        return new OkObjectResult(worksheetDTO);
-    }
 
     [HttpPost("customer/{customerId}/worksheet/{workoutId}/product", Name = "CreateProduct")]
     public async Task<IActionResult> CreateProduct(Guid customerId, Guid workoutId, [FromBody] ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
