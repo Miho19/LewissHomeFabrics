@@ -79,10 +79,10 @@ public class PricingController : ControllerBase
 
 
     [HttpPost("customer/{customerId}/worksheet", Name = "CreateWorksheet")]
-    public async Task<IActionResult> CreateWorksheet([FromBody] CustomerEntryDTO customerDTO, Guid customerId, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> CreateWorksheet(Guid customerId, CancellationToken cancellationToken = default)
     {
-        var worksheet = await _worksheetService.CreateWorksheetAsync(customerDTO, cancellationToken);
-        if (worksheet is null)
+        var worksheetDTO = await _worksheetService.CreateWorksheetAsync(customerId, cancellationToken);
+        if (worksheetDTO is null)
         {
             return new ObjectResult(new ProblemDetails
             {
@@ -92,13 +92,13 @@ public class PricingController : ControllerBase
             });
         }
 
-        return new CreatedAtActionResult("Created Worksheet", nameof(CreateWorksheet), new { Id = worksheet.Id }, worksheet);
+        return new CreatedAtActionResult("GetWorksheet", "Pricing", new { worksheetId = worksheetDTO.Id }, worksheetDTO);
     }
 
-    [HttpGet("customer/{customerId}/worksheet/{workoutId}", Name = "GetWorksheet")]
-    public async Task<IActionResult> GetWorksheet(Guid customerId, Guid workoutId, CancellationToken cancellationToken = default)
+    [HttpGet("customer/{customerId}/worksheet/{worksheetId}", Name = "GetWorksheet")]
+    public async Task<IActionResult> GetWorksheet(Guid customerId, Guid worksheetId, CancellationToken cancellationToken = default)
     {
-        var worksheetDTO = await _worksheetService.GetWorksheetDTOAsync(workoutId, cancellationToken);
+        var worksheetDTO = await _worksheetService.GetWorksheetDTOAsync(worksheetId, cancellationToken);
         if (worksheetDTO is null)
         {
             return new ObjectResult(new ProblemDetails

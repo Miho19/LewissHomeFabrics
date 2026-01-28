@@ -11,9 +11,9 @@ public class WorksheetService
         _unitOfWork = unitOfWork;
     }
 
-    public virtual async Task<WorksheetDTO?> CreateWorksheetAsync(CustomerEntryDTO customerEntryDTO, CancellationToken cancellationToken = default)
+    public virtual async Task<WorksheetDTO?> CreateWorksheetAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
     {
-        var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(customerEntryDTO.Id, cancellationToken);
+        var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
         if (customer is null)
         {
             return null;

@@ -97,7 +97,9 @@ public class CustomerService
             return null;
         }
 
+        var customerEntryDto = customer.ToEntryDTO();
 
+        return customerEntryDto;
     }
 
 }
