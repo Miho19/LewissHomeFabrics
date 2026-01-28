@@ -6,7 +6,10 @@ namespace Lewiss.Pricing.Api.Tests.Fixtures;
 public static class ProductFixture
 {
 
-    private static readonly VariationProductConfiguration TestKineticsCellularVariationProductConfiguration = new VariationProductConfiguration
+    /// <summary>
+    /// Kinetics Cellular
+    /// </summary>
+    private static readonly FixedConfiguration TestKineticsCellularFixedConfiguration = new FixedConfiguration
     {
         FitType = "Inside",
         FixingTo = "Wood",
@@ -16,19 +19,18 @@ public static class ProductFixture
         OperationSide = "Left",
     };
 
-    private static readonly GeneralProductConfigration TestKineticsCellularGeneralProductConfigration = new GeneralProductConfigration
+    private static readonly VariableConfiguration TestKineticsCellularVariableConfiguration = new VariableConfiguration
     {
-        Price = 1200.00m,
         Location = "Kitchen",
         Width = 1200,
         Height = 900,
         Reveal = 80,
-        AboveHeightConstraint = false,
+        InstallHeight = 1.20m,
         RemoteNumber = 0,
         RemoteChannel = 0,
     };
 
-    private static readonly ISpecificConfiguration TestKineticsCellularConfiguration = new KineticsCellularDTO
+    private static readonly KineticsCellular TestKineticsCellularConfiguration = new KineticsCellular
     {
         HeadRailColour = "Black",
         SideChannelColour = "None",
@@ -37,33 +39,35 @@ public static class ProductFixture
     public static ProductCreateDTO TestProductCreateDTOKineticsCellular = new ProductCreateDTO
     {
         WorksheetId = WorksheetFixture.TestWorksheet.ExternalMapping,
-        GeneralProductConfigration = TestKineticsCellularGeneralProductConfigration,
-        VariationProductConfiguration = TestKineticsCellularVariationProductConfiguration,
-        Configuration = TestKineticsCellularConfiguration,
-
+        VariableConfiguration = TestKineticsCellularVariableConfiguration,
+        FixedConfiguration = TestKineticsCellularFixedConfiguration,
+        KineticsCellular = TestKineticsCellularConfiguration,
     };
 
 
+    // This does not include variations
     public static Product TestProductKineticsCellular = new Product()
     {
         ProductId = 1,
         ExternalMapping = Guid.CreateVersion7(DateTimeOffset.UtcNow),
-        Price = TestKineticsCellularGeneralProductConfigration.Price,
-        Location = TestKineticsCellularGeneralProductConfigration.Location,
-        Width = TestKineticsCellularGeneralProductConfigration.Width,
-        Height = TestKineticsCellularGeneralProductConfigration.Height,
-        Reveal = TestKineticsCellularGeneralProductConfigration.Reveal,
-        AboveHeightConstraint = TestKineticsCellularGeneralProductConfigration.AboveHeightConstraint,
-        RemoteNumber = TestKineticsCellularGeneralProductConfigration.RemoteNumber,
-        RemoteChannel = TestKineticsCellularGeneralProductConfigration.RemoteChannel,
+        Price = 1200.00m,
+        Location = TestKineticsCellularVariableConfiguration.Location,
+        Width = TestKineticsCellularVariableConfiguration.Width,
+        Height = TestKineticsCellularVariableConfiguration.Height,
+        Reveal = TestKineticsCellularVariableConfiguration.Reveal,
+        InstallHeight = TestKineticsCellularVariableConfiguration.InstallHeight,
+        RemoteNumber = TestKineticsCellularVariableConfiguration.RemoteNumber,
+        RemoteChannel = TestKineticsCellularVariableConfiguration.RemoteChannel,
         WorksheetId = WorksheetFixture.TestWorksheet.WorksheetId,
         Worksheet = WorksheetFixture.TestWorksheet,
     };
 
+    /// <summary>
+    /// Kinetics Roller 
+    /// </summary>
 
 
-
-    private static readonly VariationProductConfiguration TestKineticsRollerVariationProductConfiguration = new VariationProductConfiguration
+    private static readonly FixedConfiguration TestKineticsRollerFixedConfiguration = new FixedConfiguration
     {
         FitType = "IN",
         FixingTo = "Wood",
@@ -75,21 +79,21 @@ public static class ProductFixture
 
 
 
-    private static readonly GeneralProductConfigration TestKineticsRollerGeneralProductConfigration = new GeneralProductConfigration
+    private static readonly VariableConfiguration TestKineticsRollerVariableConfiguration = new VariableConfiguration
     {
-        Price = 800.00m,
+
         Location = "Kitchen",
         Width = 1200,
         Height = 900,
         Reveal = 80,
-        AboveHeightConstraint = false,
+        InstallHeight = 1.20m,
         RemoteNumber = 1,
         RemoteChannel = 1,
     };
 
 
 
-    private static readonly ISpecificConfiguration TestKineticsRollerConfiguration = new KineticsRollerDTO
+    private static readonly KineticsRoller TestKineticsRollerConfiguration = new KineticsRoller
     {
         RollType = "Front",
         ChainColour = null,
@@ -106,10 +110,9 @@ public static class ProductFixture
     public static ProductCreateDTO TestProductCreateDTOKineticsRoller = new ProductCreateDTO
     {
         WorksheetId = WorksheetFixture.TestWorksheet.ExternalMapping,
-        GeneralProductConfigration = TestKineticsRollerGeneralProductConfigration,
-        VariationProductConfiguration = TestKineticsRollerVariationProductConfiguration,
-        Configuration = TestKineticsRollerConfiguration,
-
+        VariableConfiguration = TestKineticsRollerVariableConfiguration,
+        FixedConfiguration = TestKineticsRollerFixedConfiguration,
+        KineticsRoller = TestKineticsRollerConfiguration,
     };
 
 

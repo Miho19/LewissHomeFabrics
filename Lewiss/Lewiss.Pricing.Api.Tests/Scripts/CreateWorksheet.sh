@@ -7,16 +7,12 @@ if ! command -v jq &> /dev/null; then
     exit 1
 fi
 
-SCRIPT_DIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
-JSON_FILE_PATH="${SCRIPT_DIR}/Customer.json"
-
 baseaddress="http://localhost:5085/api/v1"
 
-currentaddress="${baseaddress}/pricing/customer"
+currentaddress="${baseaddress}/pricing/customer/$1/worksheet"
 
 response=$(curl -s -X POST \
     -H "Content-Type: application/json" \
-    --data "@$JSON_FILE_PATH" \
     $currentaddress
 )
 

@@ -1,3 +1,4 @@
+using Castle.Core.Logging;
 using Lewiss.Pricing.Api.Controllers;
 using Lewiss.Pricing.Api.Tests.Fixtures;
 using Lewiss.Pricing.Data.Model;
@@ -7,6 +8,7 @@ using Lewiss.Pricing.Shared.Services;
 using Lewiss.Pricing.Shared.Worksheet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit.Abstractions;
 
@@ -15,10 +17,13 @@ namespace Lewiss.Pricing.Api.Tests.Systems.Controllers;
 public class PricingControllerTests
 {
     private readonly ITestOutputHelper _logger;
+
     public PricingControllerTests(ITestOutputHelper logger)
     {
         _logger = logger;
     }
+
+
 
     [Fact]
     public async Task CreateWorksheet_ShouldReturnOkCreated_OnSuccess()
@@ -28,7 +33,9 @@ public class PricingControllerTests
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
         var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
-        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
+        var loggerMock = new Mock<ILogger<PricingController>>();
+
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
 
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
@@ -53,7 +60,9 @@ public class PricingControllerTests
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
         var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
-        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
+        var loggerMock = new Mock<ILogger<PricingController>>();
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
+
 
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
@@ -75,7 +84,8 @@ public class PricingControllerTests
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
         var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
-        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
+        var loggerMock = new Mock<ILogger<PricingController>>();
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
 
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
@@ -97,7 +107,9 @@ public class PricingControllerTests
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
         var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
-        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
+        var loggerMock = new Mock<ILogger<PricingController>>();
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
+
 
         var testCustomerEntryDTO = CustomerFixture.TestCustomerCreate;
 
@@ -119,7 +131,11 @@ public class PricingControllerTests
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
         var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
-        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
+        var loggerMock = new Mock<ILogger<PricingController>>();
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
+
+
+
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
         customerServiceMock.Setup(p => p.GetCustomerByExternalIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(testCustomerEntryDTO);
@@ -141,9 +157,10 @@ public class PricingControllerTests
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
         var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
-        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
-        var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
+        var loggerMock = new Mock<ILogger<PricingController>>();
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
 
+        var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
         customerServiceMock.Setup(p => p.GetCustomerByExternalIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync((CustomerEntryDTO)null!);
 
         var result = await pricingController.GetCustomer(testCustomerEntryDTO.Id);
@@ -162,7 +179,8 @@ public class PricingControllerTests
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
         var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
-        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
+        var loggerMock = new Mock<ILogger<PricingController>>();
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
         worksheetServiceMock.Setup(p => p.GetWorksheetAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(testWorksheetDTO);
@@ -185,7 +203,8 @@ public class PricingControllerTests
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
         var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
-        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
+        var loggerMock = new Mock<ILogger<PricingController>>();
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
 
@@ -208,7 +227,8 @@ public class PricingControllerTests
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
         var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
-        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
+        var loggerMock = new Mock<ILogger<PricingController>>();
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
@@ -232,7 +252,8 @@ public class PricingControllerTests
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
         var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
-        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
+        var loggerMock = new Mock<ILogger<PricingController>>();
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
@@ -256,7 +277,8 @@ public class PricingControllerTests
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
         var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
-        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
+        var loggerMock = new Mock<ILogger<PricingController>>();
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;

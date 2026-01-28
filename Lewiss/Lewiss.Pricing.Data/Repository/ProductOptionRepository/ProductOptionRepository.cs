@@ -13,7 +13,7 @@ public class ProductOptionRepository : Repository<ProductOption>, IProductOption
 
     public async Task<ProductOption?> GetProductOptionByNameAsync(string productOptionName, CancellationToken cancellationToken)
     {
-        var productOption = await _dbSet.FirstOrDefaultAsync(po => po.Name.ToUpper() == productOptionName.ToUpper());
+        var productOption = await _dbSet.Include(po => po.ProductOptionVariation).FirstOrDefaultAsync(po => po.Name.ToUpper() == productOptionName.ToUpper());
         if (productOption is null)
         {
             return null;

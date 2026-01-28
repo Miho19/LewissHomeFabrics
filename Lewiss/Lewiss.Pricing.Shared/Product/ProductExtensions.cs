@@ -10,19 +10,18 @@ public static class ProductExtensions
             throw new Exception("Inputs are null");
         }
 
-        var generalConfiguration = productCreateDTO.GeneralProductConfigration;
+        var variableConfiguration = productCreateDTO.VariableConfiguration;
 
         return new Product
         {
             ExternalMapping = Guid.CreateVersion7(DateTimeOffset.UtcNow),
-            Price = generalConfiguration.Price,
-            Location = generalConfiguration.Location,
-            Width = generalConfiguration.Width,
-            Height = generalConfiguration.Height,
-            Reveal = generalConfiguration.Reveal,
-            AboveHeightConstraint = generalConfiguration.AboveHeightConstraint,
-            RemoteNumber = generalConfiguration.RemoteNumber,
-            RemoteChannel = generalConfiguration.RemoteChannel,
+            InstallHeight = variableConfiguration.InstallHeight,
+            Location = variableConfiguration.Location,
+            Width = variableConfiguration.Width,
+            Height = variableConfiguration.Height,
+            Reveal = variableConfiguration.Reveal,
+            RemoteNumber = variableConfiguration.RemoteNumber,
+            RemoteChannel = variableConfiguration.RemoteChannel,
             WorksheetId = worksheet.WorksheetId,
             Worksheet = worksheet
         };
@@ -39,9 +38,11 @@ public static class ProductExtensions
         {
             Id = product.ExternalMapping,
             WorksheetId = productCreateDTO.WorksheetId,
-            Configuration = productCreateDTO.Configuration,
-            GeneralConfiguration = productCreateDTO.GeneralProductConfigration,
-            VariationProductConfiguration = productCreateDTO.VariationProductConfiguration
+            Price = product.Price,
+            VariableConfiguration = productCreateDTO.VariableConfiguration,
+            FixedConfiguration = productCreateDTO.FixedConfiguration,
+            KineticsCellular = productCreateDTO.KineticsCellular,
+            KineticsRoller = productCreateDTO.KineticsRoller,
         };
     }
 }

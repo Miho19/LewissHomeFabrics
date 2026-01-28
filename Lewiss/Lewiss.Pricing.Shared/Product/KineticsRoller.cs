@@ -1,8 +1,7 @@
-using Lewiss.Pricing.Shared.Product;
+namespace Lewiss.Pricing.Shared.Product;
 
-public class KineticsRollerDTO : ISpecificConfiguration
+public class KineticsRoller
 {
-    public string ProductType { get; } = "KineticsRoller";
     public required string RollType { get; set; }
     public string? ChainColour { get; set; }
     public int? ChainLength { get; set; }

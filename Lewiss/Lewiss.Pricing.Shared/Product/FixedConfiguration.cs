@@ -1,6 +1,6 @@
 namespace Lewiss.Pricing.Shared.Product;
 
-public class VariationProductConfiguration
+public class FixedConfiguration
 {
     public required string FitType { get; set; }
     public required string FixingTo { get; set; }

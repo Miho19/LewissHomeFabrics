@@ -16,13 +16,15 @@ public class PricingController : ControllerBase
     private readonly CustomerService _customerService;
     private readonly ProductService _productService;
     private readonly WorksheetService _worksheetService;
+    private readonly ILogger<PricingController> _logger;
 
-    public PricingController(PricingService pricingService, CustomerService customerService, ProductService productService, WorksheetService worksheetService)
+    public PricingController(PricingService pricingService, CustomerService customerService, ProductService productService, WorksheetService worksheetService, ILogger<PricingController> logger)
     {
         _pricingService = pricingService;
         _customerService = customerService;
         _productService = productService;
         _worksheetService = worksheetService;
+        _logger = logger;
 
     }
 
@@ -128,7 +130,7 @@ public class PricingController : ControllerBase
             });
         }
 
-        return new CreatedAtActionResult("GetWorksheet", "Pricing", new { worksheetId = worksheetDTO.Id }, worksheetDTO);
+        return new CreatedAtActionResult("GetWorksheet", "Pricing", new { worksheetId = worksheetDTO.Id, customerId }, worksheetDTO);
     }
 
 
@@ -136,6 +138,7 @@ public class PricingController : ControllerBase
     [HttpPost("customer/{customerId}/worksheet/{workoutId}/product", Name = "CreateProduct")]
     public async Task<IActionResult> CreateProduct(Guid customerId, Guid workoutId, [FromBody] ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
+
         var productEntryDTO = await _productService.CreateProductAsync(customerId, workoutId, productCreateDTO, cancellationToken);
         if (productEntryDTO is null)
         {
@@ -149,10 +152,5 @@ public class PricingController : ControllerBase
 
         return new OkObjectResult(productEntryDTO);
     }
-
-
-
-
-
 
 }
