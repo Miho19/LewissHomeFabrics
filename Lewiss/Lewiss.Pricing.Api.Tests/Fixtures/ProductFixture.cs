@@ -62,6 +62,17 @@ public static class ProductFixture
         Worksheet = WorksheetFixture.TestWorksheet,
     };
 
+
+    public static ProductEntryDTO TestProductEntryDTOKineticsCellular = new ProductEntryDTO
+    {
+        Id = TestProductKineticsCellular.ExternalMapping,
+        WorksheetId = WorksheetFixture.TestWorksheetDTO.Id,
+        FixedConfiguration = TestKineticsCellularFixedConfiguration,
+        VariableConfiguration = TestKineticsCellularVariableConfiguration,
+        Price = TestProductKineticsCellular.Price,
+        KineticsCellular = TestKineticsCellularConfiguration
+    };
+
     /// <summary>
     /// Kinetics Roller 
     /// </summary>

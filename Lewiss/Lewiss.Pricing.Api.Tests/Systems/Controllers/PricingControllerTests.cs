@@ -3,6 +3,7 @@ using Lewiss.Pricing.Api.Controllers;
 using Lewiss.Pricing.Api.Tests.Fixtures;
 using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Shared.CustomerDTO;
+using Lewiss.Pricing.Shared.Product;
 using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.Services;
 using Lewiss.Pricing.Shared.Worksheet;
@@ -294,26 +295,32 @@ public class PricingControllerTests
         Assert.Empty(workoutDTOList);
     }
 
+    [Fact]
+    public async Task CreateProduct_ShouldReturnOK200_OnSuccess()
+    {
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
+        var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
+        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var loggerMock = new Mock<ILogger<PricingController>>();
+        var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
 
-    // public async Task CreateProduct_ShouldReturnOK200_OnSuccess()
-    // {
-    //     var unitOfWorkMock = new Mock<IUnitOfWork>();
-    //     var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
-    //     var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object, productServiceMock.Object);
+        productServiceMock.Setup(p => p.CreateProductAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<ProductCreateDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(ProductFixture.TestProductEntryDTOKineticsCellular);
 
-    //     var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
+        var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
+        var newProductDTO = ProductFixture.TestProductCreateDTOKineticsCellular;
+        var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-    //     var newProductDTO = ProductFixture.TestProductCreateDTOKineticsCellular;
+        var result = await pricingController.CreateProduct(testCustomerEntryDTO.Id, testWorksheetDTO.Id, newProductDTO);
 
-    //     var pricingController = new PricingController(pricingServiceMock.Object);
+        Assert.NotNull(result);
+        var okObjectResult = Assert.IsType<OkObjectResult>(result);
+        var productEntryDTO = Assert.IsType<ProductEntryDTO>(okObjectResult.Value);
+        Assert.Equal(newProductDTO.WorksheetId, productEntryDTO.WorksheetId);
+        Assert.NotNull(productEntryDTO.KineticsCellular);
+    }
 
-    //     var result = await pricingController.CreateProduct(testWorksheetDTO.Id, newProductDTO);
 
-    //     Assert.NotNull(result);
-    //     var okObjectResult = Assert.IsType<OkObjectResult>(result);
-    //     var worksheetDTOList = Assert.IsType<List<WorksheetDTO>>(okObjectResult.Value);
-    //     Assert.NotEmpty(worksheetDTOList);
-    //     Assert.Equal(testWorksheetDTO.Id, worksheetDTOList[0].Id);
-    // }
 
 }
