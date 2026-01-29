@@ -57,21 +57,21 @@ customerId="019bff20-6de5-732c-a872-751a20bf9a4b"
 
 worksheetId="019c0300-bcce-7a1f-b6f4-8151b86e2bfb"
 
-create_product "$customerId" "$worksheetId"
+# create_product "$customerId" "$worksheetId"
 
 # productId="019c0841-c4b1-72fd-9b47-8cff3464af27"
 
-# baseaddress="http://localhost:5085/api/v1"
+baseaddress="http://localhost:5085/api/v1"
 
-# currentaddress="${baseaddress}/pricing/customer/${customerId}/worksheet/${worksheetId}/product/${productId}"
+currentaddress="${baseaddress}/pricing/customer/${customerId}/worksheet/${worksheetId}/product"
 
-# response=$(curl -s -X GET \
-#     -H "Content-Type: application/json" \
-#     $currentaddress
-# )
+response=$(curl -s -X GET \
+    -H "Content-Type: application/json" \
+    $currentaddress
+)
 
 
-# echo "$response" | jq .
+echo "$response" | jq .
 
 
 

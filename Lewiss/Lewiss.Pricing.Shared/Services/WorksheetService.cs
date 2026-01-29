@@ -1,4 +1,5 @@
 using Lewiss.Pricing.Shared.CustomerDTO;
+using Lewiss.Pricing.Shared.Product;
 using Lewiss.Pricing.Shared.Worksheet;
 
 namespace Lewiss.Pricing.Shared.Services;
@@ -39,28 +40,55 @@ public class WorksheetService
         return worksheetDTO;
     }
 
-    public virtual async Task<WorksheetDTO?> GetWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
+    private async Task<(Data.Model.Customer?, Data.Model.Worksheet?)> GetCustomerAndWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
     {
-
         var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
         if (customer is null)
         {
-            return null;
+            return (null, null);
         }
 
         var worksheet = await _unitOfWork.Worksheet.GetWorksheetByExternalIdAsync(externalWorksheetId, cancellationToken);
         if (worksheet is null)
         {
-            return null;
+            return (null, null);
         }
 
         if (worksheet.CustomerId != customer.CustomerId)
+        {
+            return (null, null);
+        }
+
+        return (customer, worksheet);
+    }
+
+
+    public virtual async Task<WorksheetDTO?> GetWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
+    {
+
+        var (customer, worksheet) = await GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
+        if (customer is null || worksheet is null)
         {
             return null;
         }
 
         var worksheetDTO = worksheet.ToWorksheetDTO(externalCustomerId);
         return worksheetDTO;
+    }
+
+    public virtual async Task<List<ProductEntryDTO>?> GetWorksheetProductsAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
+    {
+        var (customer, worksheet) = await GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
+        if (customer is null || worksheet is null)
+        {
+            return null;
+        }
+
+        var productList = await _unitOfWork.Worksheet.GetWorksheetProductsAsync(worksheet, cancellationToken);
+
+        var productEntryDTOList = productList.Select(p => p.ToProductEntryDTO(worksheet.ExternalMapping)).ToList();
+
+        return productEntryDTOList;
     }
 
 }

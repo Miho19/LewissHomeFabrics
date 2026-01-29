@@ -6,7 +6,6 @@ public class Worksheet
     public int WorksheetId { get; set; }
     public required Guid ExternalMapping { get; set; }
     public required DateTimeOffset CreatedAt { get; set; }
-
     public required decimal Price { get; set; }
     public required decimal Discount { get; set; }
     public required bool NewBuild { get; set; }

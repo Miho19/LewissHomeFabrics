@@ -34,4 +34,16 @@ public class WorksheetRepository : Repository<Worksheet>, IWorksheetRepository
 
         return worksheets;
     }
+
+    public async Task<List<Product>> GetWorksheetProductsAsync(Worksheet worksheet, CancellationToken cancellationToken)
+    {
+        var productList = await _dbContext.Product
+        .Include(p => p.OptionVariations)
+        .Where(p => p.WorksheetId == worksheet.WorksheetId)
+        .ToListAsync();
+
+        return productList;
+    }
+
+
 }

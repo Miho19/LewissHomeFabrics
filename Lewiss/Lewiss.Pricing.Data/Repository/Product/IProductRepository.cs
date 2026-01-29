@@ -6,4 +6,5 @@ namespace Lewiss.Pricing.Data.Repository.ProductRepository;
 public interface IProductRepository : IRepository<Product>
 {
     Task<Product?> GetProductByExternalIdAsync(Guid externalProductId, CancellationToken cancellationToken);
+
 }
