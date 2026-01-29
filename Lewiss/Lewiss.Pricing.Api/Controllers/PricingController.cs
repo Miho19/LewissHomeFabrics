@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using Lewiss.Pricing.Shared.CustomerDTO;
 using Lewiss.Pricing.Shared.Product;
 using Lewiss.Pricing.Shared.QueryParameters;
@@ -156,7 +155,6 @@ public class PricingController : ControllerBase
     [HttpGet("customer/{customerId}/worksheet/{worksheetId}/product/{productId}", Name = "GetProduct")]
     public async Task<IActionResult> GetProduct(Guid customerId, Guid worksheetId, Guid productId, CancellationToken cancellationToken = default)
     {
-        _logger.LogCritical("in func");
 
         var productEntryDTO = await _productService.GetProductAsync(customerId, worksheetId, productId, cancellationToken);
         if (productEntryDTO is null)
@@ -170,6 +168,24 @@ public class PricingController : ControllerBase
         }
 
         return new OkObjectResult(productEntryDTO);
+    }
+
+    [HttpGet("customer/{customerId}/worksheet/{worksheetId}/product", Name = "GetWorksheetProduct")]
+    public async Task<IActionResult> GetWorksheetProduct(Guid customerId, Guid worksheetId, CancellationToken cancellationToken = default)
+    {
+
+        var productEntryDTOList = await _worksheetService.GetWorksheetProductsAsync(customerId, worksheetId, cancellationToken);
+        if (productEntryDTOList is null)
+        {
+            return new ObjectResult(new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Internal Server Error",
+                Detail = "Something went wrong."
+            });
+        }
+
+        return new OkObjectResult(productEntryDTOList);
     }
 
 }
