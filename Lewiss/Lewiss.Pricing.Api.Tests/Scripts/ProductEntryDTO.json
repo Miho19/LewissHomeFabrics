@@ -1,0 +1,27 @@
+{
+  "id": "019c0841-c4b1-72fd-9b47-8cff3464af27",
+  "worksheetId": "019c0300-bcce-7a1f-b6f4-8151b86e2bfb",
+  "price": 0,
+  "variableConfiguration": {
+    "location": "Kitchen",
+    "width": 1200,
+    "height": 900,
+    "reveal": 0,
+    "remoteNumber": 0,
+    "remoteChannel": 0,
+    "installHeight": 1200
+  },
+  "fixedConfiguration": {
+    "fitType": "inside",
+    "fixingTo": "wood",
+    "productType": "Kinetics Cellular",
+    "fabric": "Translucent White",
+    "operationType": "Cord",
+    "operationSide": "Left"
+  },
+  "kineticsCellular": {
+    "headrailColour": "White",
+    "sideChannelColour": "White"
+  },
+  "kineticsRoller": null
+}

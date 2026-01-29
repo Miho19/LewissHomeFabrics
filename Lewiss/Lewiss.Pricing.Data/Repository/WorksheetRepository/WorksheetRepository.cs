@@ -19,13 +19,13 @@ public class WorksheetRepository : Repository<Worksheet>, IWorksheetRepository
 
     public async Task<List<Worksheet>?> GetWorksheetsByExternalCustomerIdAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
     {
-        var customer = _dbContext.Set<Customer>().FirstOrDefaultAsync(c => c.ExternalMapping == externalCustomerId, cancellationToken);
+        var customer = await _dbContext.Set<Customer>().Include(c => c.CurrentWorksheets).FirstOrDefaultAsync(c => c.ExternalMapping == externalCustomerId, cancellationToken);
         if (customer is null)
         {
             return null;
         }
 
-        var worksheets = await _dbContext.Set<Worksheet>().Where(w => w.CustomerId == customer.Id).ToListAsync();
+        var worksheets = customer.CurrentWorksheets.ToList();
 
         if (worksheets is null || worksheets.Count == 0)
         {

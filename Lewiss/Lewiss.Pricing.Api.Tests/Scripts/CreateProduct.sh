@@ -13,8 +13,8 @@ fi
 SCRIPT_DIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 
 
-JSON_FILE_PATH="${SCRIPT_DIR}/ProductCreateDTOKineticsCellular.json"
-# JSON_FILE_PATH="${SCRIPT_DIR}/ProductCreateDTOKineticsRoller.json"
+# JSON_FILE_PATH="${SCRIPT_DIR}/ProductCreateDTOKineticsCellular.json"
+JSON_FILE_PATH="${SCRIPT_DIR}/ProductCreateDTOKineticsRoller.json"
 
 temp=$(mktemp)
 

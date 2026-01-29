@@ -153,10 +153,12 @@ public class PricingController : ControllerBase
         return new OkObjectResult(productEntryDTO);
     }
 
-    [HttpGet("customer/{customerId}/worksheet/{workoutId}/product/{productId}", Name = "GetProduct")]
-    public async Task<IActionResult> GetProduct(Guid customerId, Guid workoutId, Guid productId, CancellationToken cancellationToken = default)
+    [HttpGet("customer/{customerId}/worksheet/{worksheetId}/product/{productId}", Name = "GetProduct")]
+    public async Task<IActionResult> GetProduct(Guid customerId, Guid worksheetId, Guid productId, CancellationToken cancellationToken = default)
     {
-        var productEntryDTO = await _productService.GetProductAsync(customerId, workoutId, productId, cancellationToken);
+        _logger.LogCritical("in func");
+
+        var productEntryDTO = await _productService.GetProductAsync(customerId, worksheetId, productId, cancellationToken);
         if (productEntryDTO is null)
         {
             return new ObjectResult(new ProblemDetails
