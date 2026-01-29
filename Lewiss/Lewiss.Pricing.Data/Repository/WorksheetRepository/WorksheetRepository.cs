@@ -39,6 +39,7 @@ public class WorksheetRepository : Repository<Worksheet>, IWorksheetRepository
     {
         var productList = await _dbContext.Product
         .Include(p => p.OptionVariations)
+        .ThenInclude(po => po.ProductOption)
         .Where(p => p.WorksheetId == worksheet.WorksheetId)
         .ToListAsync();
 

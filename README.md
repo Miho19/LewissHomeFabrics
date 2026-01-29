@@ -340,3 +340,111 @@ Create a `Product` for a `Worksheet` assoicated with a `Customer`
   }
 }
 ```
+
+### Get Worksheet Products
+
+Retrieve all `Product` assoicated with a `Worksheet`
+
+#### Request
+
+`GET /customer/id/worksheet/id/product`
+
+```bash
+    curl -s -H 'Accept: application/json' \
+    http://localhost:5085/api/v1/pricing/customer/019bff20-6de5-732c-a872-751a20bf9a4b/worksheet/019c0300-bcce-7a1f-b6f4-8151b86e2bfb/product
+```
+
+#### JSON Response Body
+
+```json
+[
+  {
+    "id": "019c0841-c4b1-72fd-9b47-8cff3464af27",
+    "worksheetId": "019c0300-bcce-7a1f-b6f4-8151b86e2bfb",
+    "price": 0e-28,
+    "variableConfiguration": {
+      "location": "Kitchen",
+      "width": 1200,
+      "height": 900,
+      "reveal": 0,
+      "remoteNumber": 0,
+      "remoteChannel": 0,
+      "installHeight": 1200.0
+    },
+    "fixedConfiguration": {
+      "fitType": "Inside",
+      "fixingTo": "Wood",
+      "productType": "Kinetics Cellular",
+      "fabric": "Translucent White",
+      "operationType": "Cord",
+      "operationSide": "Left"
+    },
+    "kineticsCellular": {
+      "headrailColour": "White",
+      "sideChannelColour": "White"
+    },
+    "kineticsRoller": null
+  },
+  {
+    "id": "019c0842-90a2-7566-831a-90bd4e636566",
+    "worksheetId": "019c0300-bcce-7a1f-b6f4-8151b86e2bfb",
+    "price": 0e-28,
+    "variableConfiguration": {
+      "location": "Kitchen",
+      "width": 1200,
+      "height": 900,
+      "reveal": 0,
+      "remoteNumber": 0,
+      "remoteChannel": 0,
+      "installHeight": 1200.0
+    },
+    "fixedConfiguration": {
+      "fitType": "Inside",
+      "fixingTo": "Wood",
+      "productType": "Kinetics Cellular",
+      "fabric": "Translucent White",
+      "operationType": "Cord",
+      "operationSide": "Left"
+    },
+    "kineticsCellular": {
+      "headrailColour": "White",
+      "sideChannelColour": "White"
+    },
+    "kineticsRoller": null
+  },
+  {
+    "id": "019c084a-a213-7d9c-977f-0d973e2d538a",
+    "worksheetId": "019c0300-bcce-7a1f-b6f4-8151b86e2bfb",
+    "price": 0e-28,
+    "variableConfiguration": {
+      "location": "Lounge",
+      "width": 1200,
+      "height": 900,
+      "reveal": 0,
+      "remoteNumber": 0,
+      "remoteChannel": 0,
+      "installHeight": 1200.0
+    },
+    "fixedConfiguration": {
+      "fitType": "Inside",
+      "fixingTo": "Wood",
+      "productType": "Kinetics Roller",
+      "fabric": "Everyday Vinyl Collection - Polar",
+      "operationType": "Chain",
+      "operationSide": "Left"
+    },
+    "kineticsCellular": null,
+    "kineticsRoller": {
+      "rollType": "Front",
+      "chainColour": "Black",
+      "chainLength": "1500",
+      "bracketType": "Standard",
+      "bracketColour": "White",
+      "bottomRailType": "Flat",
+      "bottomRailColour": "White",
+      "pelmetType": null,
+      "pelmetColour": null
+    }
+  }
+]
+```
