@@ -1,122 +1,92 @@
 [
   {
-    "kineticsCellularFabricId": 1,
     "code": "001",
     "colour": "Cotton",
     "opacity": "Translucent",
-    "multiplier": 1.0,
-    "productOptionVariationId": -1
+    "multiplier": 1.0
   },
   {
-    "kineticsCellularFabricId": 2,
     "code": "005",
     "colour": "Cream",
     "opacity": "Translucent",
-    "multiplier": 1.0,
-    "productOptionVariationId": -1
+    "multiplier": 1.0
   },
   {
-    "kineticsCellularFabricId": 3,
     "code": "014",
     "colour": "Water Green",
     "opacity": "Translucent",
-    "multiplier": 1.0,
-    "productOptionVariationId": -1
+    "multiplier": 1.0
   },
   {
-    "kineticsCellularFabricId": 4,
     "code": "019",
     "colour": "Agate Red",
     "opacity": "Translucent",
-    "multiplier": 1.0,
-    "productOptionVariationId": -1
+    "multiplier": 1.0
   },
   {
-    "kineticsCellularFabricId": 5,
     "code": "021",
     "colour": "Gray Sheen",
     "opacity": "Translucent",
-    "multiplier": 1.0,
-    "productOptionVariationId": -1
+    "multiplier": 1.0
   },
   {
-    "kineticsCellularFabricId": 6,
     "code": "023",
     "colour": "Royal Gray",
     "opacity": "Translucent",
-    "multiplier": 1.0,
-    "productOptionVariationId": -1
+    "multiplier": 1.0
   },
   {
-    "kineticsCellularFabricId": 6,
     "code": "024",
     "colour": "Jean Blue",
     "opacity": "Translucent",
-    "multiplier": 1.0,
-    "productOptionVariationId": -1
+    "multiplier": 1.0
   },
   {
-    "kineticsCellularFabricId": 7,
     "code": "025",
     "colour": "Black",
     "opacity": "Translucent",
-    "multiplier": 1.0,
-    "productOptionVariationId": -1
+    "multiplier": 1.0
   },
   {
-    "kineticsCellularFabricId": 8,
     "code": "026",
     "colour": "Federal Blue",
     "opacity": "Translucent",
-    "multiplier": 1.0,
-    "productOptionVariationId": -1
+    "multiplier": 1.0
   },
   {
-    "kineticsCellularFabricId": 9,
     "code": "030",
     "colour": "Steel Grey",
     "opacity": "Translucent",
-    "multiplier": 1.0,
-    "productOptionVariationId": -1
+    "multiplier": 1.0
   },
   {
-    "kineticsCellularFabricId": 10,
     "code": "070",
     "colour": "Winter White",
     "opacity": "Translucent",
-    "multiplier": 1.0,
-    "productOptionVariationId": -1
+    "multiplier": 1.0
   },
   {
-    "kineticsCellularFabricId": 11,
     "code": "102",
     "colour": "Aqua Glass",
     "opacity": "Translucent",
-    "multiplier": 1.0,
-    "productOptionVariationId": -1
+    "multiplier": 1.0
   },
   {
-    "kineticsCellularFabricId": 12,
     "code": "333",
     "colour": "Warm Chocolate",
     "opacity": "Translucent",
-    "multiplier": 1.0,
-    "productOptionVariationId": -1
+    "multiplier": 1.0
   },
   {
-    "kineticsCellularFabricId": 13,
     "code": "416",
     "colour": "Taupe A",
     "opacity": "Translucent",
-    "multiplier": 1.0,
-    "productOptionVariationId": -1
+    "multiplier": 1.0
   },
   {
-    "kineticsCellularFabricId": 14,
     "code": "512",
     "colour": "Flax Green",
     "opacity": "Translucent",
-    "multiplier": 1.0,
-    "productOptionVariationId": -1
+    "multiplier": 1.0
   }
 ]
