@@ -15,12 +15,13 @@ public class FabricDataUtilityTests
     public async Task GetFileData_ShouldReturnAString_WhenSuppliedAFileName()
     {
         var fileName = "KineticsCellularFabricData.json";
-        var result = await FabricDataUtility.GetFileData(fileName);
+        var result = await FabricDataUtility.GetJSONFileListData<KineticsCellularFabricDataJSONStructure>(fileName);
 
         _logger.WriteLine($"output: {result}");
 
         Assert.NotNull(result);
-        Assert.IsType<string>(result);
+        Assert.IsType<List<KineticsCellularFabricDataJSONStructure>>(result);
+        Assert.NotEmpty(result);
 
     }
 

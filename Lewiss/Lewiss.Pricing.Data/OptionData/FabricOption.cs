@@ -10,23 +10,7 @@ public static class FabricOption
         Name = "Fabric"
     };
 
-    public static readonly ProductOptionVariation TranslucentWhite = new ProductOptionVariation
-    {
-        ProductOptionVariationId = OptionDataUtility.GetOptionVariationId(),
-        ProductOptionId = ProductOption.ProductOptionId,
-        Value = "Translucent White",
-        Price = 0.0m,
-    };
 
-    public static readonly ProductOptionVariation EverydayVinylCollectionPolar = new ProductOptionVariation
-    {
-        ProductOptionVariationId = OptionDataUtility.GetOptionVariationId(),
-        ProductOptionId = ProductOption.ProductOptionId,
-        Value = "Everyday Vinyl Collection - Polar",
-        Price = 0.0m,
-    };
 
-    public static readonly List<ProductOptionVariation> ProductOptionVariations = [
-        TranslucentWhite, EverydayVinylCollectionPolar
-    ];
+    public static readonly List<ProductOptionVariation> ProductOptionVariations = [];
 }

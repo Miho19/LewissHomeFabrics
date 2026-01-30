@@ -89,6 +89,8 @@ public class PricingDbContext : DbContext
             OptionDataUtility.OptionList
         );
 
+
+
         modelBuilder.Entity<ProductOptionVariation>().HasData(
             OptionDataUtility.OptionVariationList
         );

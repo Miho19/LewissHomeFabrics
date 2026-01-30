@@ -8,5 +8,5 @@ public class KineticsCellularFabric
     public required string Opacity { get; set; }
     public required decimal Multiplier { get; set; }
     public required int ProductOptionVariationId { get; set; }
-    public required ProductOptionVariation ProductOptionVariation { get; set; }
+    public ProductOptionVariation? ProductOptionVariation { get; set; }
 }
