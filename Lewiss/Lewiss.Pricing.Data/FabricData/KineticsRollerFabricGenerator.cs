@@ -4,15 +4,16 @@ using Lewiss.Pricing.Data.OptionData;
 
 namespace Lewiss.Pricing.Data.FabricData;
 
-public record struct KineticsCellularFabricDataJSONStructure()
+public record struct KineticsRollerFabricDataJSONStructure()
 {
-    public required string Code;
+    public required string Fabric;
     public required string Colour;
     public required string Opacity;
     public required int Multiplier;
-
+    public required int MaxWidth;
+    public required int MaxHeight;
 }
-public static class KineticsCellularFabricGenerator
+public static class KineticsRollerFabricGenerator
 {
 
     private static int CurrentId = 0;
@@ -22,20 +23,20 @@ public static class KineticsCellularFabricGenerator
         return ++CurrentId;
     }
 
-    public static string JSONFilePath { get; } = "KineticsCellularFabricData.json";
-    public static async Task<List<KineticsCellularFabric>> FabricListAsync(CancellationToken cancellationToken = default)
+    public static string JSONFabricFilePath { get; } = "KineticsRollerFabricData.json";
+    public static async Task<List<KineticsRollerFabric>> FabricListAsync(CancellationToken cancellationToken = default)
     {
 
-        var jsonData = await FabricDataUtility.GetJSONFileListData<KineticsCellularFabricDataJSONStructure>(JSONFilePath, cancellationToken);
+        var jsonData = await FabricDataUtility.GetJSONFileListData<KineticsRollerFabricDataJSONStructure>(JSONFabricFilePath, cancellationToken);
 
-        List<KineticsCellularFabric> fabricList = [];
+        List<KineticsRollerFabric> fabricList = [];
 
         var fabricProductOptionId = FabricOption.ProductOption.ProductOptionId;
 
         foreach (var fabric in jsonData)
         {
 
-            var fabricName = $"{fabric.Code} {fabric.Opacity} {fabric.Colour}";
+            var fabricName = $"{fabric.Fabric} {fabric.Colour} {fabric.Opacity}"; //
 
             var productOptionVariation = new ProductOptionVariation
             {
@@ -47,17 +48,19 @@ public static class KineticsCellularFabricGenerator
 
             FabricOption.ProductOptionVariations.Add(productOptionVariation);
 
-            var kineticsCellularFabric = new KineticsCellularFabric()
+            var kineticsRollerFabric = new KineticsRollerFabric()
             {
-                KineticsCellularFabricId = GetCurrentId(),
-                Code = fabric.Code,
+                KineticsRollerFabricId = GetCurrentId(),
+                Fabric = fabric.Fabric,
                 Colour = fabric.Colour,
                 Opacity = fabric.Opacity,
                 Multiplier = fabric.Multiplier,
+                MaxWidth = fabric.MaxWidth,
+                MaxHeight = fabric.MaxHeight,
                 ProductOptionVariationId = productOptionVariation.ProductOptionVariationId
             };
 
-            fabricList.Add(kineticsCellularFabric);
+            fabricList.Add(kineticsRollerFabric);
 
         }
 

@@ -11,5 +11,5 @@ public class KineticsRollerFabric
     public required int MaxHeight { get; set; }
 
     public required int ProductOptionVariationId { get; set; }
-    public required ProductOptionVariation ProductOptionVariation { get; set; }
+    public ProductOptionVariation? ProductOptionVariation { get; set; }
 }
