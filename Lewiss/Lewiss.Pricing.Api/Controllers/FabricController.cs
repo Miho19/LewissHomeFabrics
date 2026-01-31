@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
+namespace Lewiss.Pricing.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/[controller]")]
@@ -9,6 +10,24 @@ public class FabricController : ControllerBase
     public FabricController(FabricService fabricService)
     {
         _fabricService = fabricService;
+    }
+
+    [HttpGet("", Name = "GetFabrics")]
+    public async Task<IActionResult> GetFabrics([FromQuery] string fabricType, CancellationToken cancellationToken = default)
+    {
+        var fabricList = await _fabricService.GetFabricsAsync(fabricType, cancellationToken);
+        if (fabricList is null || fabricList.Count == 0)
+        {
+            return StatusCode(404, new ProblemDetails
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "Not Found",
+                Detail = "Fabric list not found.",
+            });
+        }
+
+
+        return new OkObjectResult(fabricList);
     }
 
 
