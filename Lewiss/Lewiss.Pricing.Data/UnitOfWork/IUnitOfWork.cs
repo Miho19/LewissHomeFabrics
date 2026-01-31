@@ -9,9 +9,9 @@ public interface IUnitOfWork : IDisposable
     ICustomerRepository Customer { get; }
     IProductRepository Product { get; }
 
-    IKineticsCellularRepository KineticsCellularFabric { get; }
+    IKineticsCellularFabricRepository KineticsCellularFabric { get; }
 
-    IKineticsRollerRepository KineticsRollerFabric { get; }
+    IKineticsRollerFabricRepository KineticsRollerFabric { get; }
 
     IProductOptionRepository ProductOption { get; set; }
 

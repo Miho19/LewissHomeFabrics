@@ -1,6 +1,7 @@
 using dotenv.net;
 using Lewiss.Pricing.Data.Context;
 using Lewiss.Pricing.Data.Repository.CustomerRepository;
+using Lewiss.Pricing.Data.Repository.Fabric;
 using Lewiss.Pricing.Data.Repository.ProductOptionRepository;
 using Lewiss.Pricing.Data.Repository.ProductRepository;
 using Lewiss.Pricing.Data.Repository.WorksheetRepository;
@@ -23,6 +24,10 @@ builder.Services.AddScoped<IWorksheetRepository, WorksheetRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductOptionRepository, ProductOptionRepository>();
+
+builder.Services.AddScoped<IKineticsCellularFabricRepository, KineticsCellularFabricRepository>();
+builder.Services.AddScoped<IKineticsRollerFabricRepository, KineticsRollerFabricRepository>();
+
 
 // Services
 builder.Services.AddScoped<PricingService>();

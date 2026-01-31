@@ -16,7 +16,8 @@ public class UnitOfWork : IUnitOfWork
 
     public IProductOptionRepository ProductOption { get; set; }
 
-    public IKineticsCellularRepository KineticsCellularRepository { get; set; }
+    public IKineticsCellularFabricRepository KineticsCellularFabric { get; set; }
+    public IKineticsRollerFabricRepository KineticsRollerFabric { get; set; }
 
     private bool _disposed = false;
 

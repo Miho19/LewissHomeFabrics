@@ -5,7 +5,7 @@ using Lewiss.Pricing.Data.Repository.Generic;
 
 namespace Lewiss.Pricing.Data.Repository.Fabric;
 
-class KineticsCellularFabricRepository : Repository<KineticsCellularFabric>, IKineticsCellularFabricRepository
+public class KineticsCellularFabricRepository : Repository<KineticsCellularFabric>, IKineticsCellularFabricRepository
 {
     public KineticsCellularFabricRepository(PricingDbContext dbContext) : base(dbContext)
     {
