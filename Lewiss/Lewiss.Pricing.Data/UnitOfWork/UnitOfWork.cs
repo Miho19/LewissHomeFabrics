@@ -16,6 +16,8 @@ public class UnitOfWork : IUnitOfWork
 
     public IProductOptionRepository ProductOption { get; set; }
 
+    public IKineticsCellularRepository KineticsCellularRepository { get; set; }
+
     private bool _disposed = false;
 
     public UnitOfWork(PricingDbContext pricingDbContext, IWorksheetRepository worksheetRepository, ICustomerRepository customerRepository, IProductRepository productRepository, IProductOptionRepository productOptionRepository)

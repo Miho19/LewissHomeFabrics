@@ -9,6 +9,10 @@ public interface IUnitOfWork : IDisposable
     ICustomerRepository Customer { get; }
     IProductRepository Product { get; }
 
+    IKineticsCellularRepository KineticsCellularFabric { get; }
+
+    IKineticsRollerRepository KineticsRollerFabric { get; }
+
     IProductOptionRepository ProductOption { get; set; }
 
     Task<int> CommitAsync();
