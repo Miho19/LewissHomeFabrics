@@ -21,7 +21,7 @@ Used to retrieve an `Customer`
 
 ```bash
     curl -s -H 'Accept: application/json' \
-    http://localhost:5085/api/v1/pricing/customer/019bff20-6de5-732c-a872-751a20bf9a4b
+    http://localhost:5085/api/v1/customer/019bff20-6de5-732c-a872-751a20bf9a4b
 ```
 
 #### JSON Response Body
@@ -67,7 +67,7 @@ Creates a new `Customer` in the system.
     curl -s -X POST \
     -H "Content-Type: application/json" \
     -d @Customer.json \
-    http://localhost:5085/api/v1/pricing/customer
+    http://localhost:5085/api/v1/customer
 ```
 
 #### JSON Response Body
@@ -98,7 +98,7 @@ Creates a new `Customer` in the system.
 
 ```bash
     curl -s -H 'Accept: application/json' \
-    http://localhost:5085/api/v1/pricing/customer?familyname=April
+    http://localhost:5085/api/v1/customer?familyname=April
 ```
 
 #### JSON Response Body
