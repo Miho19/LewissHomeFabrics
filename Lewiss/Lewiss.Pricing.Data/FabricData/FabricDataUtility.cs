@@ -6,7 +6,7 @@ public static class FabricDataUtility
 {
     // public static string FabricDataBaseAddress { get; } = "./FabricData/JSONData";
 
-    public static List<T> GetJSONFileListData<T>(string fileName) where T : struct
+    public static T GetJSONFileData<T>(string fileName)
     {
         try
         {
@@ -22,10 +22,10 @@ public static class FabricDataUtility
             }
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-            var jsonData = JsonSerializer.Deserialize<List<T>>(jsonString, options);
+            var jsonData = JsonSerializer.Deserialize<T>(jsonString, options);
             if (jsonData is null)
             {
-                throw new Exception("Failed to deserialise fabric data");
+                throw new Exception("Failed to deserialise JSON data");
             }
 
             return jsonData;

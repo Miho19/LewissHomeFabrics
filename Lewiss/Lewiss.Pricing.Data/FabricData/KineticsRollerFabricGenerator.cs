@@ -34,7 +34,7 @@ public static class KineticsRollerFabricGenerator
     public static List<KineticsRollerFabric> FabricList()
     {
 
-        var jsonData = FabricDataUtility.GetJSONFileListData<KineticsRollerFabricDataJSONStructure>(JSONFabricFilePath);
+        var jsonData = FabricDataUtility.GetJSONFileData<List<KineticsRollerFabricDataJSONStructure>>(JSONFabricFilePath);
 
         List<KineticsRollerFabric> fabricList = [];
 

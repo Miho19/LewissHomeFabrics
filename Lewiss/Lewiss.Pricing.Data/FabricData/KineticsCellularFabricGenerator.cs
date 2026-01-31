@@ -27,7 +27,7 @@ public static class KineticsCellularFabricGenerator
     public static List<KineticsCellularFabric> FabricList()
     {
 
-        var jsonData = FabricDataUtility.GetJSONFileListData<KineticsCellularFabricDataJSONStructure>(JSONFilePath);
+        var jsonData = FabricDataUtility.GetJSONFileData<List<KineticsCellularFabricDataJSONStructure>>(JSONFilePath);
 
         List<KineticsCellularFabric> fabricList = [];
 
