@@ -68,4 +68,22 @@ public class FabricControllerTests
             Assert.NotNull(f.Fabric);
         }
     }
+
+    [Fact]
+    public async Task GetFabricList_KineticsRollerQuery_ShouldReturn404Ntound_OnFailure()
+    {
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object);
+        var fabricController = new FabricController(fabricServiceMock.Object);
+        var fabricType = "Kinetics Roller";
+
+        fabricServiceMock.Setup(f => f.GetFabricsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync([]);
+
+        var result = await fabricController.GetFabrics(fabricType);
+
+        Assert.NotNull(result);
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        var problemDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
+        Assert.Equal(StatusCodes.Status404NotFound, problemDetails.Status);
+    }
 }
