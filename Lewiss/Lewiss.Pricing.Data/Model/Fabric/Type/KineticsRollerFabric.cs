@@ -1,4 +1,4 @@
-namespace Lewiss.Pricing.Data.Model.Fabric;
+namespace Lewiss.Pricing.Data.Model.Fabric.Type;
 
 public class KineticsRollerFabric
 {

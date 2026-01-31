@@ -1,4 +1,4 @@
-using Lewiss.Pricing.Data.Model.Fabric;
+using Lewiss.Pricing.Data.Model.Fabric.Type;
 using Lewiss.Pricing.Shared.Fabric;
 
 public static class FabricExtensions

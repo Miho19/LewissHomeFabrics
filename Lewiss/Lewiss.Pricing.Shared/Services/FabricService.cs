@@ -55,4 +55,9 @@ public class FabricService
         return listToReturn;
     }
 
+    public async Task<decimal> GetFabricPriceAsync(string fabricName, int width, int height, CancellationToken cancellationToken = default)
+    {
+        return default;
+    }
+
 }

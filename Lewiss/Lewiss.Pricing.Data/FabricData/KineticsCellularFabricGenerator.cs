@@ -1,5 +1,5 @@
 using Lewiss.Pricing.Data.Model;
-using Lewiss.Pricing.Data.Model.Fabric;
+using Lewiss.Pricing.Data.Model.Fabric.Type;
 using Lewiss.Pricing.Data.OptionData;
 
 namespace Lewiss.Pricing.Data.FabricData;

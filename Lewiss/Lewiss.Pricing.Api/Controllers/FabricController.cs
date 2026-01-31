@@ -30,10 +30,10 @@ public class FabricController : ControllerBase
         return new OkObjectResult(fabricList);
     }
 
-    [HttpGet("{fabricName}", Name = "GetFabrics")]
+    [HttpGet("{fabricName}", Name = "GetFabricPrice")]
     public async Task<IActionResult> GetFabricPrice(string fabricName, [FromQuery] int width, [FromQuery] int height, CancellationToken cancellationToken = default)
     {
-        var fabricPrice = await _fabricService.GetFabricsAsync(fabricType, cancellationToken);
+        var fabricPrice = await _fabricService.GetFabricPriceAsync(fabricName, width, height, cancellationToken);
 
         if (fabricPrice == default)
         {
