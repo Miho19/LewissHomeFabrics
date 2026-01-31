@@ -105,6 +105,12 @@ public class PricingDbContext : DbContext
         .HasForeignKey<KineticsRollerFabric>(kr => kr.ProductOptionVariationId)
         .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<KineticsRollerFabric>()
+        .HasAlternateKey(f => new { f.Colour, f.Fabric, f.Opacity });
+
+        modelBuilder.Entity<KineticsCellularFabric>()
+        .HasAlternateKey(f => new { f.Code, f.Colour, f.Opacity });
+
         modelBuilder.Entity<KineticsCellularFabric>()
         .HasOne(kr => kr.ProductOptionVariation)
         .WithOne()
