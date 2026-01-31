@@ -45,6 +45,7 @@ public class ProductService
         return (customer, worksheet);
     }
 
+    // Need to adjust this to follow a more functional programming approach
     public virtual async Task<ProductEntryDTO?> CreateProductAsync(Guid externalCustomerId, Guid externalWorksheetId, ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
         var (customer, worksheet) = await GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId, cancellationToken);
