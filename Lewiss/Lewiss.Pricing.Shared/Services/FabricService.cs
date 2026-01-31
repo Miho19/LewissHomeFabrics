@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Lewiss.Pricing.Shared.Product;
 
 public class FabricService
@@ -11,10 +12,13 @@ public class FabricService
 
     public virtual async Task<List<IFabricDTO>> GetFabricsAsync(string fabricType, CancellationToken cancellationToken = default)
     {
-        var fabricList = fabricType switch
+        var query = Regex.Replace(fabricType, @"\s+", String.Empty).ToLower();
+
+
+        var fabricList = query switch
         {
-            "Kinetics Cellular" => await GetKineticsCellularFabricListAsync(cancellationToken),
-            "Kinetics Roller" => await GetKineticsRollerFabricListAsync(cancellationToken),
+            "kineticscellular" => await GetKineticsCellularFabricListAsync(cancellationToken),
+            "kineticsroller" => await GetKineticsRollerFabricListAsync(cancellationToken),
             _ => [],
         };
 
@@ -30,7 +34,9 @@ public class FabricService
             return [];
         }
 
-        return (List<IFabricDTO>)fabricList.Select(f => f.ToKineticsCellularFabricDTO());
+        List<IFabricDTO> listToReturn = fabricList.Select(f => f.ToKineticsCellularFabricDTO()).ToList<IFabricDTO>();
+
+        return listToReturn;
 
     }
 
@@ -39,13 +45,14 @@ public class FabricService
     {
 
         var fabricList = await _unitOfWork.KineticsRollerFabric.GetAllAsync();
-
         if (fabricList is null || fabricList.Count == 0)
         {
             return [];
         }
 
-        return (List<IFabricDTO>)fabricList.Select(f => f.ToKineticsRollerFabricDTO());
+        List<IFabricDTO> listToReturn = fabricList.Select(f => f.ToKineticsRollerFabricDTO()).ToList<IFabricDTO>();
+
+        return listToReturn;
     }
 
 }
