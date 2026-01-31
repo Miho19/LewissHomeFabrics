@@ -90,8 +90,6 @@ public class PricingDbContext : DbContext
         .HasForeignKey(ov => ov.ProductOptionId)
         .OnDelete(DeleteBehavior.Cascade);
 
-
-
         modelBuilder.Entity<KineticsRollerFabric>()
         .HasKey(kr => kr.KineticsRollerFabricId);
 
