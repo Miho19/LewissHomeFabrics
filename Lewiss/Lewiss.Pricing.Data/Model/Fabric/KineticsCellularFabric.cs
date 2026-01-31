@@ -9,4 +9,6 @@ public class KineticsCellularFabric
     public required decimal Multiplier { get; set; }
     public required int ProductOptionVariationId { get; set; }
     public ProductOptionVariation? ProductOptionVariation { get; set; }
+
+    public string GetFabricName => $"{Code} {Opacity} {Colour}";
 }

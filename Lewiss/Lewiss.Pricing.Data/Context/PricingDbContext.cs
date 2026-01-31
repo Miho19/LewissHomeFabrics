@@ -119,7 +119,7 @@ public class PricingDbContext : DbContext
         // Seed data here 
 
         SeedKineticsRollerFabricData(modelBuilder);
-
+        SeedKineticsCellularFabricData(modelBuilder);
 
 
         // Called after you have added product option variations with their ids to the OptionVariationList
@@ -138,6 +138,19 @@ public class PricingDbContext : DbContext
 
         modelBuilder.Entity<KineticsRollerFabric>()
         .HasData(linkedKineticsRollerFabricList);
+
+        OptionDataUtility.OptionVariationList.AddRange(linkedProductOptionVariationList);
+
+    }
+
+    private void SeedKineticsCellularFabricData(ModelBuilder modelBuilder)
+    {
+        var unLinkedKineticsCellularFabricList = KineticsCellularFabricGenerator.FabricList();
+        var unLinkedProductOptionVariationList = KineticsCellularFabricGenerator.GenerateProductOptionVariationList(unLinkedKineticsCellularFabricList);
+        var (linkedKineticsCellularFabricList, linkedProductOptionVariationList) = KineticsCellularFabricGenerator.LinkFabricListToProductOptionVariationList(unLinkedKineticsCellularFabricList, unLinkedProductOptionVariationList);
+
+        modelBuilder.Entity<KineticsCellularFabric>()
+        .HasData(linkedKineticsCellularFabricList);
 
         OptionDataUtility.OptionVariationList.AddRange(linkedProductOptionVariationList);
 
