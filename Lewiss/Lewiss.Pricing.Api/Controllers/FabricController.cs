@@ -30,5 +30,24 @@ public class FabricController : ControllerBase
         return new OkObjectResult(fabricList);
     }
 
+    [HttpGet("{fabricName}", Name = "GetFabrics")]
+    public async Task<IActionResult> GetFabricPrice(string fabricName, [FromQuery] int width, [FromQuery] int height, CancellationToken cancellationToken = default)
+    {
+        var fabricPrice = await _fabricService.GetFabricsAsync(fabricType, cancellationToken);
+
+        if (fabricPrice == default)
+        {
+            return StatusCode(404, new ProblemDetails
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "Not Found",
+                Detail = "Fabric price not found.",
+            });
+        }
+
+
+        return new OkObjectResult(fabricPrice);
+    }
+
 
 }
