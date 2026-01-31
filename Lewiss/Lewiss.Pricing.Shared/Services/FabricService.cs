@@ -9,7 +9,7 @@ public class FabricService
     }
 
 
-    public async Task<List<IFabricDTO>> GetFabricsAsync(string fabricType, CancellationToken cancellationToken = default)
+    public virtual async Task<List<IFabricDTO>> GetFabricsAsync(string fabricType, CancellationToken cancellationToken = default)
     {
         var fabricList = fabricType switch
         {

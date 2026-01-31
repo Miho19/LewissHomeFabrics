@@ -1,27 +1,45 @@
 using Lewiss.Pricing.Api.Controllers;
+using Lewiss.Pricing.Api.Tests.Fixtures;
 using Lewiss.Pricing.Data.Model.Fabric;
 using Lewiss.Pricing.Shared.Fabric;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Xunit.Abstractions;
 
 namespace Lewiss.Pricing.Api.Tests.Systems.Controllers;
 
 public class FabricControllerTests
 {
-    public FabricControllerTests()
+    private readonly ITestOutputHelper _logger;
+    public FabricControllerTests(ITestOutputHelper logger)
     {
-
+        _logger = logger;
     }
 
+    [Fact]
     public async Task GetFabricList_ShouldReturn200Ok_OnSuccess()
     {
-        var fabricServiceMock = new Mock<FabricService>();
+        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object);
         var fabricController = new FabricController(fabricServiceMock.Object);
-
         var fabricType = "Kinetics Cellular";
+
+        fabricServiceMock.Setup(f => f.GetFabricsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(FabricFixture.GetFabricListKineticsCellular);
+
         var result = await fabricController.GetFabrics(fabricType);
 
         Assert.NotNull(result);
-        var fabricList = Assert.IsType<List<KineticsCellularFabricDTO>>(result);
+        var okObjectResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(StatusCodes.Status200OK, okObjectResult.StatusCode);
+        var fabricList = Assert.IsAssignableFrom<List<IFabricDTO>>(okObjectResult.Value);
         Assert.NotEmpty(fabricList);
+
+        var kineticsCellularFabricDTOList = fabricList.Cast<KineticsCellularFabricDTO>().ToList();
+
+        foreach (var f in kineticsCellularFabricDTOList)
+        {
+            Assert.NotNull(f.Code);
+        }
     }
 }
