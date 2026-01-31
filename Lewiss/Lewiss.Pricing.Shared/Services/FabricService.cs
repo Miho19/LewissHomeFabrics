@@ -30,6 +30,7 @@ public class FabricService
             return [];
         }
 
+        return (List<IFabricDTO>)fabricList.Select(f => f.ToKineticsCellularFabricDTO());
 
     }
 
@@ -44,6 +45,7 @@ public class FabricService
             return [];
         }
 
+        return (List<IFabricDTO>)fabricList.Select(f => f.ToKineticsRollerFabricDTO());
     }
 
 }
