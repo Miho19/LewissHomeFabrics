@@ -136,7 +136,7 @@ public class PricingDbContext : DbContext
 
         SeedKineticsRollerFabricData(modelBuilder);
         SeedKineticsCellularFabricData(modelBuilder);
-
+        SeedKineticsPricingData(modelBuilder);
 
         // Called after you have added product option variations with their ids to the OptionVariationList
         modelBuilder.Entity<ProductOptionVariation>().HasData(
@@ -171,14 +171,28 @@ public class PricingDbContext : DbContext
 
     private void SeedKineticsCellularFabricData(ModelBuilder modelBuilder)
     {
-        var unLinkedKineticsCellularFabricList = KineticsCellularFabricGenerator.FabricList();
-        var unLinkedProductOptionVariationList = KineticsCellularFabricGenerator.GenerateProductOptionVariationList(unLinkedKineticsCellularFabricList);
-        var (linkedKineticsCellularFabricList, linkedProductOptionVariationList) = KineticsCellularFabricGenerator.LinkFabricListToProductOptionVariationList(unLinkedKineticsCellularFabricList, unLinkedProductOptionVariationList);
+        try
+        {
+            var unLinkedKineticsCellularFabricList = KineticsCellularFabricGenerator.FabricList();
+            var unLinkedProductOptionVariationList = KineticsCellularFabricGenerator.GenerateProductOptionVariationList(unLinkedKineticsCellularFabricList);
+            var (linkedKineticsCellularFabricList, linkedProductOptionVariationList) = KineticsCellularFabricGenerator.LinkFabricListToProductOptionVariationList(unLinkedKineticsCellularFabricList, unLinkedProductOptionVariationList);
 
-        modelBuilder.Entity<KineticsCellularFabric>()
-        .HasData(linkedKineticsCellularFabricList);
 
-        OptionDataUtility.OptionVariationList.AddRange(linkedProductOptionVariationList);
+            modelBuilder.Entity<KineticsCellularFabric>()
+            .HasData(linkedKineticsCellularFabricList);
+
+            OptionDataUtility.OptionVariationList.AddRange(linkedProductOptionVariationList);
+
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"{ex.Message}");
+        }
+
+    }
+
+    private void SeedKineticsPricingData(ModelBuilder modelBuilder)
+    {
 
     }
 
