@@ -7,10 +7,10 @@ namespace Lewiss.Pricing.Data.FabricData;
 // We can change this into generic generator and use a func delegate to populate the T 
 public record struct KineticsCellularFabricDataJSONStructure()
 {
-    public required string Code;
-    public required string Colour;
-    public required string Opacity;
-    public required int Multiplier;
+    public required string Code { get; init; }
+    public required string Colour { get; init; }
+    public required string Opacity { get; init; }
+    public required decimal Multiplier { get; init; }
 
 }
 public static class KineticsCellularFabricGenerator

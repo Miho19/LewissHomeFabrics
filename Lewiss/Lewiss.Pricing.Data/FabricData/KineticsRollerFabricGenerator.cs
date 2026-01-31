@@ -6,12 +6,12 @@ namespace Lewiss.Pricing.Data.FabricData;
 
 public record struct KineticsRollerFabricDataJSONStructure()
 {
-    public required string Fabric;
-    public required string Colour;
-    public required string Opacity;
-    public required int Multiplier;
-    public required int MaxWidth;
-    public required int MaxHeight;
+    public required string Fabric { get; init; }
+    public required string Colour { get; init; }
+    public required string Opacity { get; init; }
+    public required decimal Multiplier { get; init; }
+    public required int MaxWidth { get; init; }
+    public required int MaxHeight { get; init; }
 }
 public static class KineticsRollerFabricGenerator
 {

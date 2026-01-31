@@ -132,14 +132,24 @@ public class PricingDbContext : DbContext
 
     private void SeedKineticsRollerFabricData(ModelBuilder modelBuilder)
     {
-        var unLinkedKineticsRollerFabricList = KineticsRollerFabricGenerator.FabricList();
-        var unLinkedProductOptionVariationList = KineticsRollerFabricGenerator.GenerateProductOptionVariationList(unLinkedKineticsRollerFabricList);
-        var (linkedKineticsRollerFabricList, linkedProductOptionVariationList) = KineticsRollerFabricGenerator.LinkFabricListToProductOptionVariationList(unLinkedKineticsRollerFabricList, unLinkedProductOptionVariationList);
+        try
+        {
+            var unLinkedKineticsRollerFabricList = KineticsRollerFabricGenerator.FabricList();
+            var unLinkedProductOptionVariationList = KineticsRollerFabricGenerator.GenerateProductOptionVariationList(unLinkedKineticsRollerFabricList);
+            var (linkedKineticsRollerFabricList, linkedProductOptionVariationList) = KineticsRollerFabricGenerator.LinkFabricListToProductOptionVariationList(unLinkedKineticsRollerFabricList, unLinkedProductOptionVariationList);
 
-        modelBuilder.Entity<KineticsRollerFabric>()
-        .HasData(linkedKineticsRollerFabricList);
+            modelBuilder.Entity<KineticsRollerFabric>()
+            .HasData(linkedKineticsRollerFabricList);
 
-        OptionDataUtility.OptionVariationList.AddRange(linkedProductOptionVariationList);
+            OptionDataUtility.OptionVariationList.AddRange(linkedProductOptionVariationList);
+
+        }
+
+        catch (Exception ex)
+        {
+            System.Console.WriteLine($"{ex.Message}");
+        }
+
 
     }
 

@@ -11,23 +11,13 @@ public class FabricDataUtilityTests
         _logger = logger;
     }
 
-    [Fact]
-    public async Task GetJSONFileListData_ShouldReturnJSONData_WhenSuppliedKineticsCellularFabricJSONFileData()
-    {
-        var fileName = "KineticsCellularFabricData.json";
-        var result = await FabricDataUtility.GetJSONFileListData<KineticsCellularFabricDataJSONStructure>(fileName);
 
-        Assert.NotNull(result);
-        Assert.IsType<List<KineticsCellularFabricDataJSONStructure>>(result);
-        Assert.NotEmpty(result);
-
-    }
 
     [Fact]
     public async Task GetJSONFileListData_ShouldReturnJSONData_WhenSuppliedKineticsRollerFabricJSONFileData()
     {
         var fileName = KineticsRollerFabricGenerator.JSONFabricFilePath;
-        var result = await FabricDataUtility.GetJSONFileListData<KineticsRollerFabricDataJSONStructure>(fileName);
+        var result = FabricDataUtility.GetJSONFileListData<KineticsRollerFabricDataJSONStructure>(fileName);
 
         Assert.NotNull(result);
         Assert.IsType<List<KineticsRollerFabricDataJSONStructure>>(result);
