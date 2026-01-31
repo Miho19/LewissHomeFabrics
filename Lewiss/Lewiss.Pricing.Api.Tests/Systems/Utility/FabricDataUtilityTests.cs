@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using Lewiss.Pricing.Data.FabricData;
+using Lewiss.Pricing.Data.Model.Fabric.Price;
 using Xunit.Abstractions;
 
 namespace Lewiss.Pricing.Api.Tests.Systems.Utility;
@@ -25,18 +26,38 @@ public class FabricDataUtilityTests
     }
 
     [Fact]
-    public async Task KineticsRollerFabricPriceDataGenerator_GetPriceModelList_ShouldThrow_WhenSuppliedIncorrectPath()
+    public async Task FabricPriceDataGenerator_GetPriceModelList_ShouldThrow_WhenSuppliedIncorrectPath()
     {
-        var fileName = "random-file.json";
-        Assert.Throws<Exception>(() => KineticsRollerFabricPriceDataGenerator.GetPriceModelList(fileName));
+
+        Assert.Throws<Exception>(() => FabricPriceDataGenerator.GetPriceModelList(new JSONPricingDataFileMeta
+        {
+            FileName = "Random Name.txt",
+            Opacity = "Fake",
+            ProductType = "fake",
+        }));
     }
 
-    [Fact]
-    public async Task KineticsRollerFabricPriceDataGenerator_GetPriceModelList_ShouldReturnAList_WhenSuppliedCorrectPath()
+    [Theory]
+    [InlineData(1200, 900)]
+    [InlineData(3100, 3000)]
+    [InlineData(240, 240)]
+    [InlineData(240, 900)]
+    [InlineData(2400, 900)]
+    [InlineData(2400, 1200)]
+    public async Task FabricPriceDataGenerator_GetPriceModelList_ShouldReturnAList_WhenSuppliedCorrectPath(int width, int height)
     {
-        var fileName = KineticsRollerFabricPriceDataGenerator.LFJSONPriceDataFileName;
+        var file = FabricPriceDataGenerator.LFJSONFile;
 
-        Assert.Throws<Exception>(() => KineticsRollerFabricPriceDataGenerator.GetPriceModelList(fileName));
+        var result = FabricPriceDataGenerator.GetPriceModelList(file);
+
+        Assert.NotNull(result);
+        Assert.NotEmpty(result);
+
+        var pricing = Assert.IsType<List<FabricPrice>>(result);
+
+        var price = pricing.FirstOrDefault(p => p.Height == height && p.Width == width);
+
+        Assert.NotNull(price);
     }
 
 

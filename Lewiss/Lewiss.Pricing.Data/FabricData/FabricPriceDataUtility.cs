@@ -11,6 +11,15 @@ public record struct JSONPricingDataStructure()
     public required string Opacity { get; init; }
 
 }
+
+public record struct JSONPricingDataFileMeta
+{
+    public string FileName { get; init; }
+    public string ProductType { get; init; }
+    public string Opacity { get; init; }
+
+};
+
 public static class FabricPriceDataUtility
 {
 
@@ -34,15 +43,34 @@ public static class FabricPriceDataUtility
         return true;
     }
 
-    public static List<FabricPrice> PricingDataStructureToFabricPrice(JSONPricingDataStructure pricingData)
+    public static List<FabricPrice> PricingDataStructureToFabricPrice(JSONPricingDataStructure pricingData, string productType, string opacity)
     {
         if (!IsPricingDataValid(pricingData)) return [];
 
-        foreach (var height in pricingData.Height)
+
+        List<FabricPrice> fabricPrices = [];
+
+        for (int row = 0; row < pricingData.Height.Count; row++)
         {
+            var height = pricingData.Height[row];
+            var dataRow = pricingData.Data[row];
+
+            for (int col = 0; col < dataRow.Count && col < pricingData.Width.Count; col++)
+            {
+                var fabricPrice = new FabricPrice
+                {
+                    Width = pricingData.Width[col],
+                    Height = height,
+                    Price = dataRow[col],
+                    ProductType = productType,
+                    Opacity = opacity
+                };
+
+                fabricPrices.Add(fabricPrice);
+            }
 
         }
-        return [];
+        return fabricPrices;
     }
 
 }

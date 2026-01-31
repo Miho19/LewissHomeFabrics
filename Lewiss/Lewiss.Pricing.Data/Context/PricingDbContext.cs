@@ -1,5 +1,6 @@
 using Lewiss.Pricing.Data.FabricData;
 using Lewiss.Pricing.Data.Model;
+using Lewiss.Pricing.Data.Model.Fabric.Price;
 using Lewiss.Pricing.Data.Model.Fabric.Type;
 using Lewiss.Pricing.Data.OptionData;
 using Microsoft.EntityFrameworkCore;
@@ -114,6 +115,17 @@ public class PricingDbContext : DbContext
         .WithOne()
         .HasForeignKey<KineticsCellularFabric>(kr => kr.ProductOptionVariationId)
         .OnDelete(DeleteBehavior.Cascade);
+
+        // Fabric Price Data 
+        modelBuilder.Entity<FabricPrice>()
+        .HasKey(fp => fp.FabricPriceId);
+
+        modelBuilder.Entity<FabricPrice>()
+        .Property(fp => fp.FabricPriceId)
+        .ValueGeneratedOnAdd();
+
+        modelBuilder.Entity<FabricPrice>()
+        .HasAlternateKey(fp => new { fp.Width, fp.Height, fp.Opacity, fp.ProductType });
 
         // Must come before you add any product option variations to db
         modelBuilder.Entity<ProductOption>().HasData(
