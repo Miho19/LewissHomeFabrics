@@ -1,4 +1,6 @@
+using Lewiss.Pricing.Data.FabricData;
 using Lewiss.Pricing.Data.Model;
+using Lewiss.Pricing.Data.Model.Fabric;
 using Lewiss.Pricing.Data.OptionData;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +14,9 @@ public class PricingDbContext : DbContext
     public DbSet<Product> Product { get; set; }
     public DbSet<ProductOption> ProductOption { get; set; }
     public DbSet<ProductOptionVariation> ProductOptionVariation { get; set; }
+
+    public DbSet<KineticsCellularFabric> KineticsCellularFabric { get; set; }
+    public DbSet<KineticsRollerFabric> KineticsRollerFabric { get; set; }
 
     public PricingDbContext(DbContextOptions<PricingDbContext> options) : base(options) { }
 
@@ -85,15 +90,56 @@ public class PricingDbContext : DbContext
         .HasForeignKey(ov => ov.ProductOptionId)
         .OnDelete(DeleteBehavior.Cascade);
 
+
+
+        modelBuilder.Entity<KineticsRollerFabric>()
+        .HasKey(kr => kr.KineticsRollerFabricId);
+
+        modelBuilder.Entity<KineticsRollerFabric>()
+        .Property(kr => kr.KineticsRollerFabricId)
+        .ValueGeneratedOnAdd();
+
+        modelBuilder.Entity<KineticsRollerFabric>()
+        .HasOne(kr => kr.ProductOptionVariation)
+        .WithOne()
+        .HasForeignKey<KineticsRollerFabric>(kr => kr.ProductOptionVariationId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<KineticsCellularFabric>()
+        .HasOne(kr => kr.ProductOptionVariation)
+        .WithOne()
+        .HasForeignKey<KineticsCellularFabric>(kr => kr.ProductOptionVariationId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+        // Must come before you add any product option variations to db
         modelBuilder.Entity<ProductOption>().HasData(
             OptionDataUtility.OptionList
         );
 
+        // Seed data here 
+
+        SeedKineticsRollerFabricData(modelBuilder);
 
 
+
+        // Called after you have added product option variations with their ids to the OptionVariationList
         modelBuilder.Entity<ProductOptionVariation>().HasData(
             OptionDataUtility.OptionVariationList
         );
+
+    }
+
+
+    private void SeedKineticsRollerFabricData(ModelBuilder modelBuilder)
+    {
+        var unLinkedKineticsRollerFabricList = KineticsRollerFabricGenerator.FabricList();
+        var unLinkedProductOptionVariationList = KineticsRollerFabricGenerator.GenerateProductOptionVariationList(unLinkedKineticsRollerFabricList);
+        var (linkedKineticsRollerFabricList, linkedProductOptionVariationList) = KineticsRollerFabricGenerator.LinkFabricListToProductOptionVariationList(unLinkedKineticsRollerFabricList, unLinkedProductOptionVariationList);
+
+        modelBuilder.Entity<KineticsRollerFabric>()
+        .HasData(linkedKineticsRollerFabricList);
+
+        OptionDataUtility.OptionVariationList.AddRange(linkedProductOptionVariationList);
 
     }
 

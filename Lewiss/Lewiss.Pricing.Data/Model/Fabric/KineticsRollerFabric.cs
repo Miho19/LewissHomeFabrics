@@ -12,4 +12,6 @@ public class KineticsRollerFabric
 
     public required int ProductOptionVariationId { get; set; }
     public ProductOptionVariation? ProductOptionVariation { get; set; }
+
+    public string GetFabricName => $"{Fabric} {Colour} {Opacity}";
 }

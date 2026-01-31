@@ -5,12 +5,12 @@ namespace Lewiss.Pricing.Data.FabricData;
 public static class FabricDataUtility
 {
     public static string FabricDataBaseAddress { get; } = "./FabricData/JSONData";
-    public static async Task<List<T>> GetJSONFileListData<T>(string fileName, CancellationToken cancellationToken = default) where T : struct
+    public static List<T> GetJSONFileListData<T>(string fileName) where T : struct
     {
         try
         {
             var filePath = Path.Combine(FabricDataBaseAddress, fileName);
-            var jsonString = await File.ReadAllTextAsync(filePath, cancellationToken);
+            var jsonString = File.ReadAllText(filePath);
 
             if (jsonString is null)
             {
