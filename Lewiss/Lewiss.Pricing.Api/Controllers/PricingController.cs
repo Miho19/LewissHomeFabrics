@@ -15,14 +15,19 @@ public class PricingController : ControllerBase
     private readonly CustomerService _customerService;
     private readonly ProductService _productService;
     private readonly WorksheetService _worksheetService;
+
+    private readonly FabricService _fabricService;
     private readonly ILogger<PricingController> _logger;
 
-    public PricingController(PricingService pricingService, CustomerService customerService, ProductService productService, WorksheetService worksheetService, ILogger<PricingController> logger)
+    public PricingController(PricingService pricingService, CustomerService customerService, ProductService productService, WorksheetService worksheetService, FabricService fabricService, ILogger<PricingController> logger)
     {
         _pricingService = pricingService;
         _customerService = customerService;
         _productService = productService;
         _worksheetService = worksheetService;
+        _fabricService = fabricService;
+
+
         _logger = logger;
 
     }
