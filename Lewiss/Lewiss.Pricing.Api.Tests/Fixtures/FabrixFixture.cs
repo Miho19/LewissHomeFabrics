@@ -27,4 +27,31 @@ public static class FabricFixture
         return [Cotton001Translucent.ToKineticsCellularFabricDTO(), Cream005Translucent.ToKineticsCellularFabricDTO()];
     }
 
+    public static KineticsRollerFabric AdagioBlack = new KineticsRollerFabric
+    {
+        Fabric = "Adagio",
+        Colour = "Black",
+        Opacity = "LF",
+        Multiplier = 1.25m,
+        MaxWidth = 3100,
+        MaxHeight = 2010,
+        ProductOptionVariationId = 3,
+    };
+
+    public static KineticsRollerFabric Fenescreen10Charcoal = new KineticsRollerFabric
+    {
+        Fabric = "Fenescreen 10%",
+        Colour = "Charcoal",
+        Opacity = "SS",
+        Multiplier = 0.9m,
+        MaxWidth = 3000,
+        MaxHeight = 2200,
+        ProductOptionVariationId = 4,
+    };
+
+    public static List<IFabricDTO> GetFabricListKineticsRoller()
+    {
+        return [AdagioBlack.ToKineticsRollerFabricDTO(), Fenescreen10Charcoal.ToKineticsRollerFabricDTO()];
+    }
+
 }
