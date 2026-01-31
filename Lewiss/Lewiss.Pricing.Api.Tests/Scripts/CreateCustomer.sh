@@ -8,11 +8,13 @@ if ! command -v jq &> /dev/null; then
 fi
 
 SCRIPT_DIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
-JSON_FILE_PATH="${SCRIPT_DIR}/Customer.json"
+JSON_FILE_PATH="${SCRIPT_DIR}/json/Customer.json"
+output_file_path="${SCRIPT_DIR}/json/CustomerEntryDTO.json"
+
 
 baseaddress="http://localhost:5085/api/v1"
 
-currentaddress="${baseaddress}/pricing/customer"
+currentaddress="${baseaddress}/customer"
 
 response=$(curl -s -X POST \
     -H "Content-Type: application/json" \
@@ -20,4 +22,7 @@ response=$(curl -s -X POST \
     $currentaddress
 )
 
-echo "$response" | jq .
+json=$(echo "$response" | jq .)
+
+
+echo "$json" > "$output_file_path"

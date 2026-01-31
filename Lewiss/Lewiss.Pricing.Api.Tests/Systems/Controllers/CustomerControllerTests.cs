@@ -1,8 +1,11 @@
+using Castle.Core.Logging;
 using Lewiss.Pricing.Api.Tests.Fixtures;
+using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Shared.CustomerDTO;
 using Lewiss.Pricing.Shared.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit.Abstractions;
 
@@ -21,8 +24,10 @@ public class CustomerControllerTests
     public async Task GetCustomer_ShouldReturnOkWithCustomerEntryDTO_OnSuccess()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var logger = new Mock<ILogger<CustomerController>>();
+
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
-        var customerController = new CustomerController(customerServiceMock.Object);
+        var customerController = new CustomerController(customerServiceMock.Object, logger.Object);
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
         customerServiceMock.Setup(p => p.GetCustomerByExternalIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
@@ -45,7 +50,8 @@ public class CustomerControllerTests
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
-        var customerController = new CustomerController(customerServiceMock.Object);
+        var logger = new Mock<ILogger<CustomerController>>();
+        var customerController = new CustomerController(customerServiceMock.Object, logger.Object);
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
         customerServiceMock.Setup(p => p.GetCustomerByExternalIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync((CustomerEntryDTO)null!);
@@ -63,7 +69,8 @@ public class CustomerControllerTests
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
-        var customerController = new CustomerController(customerServiceMock.Object);
+        var logger = new Mock<ILogger<CustomerController>>();
+        var customerController = new CustomerController(customerServiceMock.Object, logger.Object);
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
         customerServiceMock.Setup(p => p.CreateCustomerAsync(It.IsAny<CustomerCreateDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(testCustomerEntryDTO);
@@ -81,7 +88,8 @@ public class CustomerControllerTests
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
-        var customerController = new CustomerController(customerServiceMock.Object);
+        var logger = new Mock<ILogger<CustomerController>>();
+        var customerController = new CustomerController(customerServiceMock.Object, logger.Object);
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
 

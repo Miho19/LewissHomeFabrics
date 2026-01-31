@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 public class CustomerController : ControllerBase
 {
     private readonly CustomerService _customerService;
-    public CustomerController(CustomerService customerService)
+    private readonly ILogger<CustomerController> _logger;
+    public CustomerController(CustomerService customerService, ILogger<CustomerController> logger)
     {
         _customerService = customerService;
+        _logger = logger;
     }
 
     [HttpGet("{customerId}", Name = "GetCustomer")]
