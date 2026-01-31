@@ -6,23 +6,31 @@ namespace Lewiss.Pricing.Data.FabricData;
 public static class FabricPriceDataGenerator
 {
 
-    public static JSONPricingDataFileMeta LFJSONFile { get; } = new JSONPricingDataFileMeta()
+    public static JSONPricingDataFileMeta KineticsRollerLFJSONFile { get; } = new JSONPricingDataFileMeta()
     {
         FileName = "KineticsRollerLFPriceData.json",
         ProductType = "Kinetics Roller",
         Opacity = "LF"
     };
 
-    public static JSONPricingDataFileMeta SSJSONFile { get; } = new JSONPricingDataFileMeta()
+    public static JSONPricingDataFileMeta KineticsRollerSSJSONFile { get; } = new JSONPricingDataFileMeta()
     {
         FileName = "KineticsRollerSSPriceData.json",
         ProductType = "Kinetics Roller",
         Opacity = "SS"
     };
 
+    public static JSONPricingDataFileMeta KineticsCellularTranslucentJSONFile { get; } = new JSONPricingDataFileMeta()
+    {
+        FileName = "KineticsCellularTranslucentPriceData.json",
+        ProductType = "Kinetics Cellular",
+        Opacity = "Translucent"
+    };
+
     private static string[] FileList { get; } = [
-        LFJSONFile.FileName,
-        SSJSONFile.FileName
+        KineticsRollerLFJSONFile.FileName,
+        KineticsRollerSSJSONFile.FileName,
+        KineticsCellularTranslucentJSONFile.FileName
     ];
 
     private static JSONPricingDataStructure GetJSONPriceData(JSONPricingDataFileMeta fileMetaData)

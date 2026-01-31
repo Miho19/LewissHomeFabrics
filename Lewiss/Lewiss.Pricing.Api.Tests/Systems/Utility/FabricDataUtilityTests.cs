@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Lewiss.Pricing.Data.FabricData;
 using Lewiss.Pricing.Data.Model.Fabric.Price;
 using Xunit.Abstractions;
@@ -44,9 +43,9 @@ public class FabricDataUtilityTests
     [InlineData(240, 900)]
     [InlineData(2400, 900)]
     [InlineData(2400, 1200)]
-    public async Task FabricPriceDataGenerator_GetPriceModelList_ShouldReturnAList_WhenSuppliedCorrectPath(int width, int height)
+    public async Task FabricPriceDataGenerator_GetPriceModelList_ShouldReturnAList_KineticsRollerLF(int width, int height)
     {
-        var file = FabricPriceDataGenerator.LFJSONFile;
+        var file = FabricPriceDataGenerator.KineticsRollerLFJSONFile;
 
         var result = FabricPriceDataGenerator.GetPriceModelList(file);
 
@@ -61,6 +60,50 @@ public class FabricDataUtilityTests
     }
 
 
+    [Theory]
+    [InlineData(1200, 900)]
+    [InlineData(3100, 3000)]
+    [InlineData(240, 240)]
+    [InlineData(240, 900)]
+    [InlineData(2400, 900)]
+    [InlineData(2400, 1200)]
+    public async Task FabricPriceDataGenerator_GetPriceModelList_ShouldReturnAList_KineticsRollerSS(int width, int height)
+    {
+        var file = FabricPriceDataGenerator.KineticsRollerSSJSONFile;
 
+        var result = FabricPriceDataGenerator.GetPriceModelList(file);
+
+        Assert.NotNull(result);
+        Assert.NotEmpty(result);
+
+        var pricing = Assert.IsType<List<FabricPrice>>(result);
+
+        var price = pricing.FirstOrDefault(p => p.Height == height && p.Width == width);
+
+        Assert.NotNull(price);
+    }
+
+    [Theory]
+    [InlineData(1200, 900)]
+    [InlineData(1600, 3600)]
+    [InlineData(300, 300)]
+    [InlineData(300, 3600)]
+    [InlineData(1700, 900)]
+    [InlineData(2200, 2700)]
+    public async Task FabricPriceDataGenerator_GetPriceModelList_ShouldReturnAList_KineticsCellularTranslucent(int width, int height)
+    {
+        var file = FabricPriceDataGenerator.KineticsCellularTranslucentJSONFile;
+
+        var result = FabricPriceDataGenerator.GetPriceModelList(file);
+
+        Assert.NotNull(result);
+        Assert.NotEmpty(result);
+
+        var pricing = Assert.IsType<List<FabricPrice>>(result);
+
+        var price = pricing.FirstOrDefault(p => p.Height == height && p.Width == width);
+
+        Assert.NotNull(price);
+    }
 
 }
