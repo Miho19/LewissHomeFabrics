@@ -1,3 +1,5 @@
+namespace Lewiss.Pricing.Data.Model.Fabric.Price;
+
 public class FabricPrice
 {
     public required int FabricPriceId { get; set; }

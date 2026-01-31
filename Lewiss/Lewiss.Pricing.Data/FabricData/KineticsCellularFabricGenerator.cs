@@ -4,7 +4,8 @@ using Lewiss.Pricing.Data.OptionData;
 
 namespace Lewiss.Pricing.Data.FabricData;
 
-// We can change this into generic generator and use a func delegate to populate the T 
+
+
 public record struct KineticsCellularFabricDataJSONStructure()
 {
     public required string Code { get; init; }
@@ -13,6 +14,8 @@ public record struct KineticsCellularFabricDataJSONStructure()
     public required decimal Multiplier { get; init; }
 
 }
+// We can change this into generic generator and use a func delegate to populate the T 
+
 public static class KineticsCellularFabricGenerator
 {
 

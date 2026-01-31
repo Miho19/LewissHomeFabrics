@@ -12,8 +12,6 @@ public class FabricDataUtilityTests
         _logger = logger;
     }
 
-
-
     [Fact]
     public async Task GetJSONFileListData_ShouldReturnJSONData_WhenSuppliedKineticsRollerFabricJSONFileData()
     {
@@ -25,6 +23,22 @@ public class FabricDataUtilityTests
         Assert.NotEmpty(result);
 
     }
+
+    [Fact]
+    public async Task KineticsRollerFabricPriceDataGenerator_GetPriceModelList_ShouldThrow_WhenSuppliedIncorrectPath()
+    {
+        var fileName = "random-file.json";
+        Assert.Throws<Exception>(() => KineticsRollerFabricPriceDataGenerator.GetPriceModelList(fileName));
+    }
+
+    [Fact]
+    public async Task KineticsRollerFabricPriceDataGenerator_GetPriceModelList_ShouldReturnAList_WhenSuppliedCorrectPath()
+    {
+        var fileName = KineticsRollerFabricPriceDataGenerator.LFJSONPriceDataFileName;
+
+        Assert.Throws<Exception>(() => KineticsRollerFabricPriceDataGenerator.GetPriceModelList(fileName));
+    }
+
 
 
 
