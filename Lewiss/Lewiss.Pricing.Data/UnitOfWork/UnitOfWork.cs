@@ -21,13 +21,15 @@ public class UnitOfWork : IUnitOfWork
 
     private bool _disposed = false;
 
-    public UnitOfWork(PricingDbContext pricingDbContext, IWorksheetRepository worksheetRepository, ICustomerRepository customerRepository, IProductRepository productRepository, IProductOptionRepository productOptionRepository)
+    public UnitOfWork(PricingDbContext pricingDbContext, IWorksheetRepository worksheetRepository, ICustomerRepository customerRepository, IProductRepository productRepository, IProductOptionRepository productOptionRepository, IKineticsCellularFabricRepository kineticsCellularFabricRepository, IKineticsRollerFabricRepository kineticsRollerFabricRepository)
     {
         _pricingDbContext = pricingDbContext;
         Worksheet = worksheetRepository;
         Customer = customerRepository;
         Product = productRepository;
         ProductOption = productOptionRepository;
+        KineticsCellularFabric = kineticsCellularFabricRepository;
+        KineticsRollerFabric = kineticsRollerFabricRepository;
     }
 
     public async Task<int> CommitAsync()
