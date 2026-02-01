@@ -9,11 +9,10 @@ namespace Lewiss.Pricing.Api.Controllers;
 public class FabricController : ControllerBase
 {
     private readonly FabricService _fabricService;
-    private readonly ILogger<FabricController> _logger;
-    public FabricController(FabricService fabricService, ILogger<FabricController> logger)
+
+    public FabricController(FabricService fabricService)
     {
         _fabricService = fabricService;
-        _logger = logger;
     }
 
     [HttpGet("", Name = "GetFabrics")]

@@ -2,6 +2,7 @@ using Lewiss.Pricing.Api.Controllers;
 using Lewiss.Pricing.Api.Tests.Fixtures;
 using Lewiss.Pricing.Data.Model.Fabric;
 using Lewiss.Pricing.Shared.Fabric;
+using Lewiss.Pricing.Shared.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

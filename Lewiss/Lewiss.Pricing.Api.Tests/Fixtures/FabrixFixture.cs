@@ -1,4 +1,5 @@
 using Lewiss.Pricing.Data.Model.Fabric.Type;
+using Lewiss.Pricing.Shared.Fabric;
 
 namespace Lewiss.Pricing.Api.Tests.Fixtures;
 
