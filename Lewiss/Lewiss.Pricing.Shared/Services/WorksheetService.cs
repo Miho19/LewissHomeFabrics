@@ -7,9 +7,11 @@ namespace Lewiss.Pricing.Shared.Services;
 public class WorksheetService
 {
     private readonly IUnitOfWork _unitOfWork;
-    public WorksheetService(IUnitOfWork unitOfWork)
+    private readonly SharedUtilityService _sharedUtilityService;
+    public WorksheetService(IUnitOfWork unitOfWork, SharedUtilityService sharedUtilityService)
     {
         _unitOfWork = unitOfWork;
+        _sharedUtilityService = sharedUtilityService;
     }
 
     public virtual async Task<WorksheetOutputDTO?> CreateWorksheetAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
@@ -20,7 +22,7 @@ public class WorksheetService
             return null;
         }
 
-        var worksheet = new Data.Model.Worksheet
+        var worksheet = new Worksheet
         {
             ExternalMapping = Guid.CreateVersion7(DateTimeOffset.UtcNow),
             CreatedAt = DateTimeOffset.UtcNow,
@@ -40,33 +42,11 @@ public class WorksheetService
         return worksheetDTO;
     }
 
-    private async Task<(Customer?, Worksheet?)> GetCustomerAndWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
-    {
-        var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
-        if (customer is null)
-        {
-            return (null, null);
-        }
-
-        var worksheet = await _unitOfWork.Worksheet.GetWorksheetByExternalIdAsync(externalWorksheetId, cancellationToken);
-        if (worksheet is null)
-        {
-            return (null, null);
-        }
-
-        if (worksheet.CustomerId != customer.CustomerId)
-        {
-            return (null, null);
-        }
-
-        return (customer, worksheet);
-    }
-
 
     public virtual async Task<WorksheetOutputDTO?> GetWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
     {
 
-        var (customer, worksheet) = await GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
+        var (customer, worksheet) = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
         if (customer is null || worksheet is null)
         {
             return null;
@@ -78,7 +58,7 @@ public class WorksheetService
 
     public virtual async Task<List<ProductEntryOutputDTO>?> GetWorksheetProductsAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
     {
-        var (customer, worksheet) = await GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
+        var (customer, worksheet) = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
         if (customer is null || worksheet is null)
         {
             return null;

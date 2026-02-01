@@ -8,46 +8,20 @@ namespace Lewiss.Pricing.Shared.Services;
 public class ProductService
 {
     private readonly IUnitOfWork _unitOfWork;
-    // private readonly ILogger<ProductService> _logger;
+    private readonly SharedUtilityService _sharedUtilityService;
 
-    // public ProductService(IUnitOfWork unitOfWork, ILogger<ProductService> logger)
-    // {
-    //     _unitOfWork = unitOfWork;
-    //     _logger = logger;
-    // }
-
-    public ProductService(IUnitOfWork unitOfWork)
+    public ProductService(IUnitOfWork unitOfWork, SharedUtilityService sharedUtilityService)
     {
         _unitOfWork = unitOfWork;
+        _sharedUtilityService = sharedUtilityService;
     }
 
-    // This will eventually be replaced by function in PricingService and Result pattern; currently this check is duplicated
-    private async Task<(Customer?, Worksheet?)> GetCustomerAndWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
-    {
-        var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
-        if (customer is null)
-        {
-            return (null, null);
-        }
 
-        var worksheet = await _unitOfWork.Worksheet.GetWorksheetByExternalIdAsync(externalWorksheetId, cancellationToken);
-        if (worksheet is null)
-        {
-            return (null, null);
-        }
-
-        if (worksheet.CustomerId != customer.CustomerId)
-        {
-            return (null, null);
-        }
-
-        return (customer, worksheet);
-    }
 
     // Need to adjust this to follow a more functional programming approach
     public virtual async Task<ProductEntryOutputDTO?> CreateProductAsync(Guid externalCustomerId, Guid externalWorksheetId, ProductCreateInputDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
-        var (customer, worksheet) = await GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId, cancellationToken);
+        var (customer, worksheet) = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId, cancellationToken);
         if (customer is null || worksheet is null)
         {
             return null;
@@ -145,7 +119,7 @@ public class ProductService
 
     public virtual async Task<ProductEntryOutputDTO?> GetProductAsync(Guid externalCustomerId, Guid externalWorksheetId, Guid externalProductId, CancellationToken cancellationToken = default)
     {
-        var (customer, worksheet) = await GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId, cancellationToken);
+        var (customer, worksheet) = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId, cancellationToken);
         if (customer is null || worksheet is null)
         {
             return null;

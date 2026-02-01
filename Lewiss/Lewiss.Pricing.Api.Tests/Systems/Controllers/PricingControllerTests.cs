@@ -30,10 +30,11 @@ public class PricingControllerTests
     public async Task CreateWorksheet_ShouldReturnOkCreated_OnSuccess()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
+        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
         var loggerMock = new Mock<ILogger<PricingController>>();
 
         var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
@@ -57,11 +58,13 @@ public class PricingControllerTests
     public async Task CreateWorksheet_ShouldReturnStatus500_OnFailure()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
+        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
         var loggerMock = new Mock<ILogger<PricingController>>();
+
         var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
 
 
@@ -86,10 +89,11 @@ public class PricingControllerTests
     public async Task GetWorksheet_ShouldReturnOK200_OnSuccess()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
+        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
         var loggerMock = new Mock<ILogger<PricingController>>();
         var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
 
@@ -110,10 +114,11 @@ public class PricingControllerTests
     public async Task GetWorksheet_ShouldReturn404_OnFailure()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
+        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
         var loggerMock = new Mock<ILogger<PricingController>>();
         var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
 
@@ -134,10 +139,11 @@ public class PricingControllerTests
     public async Task GetCustomerWorksheet_ShouldReturnOK200_OnSuccess()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
+        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
         var loggerMock = new Mock<ILogger<PricingController>>();
         var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
 
@@ -159,10 +165,11 @@ public class PricingControllerTests
     public async Task GetCustomerWorksheet_ShouldReturn500_OnFailure()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
+        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
         var loggerMock = new Mock<ILogger<PricingController>>();
         var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
 
@@ -184,10 +191,11 @@ public class PricingControllerTests
     public async Task GetCustomerWorksheet_ShouldReturn200Ok_OnSuccess_WhenEmptyListIsReturned()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
+        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
         var loggerMock = new Mock<ILogger<PricingController>>();
         var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
 
@@ -209,10 +217,11 @@ public class PricingControllerTests
     public async Task CreateProduct_ShouldReturnOK200_OnSuccess()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
+        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
         var loggerMock = new Mock<ILogger<PricingController>>();
         var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
 
@@ -235,10 +244,11 @@ public class PricingControllerTests
     public async Task CreateProduct_ShouldReturnNotFound404_OnFailure()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
+        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
         var loggerMock = new Mock<ILogger<PricingController>>();
         var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
 
@@ -260,10 +270,11 @@ public class PricingControllerTests
     public async Task GetWorksheetProduct_ShouldReturnOK200_OnSuccess()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object);
         var pricingServiceMock = new Mock<PricingService>(unitOfWorkMock.Object);
         var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object);
+        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
+        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
+        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object);
         var loggerMock = new Mock<ILogger<PricingController>>();
         var pricingController = new PricingController(pricingServiceMock.Object, customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object, loggerMock.Object);
 
