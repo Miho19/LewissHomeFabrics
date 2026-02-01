@@ -1,5 +1,7 @@
 using System.Text.RegularExpressions;
+using Lewiss.Pricing.Data.Model.Fabric.Price;
 using Lewiss.Pricing.Shared.Product;
+using Lewiss.Pricing.Shared.QueryParameters;
 
 public class FabricService
 {
@@ -55,9 +57,80 @@ public class FabricService
         return listToReturn;
     }
 
-    public async Task<decimal> GetFabricPriceAsync(string fabricName, int width, int height, CancellationToken cancellationToken = default)
+    private async Task<IFabricDTO?> GetKineticsRollerFabricAsync(string? fabric, string colour, string opacity, CancellationToken cancellationToken = default)
     {
-        return default;
+        if (string.IsNullOrEmpty(fabric))
+        {
+            return null;
+        }
+
+        var kineticsRollerFabric = await _unitOfWork.KineticsRollerFabric.GetFabricAsync(fabric, colour, opacity, cancellationToken);
+        if (kineticsRollerFabric is null)
+        {
+            return null;
+        }
+
+        return kineticsRollerFabric.ToKineticsRollerFabricDTO();
+    }
+
+    private async Task<IFabricDTO?> GetKineticsCellularFabricAsync(string colour, string opacity, CancellationToken cancellationToken = default)
+    {
+        return null;
+    }
+
+    public async Task<decimal> GetFabricPriceAsync(string productType, GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrEmpty(productType))
+        {
+            return default;
+        }
+
+        var priceModel = await GetFabricPriceModelAsync(productType, queryParameters, cancellationToken);
+        if (priceModel is null)
+        {
+            return default;
+        }
+
+        var fabricMultiplier = await GetFabricMultiplier(productType, queryParameters, cancellationToken);
+        if (fabricMultiplier == default)
+        {
+            return default;
+        }
+
+        // just to be explicit
+        decimal price = priceModel.Price * fabricMultiplier;
+
+        return price;
+    }
+
+    private async Task<FabricPrice?> GetFabricPriceModelAsync(string productType, GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
+    {
+        var (width, height, colour, opacity, fabric) = queryParameters;
+
+        return await _unitOfWork.FabricPrice.GetFabricPriceByFabricPriceQueryParametersAsync(productType, width, height, opacity, cancellationToken);
+
+    }
+
+    private async Task<decimal> GetFabricMultiplier(string productType, GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
+    {
+        var (width, height, colour, opacity, fabric) = queryParameters;
+
+        var query = Regex.Replace(productType, @"\s+", String.Empty).ToLower();
+
+        var fabricDTO = query switch
+        {
+            "kineticscellular" => await GetKineticsCellularFabricAsync(colour, opacity, cancellationToken),
+            "kineticsroller" => await GetKineticsRollerFabricAsync(fabric, colour, opacity, cancellationToken),
+            _ => null,
+        };
+
+        if (fabricDTO is null)
+        {
+            return default;
+        }
+
+
+        return fabricDTO.Multiplier;
     }
 
 }

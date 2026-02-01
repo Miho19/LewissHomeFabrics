@@ -1,3 +1,4 @@
+using Lewiss.Pricing.Shared.QueryParameters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lewiss.Pricing.Api.Controllers;
@@ -30,10 +31,10 @@ public class FabricController : ControllerBase
         return new OkObjectResult(fabricList);
     }
 
-    [HttpGet("{fabricName}", Name = "GetFabricPrice")]
-    public async Task<IActionResult> GetFabricPrice(string fabricName, [FromQuery] int width, [FromQuery] int height, CancellationToken cancellationToken = default)
+    [HttpGet("{productType}", Name = "GetFabricPrice")]
+    public async Task<IActionResult> GetFabricPrice(string productType, [FromQuery] GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
     {
-        var fabricPrice = await _fabricService.GetFabricPriceAsync(fabricName, width, height, cancellationToken);
+        var fabricPrice = await _fabricService.GetFabricPriceAsync(productType, queryParameters, cancellationToken);
 
         if (fabricPrice == default)
         {

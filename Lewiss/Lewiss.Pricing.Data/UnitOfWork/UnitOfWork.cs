@@ -1,5 +1,6 @@
 using Lewiss.Pricing.Data.Context;
 using Lewiss.Pricing.Data.Repository.CustomerRepository;
+using Lewiss.Pricing.Data.Repository.Fabric;
 using Lewiss.Pricing.Data.Repository.ProductOptionRepository;
 using Lewiss.Pricing.Data.Repository.ProductRepository;
 using Lewiss.Pricing.Data.Repository.WorksheetRepository;
@@ -14,14 +15,23 @@ public class UnitOfWork : IUnitOfWork
 
     public IProductRepository Product { get; private set; }
 
-    public IProductOptionRepository ProductOption { get; set; }
+    public IProductOptionRepository ProductOption { get; private set; }
 
-    public IKineticsCellularFabricRepository KineticsCellularFabric { get; set; }
-    public IKineticsRollerFabricRepository KineticsRollerFabric { get; set; }
+    public IKineticsCellularFabricRepository KineticsCellularFabric { get; private set; }
+    public IKineticsRollerFabricRepository KineticsRollerFabric { get; private set; }
+
+    public IFabricPriceRepository FabricPrice { get; private set; }
 
     private bool _disposed = false;
 
-    public UnitOfWork(PricingDbContext pricingDbContext, IWorksheetRepository worksheetRepository, ICustomerRepository customerRepository, IProductRepository productRepository, IProductOptionRepository productOptionRepository, IKineticsCellularFabricRepository kineticsCellularFabricRepository, IKineticsRollerFabricRepository kineticsRollerFabricRepository)
+    public UnitOfWork(PricingDbContext pricingDbContext,
+        IWorksheetRepository worksheetRepository,
+        ICustomerRepository customerRepository,
+        IProductRepository productRepository,
+        IProductOptionRepository productOptionRepository,
+        IKineticsCellularFabricRepository kineticsCellularFabricRepository,
+        IKineticsRollerFabricRepository kineticsRollerFabricRepository,
+        IFabricPriceRepository fabricPriceRepository)
     {
         _pricingDbContext = pricingDbContext;
         Worksheet = worksheetRepository;
@@ -30,6 +40,7 @@ public class UnitOfWork : IUnitOfWork
         ProductOption = productOptionRepository;
         KineticsCellularFabric = kineticsCellularFabricRepository;
         KineticsRollerFabric = kineticsRollerFabricRepository;
+        FabricPrice = fabricPriceRepository;
     }
 
     public async Task<int> CommitAsync()

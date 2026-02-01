@@ -40,6 +40,10 @@ builder.Services.AddScoped<IKineticsCellularFabricRepository, KineticsCellularFa
 builder.Services.AddScoped<IKineticsRollerFabricRepository, KineticsRollerFabricRepository>();
 
 
+builder.Services.AddScoped<IFabricPriceRepository, FabricPriceRepository>();
+
+
+
 // Services
 builder.Services.AddScoped<PricingService>();
 builder.Services.AddScoped<CustomerService>();
