@@ -1,7 +1,10 @@
 using System.Text.RegularExpressions;
 using Lewiss.Pricing.Data.Model.Fabric.Price;
-using Lewiss.Pricing.Shared.Product;
+using Lewiss.Pricing.Shared.Fabric;
 using Lewiss.Pricing.Shared.QueryParameters;
+
+
+namespace Lewiss.Pricing.Shared.Services;
 
 public class FabricService
 {
@@ -83,36 +86,55 @@ public class FabricService
         return KineticsCellularFabric.ToKineticsCellularFabricDTO();
     }
 
-    public async Task<decimal> GetFabricPriceAsync(string productType, GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
+    public async Task<FabricPriceDTO?> GetFabricPriceAsync(string productType, GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(productType))
         {
-            return default;
+            return null;
         }
 
         var priceModel = await GetFabricPriceModelAsync(productType, queryParameters, cancellationToken);
         if (priceModel is null)
         {
-            return default;
+            return null;
         }
 
         var fabricMultiplier = await GetFabricMultiplier(productType, queryParameters, cancellationToken);
         if (fabricMultiplier == default)
         {
-            return default;
+            return null;
         }
 
         // just to be explicit
         decimal price = priceModel.Price * fabricMultiplier;
 
-        return price;
+
+
+        return new FabricPriceDTO
+        {
+            Price = price
+        };
     }
 
     private async Task<FabricPrice?> GetFabricPriceModelAsync(string productType, GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
     {
         var (width, height, colour, opacity, fabric) = queryParameters;
 
-        return await _unitOfWork.FabricPrice.GetFabricPriceByFabricPriceQueryParametersAsync(productType, width, height, opacity, cancellationToken);
+        var query = Regex.Replace(productType, @"\s+", String.Empty).ToLower();
+
+        var productTypeAdjusted = query switch
+        {
+            "kineticscellular" => "Kinetics Cellular",
+            "kineticsroller" => "Kinetics Roller",
+            _ => null,
+        };
+
+        if (string.IsNullOrEmpty(productTypeAdjusted))
+        {
+            return null;
+        }
+
+        return await _unitOfWork.FabricPrice.GetFabricPriceByFabricPriceQueryParametersAsync(productTypeAdjusted, width, height, opacity, cancellationToken);
 
     }
 

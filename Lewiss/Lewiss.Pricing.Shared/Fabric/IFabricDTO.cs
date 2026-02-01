@@ -1,3 +1,6 @@
+namespace Lewiss.Pricing.Shared.Fabric;
+
+
 public interface IFabricDTO
 {
     string FabricName { get; }

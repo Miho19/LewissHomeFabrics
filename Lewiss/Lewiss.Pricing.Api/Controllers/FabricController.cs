@@ -1,4 +1,5 @@
 using Lewiss.Pricing.Shared.QueryParameters;
+using Lewiss.Pricing.Shared.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lewiss.Pricing.Api.Controllers;
@@ -8,9 +9,11 @@ namespace Lewiss.Pricing.Api.Controllers;
 public class FabricController : ControllerBase
 {
     private readonly FabricService _fabricService;
-    public FabricController(FabricService fabricService)
+    private readonly ILogger<FabricController> _logger;
+    public FabricController(FabricService fabricService, ILogger<FabricController> logger)
     {
         _fabricService = fabricService;
+        _logger = logger;
     }
 
     [HttpGet("", Name = "GetFabrics")]
@@ -34,9 +37,9 @@ public class FabricController : ControllerBase
     [HttpGet("{productType}", Name = "GetFabricPrice")]
     public async Task<IActionResult> GetFabricPrice(string productType, [FromQuery] GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
     {
-        var fabricPrice = await _fabricService.GetFabricPriceAsync(productType, queryParameters, cancellationToken);
+        var fabricPriceDTO = await _fabricService.GetFabricPriceAsync(productType, queryParameters, cancellationToken);
 
-        if (fabricPrice == default)
+        if (fabricPriceDTO is null)
         {
             return StatusCode(404, new ProblemDetails
             {
@@ -47,7 +50,7 @@ public class FabricController : ControllerBase
         }
 
 
-        return new OkObjectResult(fabricPrice);
+        return new OkObjectResult(fabricPriceDTO);
     }
 
 

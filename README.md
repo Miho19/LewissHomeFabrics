@@ -448,3 +448,27 @@ Retrieve all `Product` assoicated with a `Worksheet`
   }
 ]
 ```
+
+### Get Fabric Price
+
+- Get the price for a specific `Fabric`
+- query parameters accepted
+
+```
+  width
+  height
+  colour
+  fabric
+  opacity
+```
+
+#### Request
+
+`GET /fabric/{productType}?queryParameters
+
+```bash
+    curl -s -H 'Accept: application/json' \
+    http://localhost:5085/api/v1/fabric/kineticsRoller?width=1200&height=900&colour=Black&fabric=Adagio&opacity=LF
+```
+
+#### Response

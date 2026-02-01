@@ -1,3 +1,5 @@
+namespace Lewiss.Pricing.Shared.Fabric;
+
 public class KineticsRollerFabricDTO : IFabricDTO
 {
     public string FabricName => $"{Fabric} {Colour} {Opacity}";

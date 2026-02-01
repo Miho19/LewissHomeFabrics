@@ -1,5 +1,7 @@
 using Lewiss.Pricing.Data.Model.Fabric.Type;
-using Lewiss.Pricing.Shared.Fabric;
+
+
+namespace Lewiss.Pricing.Shared.Fabric;
 
 public static class FabricExtensions
 {
@@ -36,4 +38,5 @@ public static class FabricExtensions
             MaxHeight = kineticsRollerFabric.MaxHeight,
         };
     }
+
 }
