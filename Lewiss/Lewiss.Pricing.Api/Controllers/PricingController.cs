@@ -79,7 +79,7 @@ public class PricingController : ControllerBase
             {
                 Status = StatusCodes.Status500InternalServerError,
                 Title = "Internal Server Error",
-                Detail = "Failed to create worksheet"
+                Detail = "Something went wrong."
             });
         }
 

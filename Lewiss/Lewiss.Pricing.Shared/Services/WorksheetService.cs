@@ -1,6 +1,7 @@
 using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Shared.ProductDTO;
 using Lewiss.Pricing.Shared.WorksheetDTO;
+using Microsoft.Extensions.Logging;
 
 namespace Lewiss.Pricing.Shared.Services;
 
@@ -8,38 +9,51 @@ public class WorksheetService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly SharedUtilityService _sharedUtilityService;
-    public WorksheetService(IUnitOfWork unitOfWork, SharedUtilityService sharedUtilityService)
+    private readonly ILogger<WorksheetService> _logger;
+
+    public WorksheetService(IUnitOfWork unitOfWork, SharedUtilityService sharedUtilityService, ILogger<WorksheetService> logger)
     {
         _unitOfWork = unitOfWork;
         _sharedUtilityService = sharedUtilityService;
+        _logger = logger;
     }
 
     public virtual async Task<WorksheetOutputDTO?> CreateWorksheetAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
     {
-        var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
-        if (customer is null)
+        try
         {
+            var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
+            if (customer is null)
+            {
+                throw new Exception($"Customer Not Found by external Id: {externalCustomerId}");
+            }
+
+            var worksheet = new Worksheet
+            {
+                ExternalMapping = Guid.CreateVersion7(DateTimeOffset.UtcNow),
+                CreatedAt = DateTimeOffset.UtcNow,
+                Customer = customer,
+                CustomerId = customer.CustomerId,
+                CallOutFee = 0.00m,
+                Discount = 0.00m,
+                NewBuild = false,
+                Price = 0.00m,
+            };
+
+            await _unitOfWork.Worksheet.AddAsync(worksheet);
+            await _unitOfWork.CommitAsync();
+
+            var worksheetDTO = worksheet.ToWorksheetDTO(externalCustomerId);
+
+            return worksheetDTO;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"WorksheetService.CreateWorksheetAsync exception {ex.Message}");
+
             return null;
         }
 
-        var worksheet = new Worksheet
-        {
-            ExternalMapping = Guid.CreateVersion7(DateTimeOffset.UtcNow),
-            CreatedAt = DateTimeOffset.UtcNow,
-            Customer = customer,
-            CustomerId = customer.CustomerId,
-            CallOutFee = 0.00m,
-            Discount = 0.00m,
-            NewBuild = false,
-            Price = 0.00m,
-        };
-
-        await _unitOfWork.Worksheet.AddAsync(worksheet);
-        await _unitOfWork.CommitAsync();
-
-        var worksheetDTO = worksheet.ToWorksheetDTO(externalCustomerId);
-
-        return worksheetDTO;
     }
 
 

@@ -21,9 +21,9 @@ public class CustomerController : ControllerBase
         var customerEntryDTO = await _customerService.GetCustomerByExternalIdAsync(customerId, cancellationToken);
         if (customerEntryDTO is null)
         {
-            return StatusCode(404, new ProblemDetails
+            return StatusCode(StatusCodes.Status404NotFound, new ProblemDetails
             {
-                Status = 404,
+                Status = StatusCodes.Status404NotFound,
                 Title = "Not Found",
                 Detail = "Customer not found.",
             });
@@ -38,9 +38,9 @@ public class CustomerController : ControllerBase
         var customerEntryDto = await _customerService.CreateCustomerAsync(customerCreateDTO, cancellationToken);
         if (customerEntryDto is null)
         {
-            return StatusCode(500, new ProblemDetails
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
             {
-                Status = 500,
+                Status = StatusCodes.Status500InternalServerError,
                 Title = "Internal Server Error",
                 Detail = "Failed to create customer",
             });
@@ -55,9 +55,9 @@ public class CustomerController : ControllerBase
         var customerEntryDTOList = await _customerService.GetCustomersAsync(getCustomerQueryParameters, cancellationToken);
         if (customerEntryDTOList is null)
         {
-            return StatusCode(500, new ProblemDetails
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
             {
-                Status = 500,
+                Status = StatusCodes.Status500InternalServerError,
                 Title = "Internal Server Error",
                 Detail = "Failed to retrieve customer",
             });
