@@ -176,7 +176,7 @@ public class FabricService
 
             return new FabricPriceOutputDTO
             {
-                Price = fabricPrice.Price
+                Price = fabricPrice.Price * fabricOutputDTO.Multiplier
             };
         }
         catch (Exception ex)
