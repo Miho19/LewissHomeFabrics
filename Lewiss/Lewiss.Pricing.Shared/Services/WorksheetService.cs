@@ -59,30 +59,38 @@ public class WorksheetService
 
     public virtual async Task<WorksheetOutputDTO?> GetWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
     {
-
-        var (customer, worksheet) = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
-        if (customer is null || worksheet is null)
+        try
         {
+            var (customer, worksheet) = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
+            var worksheetDTO = worksheet.ToWorksheetDTO(externalCustomerId);
+            return worksheetDTO;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"WorksheetService.GetWorksheetAsync exception {ex.Message}");
             return null;
         }
-
-        var worksheetDTO = worksheet.ToWorksheetDTO(externalCustomerId);
-        return worksheetDTO;
     }
 
     public virtual async Task<List<ProductEntryOutputDTO>?> GetWorksheetProductsAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
     {
-        var (customer, worksheet) = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
-        if (customer is null || worksheet is null)
+        try
         {
+            var (customer, worksheet) = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
+
+            var productList = await _unitOfWork.Worksheet.GetWorksheetProductsAsync(worksheet, cancellationToken);
+
+            var productEntryDTOList = productList.Select(p => p.ToProductEntryDTO(worksheet.ExternalMapping)).ToList();
+
+            return productEntryDTOList;
+
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"WorksheetService.GetWorksheetProductsAsync exception {ex.Message}");
             return null;
         }
 
-        var productList = await _unitOfWork.Worksheet.GetWorksheetProductsAsync(worksheet, cancellationToken);
-
-        var productEntryDTOList = productList.Select(p => p.ToProductEntryDTO(worksheet.ExternalMapping)).ToList();
-
-        return productEntryDTOList;
     }
 
 }

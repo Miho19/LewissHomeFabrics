@@ -40,7 +40,7 @@ public class PricingController : ControllerBase
         {
             return StatusCode(StatusCodes.Status404NotFound, new ProblemDetails
             {
-                Status = StatusCodes.Status500InternalServerError,
+                Status = StatusCodes.Status404NotFound,
                 Title = "Not Found",
                 Detail = "Customer worksheets not found.",
             });
@@ -57,11 +57,11 @@ public class PricingController : ControllerBase
         var worksheetDTO = await _worksheetService.GetWorksheetAsync(customerId, worksheetId, cancellationToken);
         if (worksheetDTO is null)
         {
-            return new ObjectResult(new ProblemDetails
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
             {
-                Status = StatusCodes.Status404NotFound,
+                Status = StatusCodes.Status500InternalServerError,
                 Title = "Internal Server Error",
-                Detail = "Worksheet Not Found"
+                Detail = "Something went wrong.",
             });
         }
 
@@ -75,11 +75,11 @@ public class PricingController : ControllerBase
         var worksheetDTO = await _worksheetService.CreateWorksheetAsync(customerId, cancellationToken);
         if (worksheetDTO is null)
         {
-            return new ObjectResult(new ProblemDetails
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
                 Title = "Internal Server Error",
-                Detail = "Something went wrong."
+                Detail = "Something went wrong.",
             });
         }
 
@@ -95,11 +95,11 @@ public class PricingController : ControllerBase
         var productEntryDTO = await _productService.CreateProductAsync(customerId, workoutId, productCreateDTO, cancellationToken);
         if (productEntryDTO is null)
         {
-            return new ObjectResult(new ProblemDetails
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
                 Title = "Internal Server Error",
-                Detail = "Failed to create product"
+                Detail = "Something went wrong.",
             });
         }
 
@@ -113,11 +113,11 @@ public class PricingController : ControllerBase
         var productEntryDTO = await _productService.GetProductAsync(customerId, worksheetId, productId, cancellationToken);
         if (productEntryDTO is null)
         {
-            return new ObjectResult(new ProblemDetails
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
             {
-                Status = StatusCodes.Status404NotFound,
-                Title = "Not Found",
-                Detail = "Product not found"
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Internal Server Error",
+                Detail = "Something went wrong.",
             });
         }
 
@@ -131,13 +131,24 @@ public class PricingController : ControllerBase
         var productEntryDTOList = await _worksheetService.GetWorksheetProductsAsync(customerId, worksheetId, cancellationToken);
         if (productEntryDTOList is null)
         {
-            return new ObjectResult(new ProblemDetails
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
                 Title = "Internal Server Error",
-                Detail = "Something went wrong."
+                Detail = "Something went wrong.",
             });
         }
+
+        if (productEntryDTOList.Count == 0)
+        {
+            return StatusCode(StatusCodes.Status404NotFound, new ProblemDetails
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "Not Found",
+                Detail = "There are no products for this worksheet.",
+            });
+        }
+
 
         return new OkObjectResult(productEntryDTOList);
     }
