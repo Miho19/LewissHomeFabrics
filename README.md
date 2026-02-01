@@ -452,15 +452,14 @@ Retrieve all `Product` assoicated with a `Worksheet`
 ### Get Fabric Price
 
 - Get the price for a specific `Fabric`
-- query parameters accepted
 
-```
-  width
-  height
-  colour
-  fabric
-  opacity
-```
+#### query parameters
+
+- `width` required int
+- `height` required int
+- `colour` required string
+- `fabric` optional, for kinetic roller fabrics
+- `opacity` required string
 
 #### Request
 
@@ -471,4 +470,10 @@ Retrieve all `Product` assoicated with a `Worksheet`
     http://localhost:5085/api/v1/fabric/kineticsRoller?width=1200&height=900&colour=Black&fabric=Adagio&opacity=LF
 ```
 
-#### Response
+#### JSON Response Body
+
+```json
+{
+  "price": 511.25
+}
+```
