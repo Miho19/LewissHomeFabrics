@@ -1,4 +1,5 @@
 using Lewiss.Pricing.Data.Model;
+using Lewiss.Pricing.Data.OptionData;
 using Lewiss.Pricing.Shared.CustomerDTO;
 using Lewiss.Pricing.Shared.ProductDTO;
 using Microsoft.Extensions.Logging;
@@ -31,14 +32,11 @@ public class ProductService
 
             var product = productCreateDTO.ToProductEntity(worksheet);
 
-            var generalProductOptionVariationList = await PopulateGeneralProductOptionVariationList(productCreateDTO.FixedConfiguration, typeof(FixedConfiguration), cancellationToken);
+            var generalProductOptionVariationList = await PopulateProductOptionVariationList(productCreateDTO.FixedConfiguration, typeof(FixedConfiguration), cancellationToken);
 
 
-            product = await PopulateProductOptionVariationList_ProductTypeSpecificConfigurationAsync(product, productCreateDTO, cancellationToken);
-            if (product is null)
-            {
-                return null;
-            }
+            var productTypeSpecificProductOptionVariationList = await PopulateProductOptionVariationList_ProductTypeSpecificConfigurationAsync(productCreateDTO, cancellationToken);
+
 
             //  Go through option variations --> add their price to total
             // Get fabric price info --> add to price totalv 
@@ -63,7 +61,7 @@ public class ProductService
 
     }
 
-    private async Task<List<ProductOptionVariation>> PopulateGeneralProductOptionVariationList(object? obj, Type type, CancellationToken cancellationToken = default)
+    private async Task<List<ProductOptionVariation>> PopulateProductOptionVariationList(object? obj, Type type, CancellationToken cancellationToken = default)
     {
         if (obj is null)
         {
@@ -103,51 +101,44 @@ public class ProductService
 
 
 
-    private async Task<List<ProductOptionVariation>> PopulateProductOptionVariationList_ProductTypeSpecificConfigurationAsync(Data.Model.Product product, ProductCreateInputDTO productCreateDTO, CancellationToken cancellationToken = default)
+    private async Task<List<ProductOptionVariation>> PopulateProductOptionVariationList_ProductTypeSpecificConfigurationAsync(ProductCreateInputDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
-        try
+
+        var queryProductType = _sharedUtilityService.GetProductTypeQueryString(productCreateDTO.FixedConfiguration.ProductType);
+
+        var result = queryProductType switch
         {
-            var productType = productCreateDTO.FixedConfiguration.ProductType.ToLower();
-            productType = String.Concat(productType.Where(c => !Char.IsWhiteSpace(c)));
+            "kineticscellular" => await PopulateProductOptionVariationList(productCreateDTO.KineticsCellular, typeof(KineticsCellular), cancellationToken),
+            "kineticsroller" => await PopulateProductOptionVariationList(productCreateDTO.KineticsRoller, typeof(KineticsRoller), cancellationToken),
+            _ => throw new Exception("Invalid Product Type"),
+        };
 
-            var result = productType switch
-            {
-                "kineticscellular" => await PopulateProductOptionVariationListByType(product, productCreateDTO.KineticsCellular, typeof(KineticsCellular), cancellationToken),
-                "kineticsroller" => await PopulateProductOptionVariationListByType(product, productCreateDTO.KineticsRoller, typeof(KineticsRoller), cancellationToken),
-                _ => null,
-            };
-        }
-        catch (Exception ex)
-        {
-
-        }
-
-
-
-
-        return product;
+        return result;
     }
 
 
     public virtual async Task<ProductEntryOutputDTO?> GetProductAsync(Guid externalCustomerId, Guid externalWorksheetId, Guid externalProductId, CancellationToken cancellationToken = default)
     {
-        var (customer, worksheet) = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId, cancellationToken);
-        if (customer is null || worksheet is null)
+        try
         {
+            var (customer, worksheet) = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId, cancellationToken);
+
+            var product = await _unitOfWork.Product.GetProductByExternalIdAsync(externalProductId, cancellationToken);
+            if (product is null)
+            {
+                throw new Exception($"Failed to retrieve product external Id: {externalProductId}");
+            }
+
+            var productEntryDTO = product.ToProductEntryDTO(externalWorksheetId);
+
+            return productEntryDTO;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"ProductService.GetProductAsync exception: {ex.Message}");
             return null;
         }
 
-
-
-        var product = await _unitOfWork.Product.GetProductByExternalIdAsync(externalProductId, cancellationToken);
-        if (product is null)
-        {
-            return null;
-        }
-
-        var productEntryDTO = product.ToProductEntryDTO(externalWorksheetId);
-
-        return productEntryDTO;
     }
 
 
