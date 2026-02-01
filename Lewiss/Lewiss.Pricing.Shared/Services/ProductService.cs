@@ -20,9 +20,6 @@ public class ProductService
         _logger = logger;
     }
 
-
-
-    // Need to adjust this to follow a more functional programming approach
     public virtual async Task<ProductEntryOutputDTO?> CreateProductAsync(Guid externalCustomerId, Guid externalWorksheetId, ProductCreateInputDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
         try
@@ -37,6 +34,7 @@ public class ProductService
 
             var productTypeSpecificProductOptionVariationList = await PopulateProductOptionVariationList_ProductTypeSpecificConfigurationAsync(productCreateDTO, cancellationToken);
 
+            product.OptionVariations = [.. generalProductOptionVariationList, .. productTypeSpecificProductOptionVariationList];
 
             //  Go through option variations --> add their price to total
             // Get fabric price info --> add to price totalv 
@@ -54,11 +52,6 @@ public class ProductService
             _logger.LogError($"CreateProductAsync Exception: {ex.Message}");
             return null;
         }
-
-
-
-
-
     }
 
     private async Task<List<ProductOptionVariation>> PopulateProductOptionVariationList(object? obj, Type type, CancellationToken cancellationToken = default)
