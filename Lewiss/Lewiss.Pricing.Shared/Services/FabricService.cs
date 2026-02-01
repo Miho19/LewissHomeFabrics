@@ -75,7 +75,12 @@ public class FabricService
 
     private async Task<IFabricDTO?> GetKineticsCellularFabricAsync(string colour, string opacity, CancellationToken cancellationToken = default)
     {
-        return null;
+        var KineticsCellularFabric = await _unitOfWork.KineticsCellularFabric.GetFabricAsync(colour, opacity, cancellationToken);
+        if (KineticsCellularFabric is null)
+        {
+            return null;
+        }
+        return KineticsCellularFabric.ToKineticsCellularFabricDTO();
     }
 
     public async Task<decimal> GetFabricPriceAsync(string productType, GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
