@@ -160,4 +160,21 @@ public class FabricService
         return fabricDTO.Multiplier;
     }
 
+    public async Task<FabricPriceOutputDTO?> GetFabricPriceOutputDTOByProductOptionVariationIdAsync(int productOptionVariationId, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+
+            return new FabricPriceOutputDTO
+            {
+                Price = default
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"FabricService.GetFabricPriceOutputDTOByProductOptionVariationIdAsync exception: {ex.Message}");
+            return null;
+        }
+    }
+
 }

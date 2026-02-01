@@ -1,6 +1,8 @@
 using Lewiss.Pricing.Data.Model;
+using Lewiss.Pricing.Data.Model.Fabric.Price;
 using Lewiss.Pricing.Data.OptionData;
 using Lewiss.Pricing.Shared.CustomerDTO;
+using Lewiss.Pricing.Shared.FabricDTO;
 using Lewiss.Pricing.Shared.ProductDTO;
 using Microsoft.Extensions.Logging;
 
@@ -12,11 +14,13 @@ public class ProductService
     private readonly IUnitOfWork _unitOfWork;
     private readonly SharedUtilityService _sharedUtilityService;
     private readonly ILogger<ProductService> _logger;
+    private readonly FabricService _fabricService;
 
-    public ProductService(IUnitOfWork unitOfWork, SharedUtilityService sharedUtilityService, ILogger<ProductService> logger)
+    public ProductService(IUnitOfWork unitOfWork, SharedUtilityService sharedUtilityService, FabricService fabricService, ILogger<ProductService> logger)
     {
         _unitOfWork = unitOfWork;
         _sharedUtilityService = sharedUtilityService;
+        _fabricService = fabricService;
         _logger = logger;
     }
 
@@ -25,7 +29,6 @@ public class ProductService
         try
         {
             var (customer, worksheet) = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId, cancellationToken);
-
 
             var product = productCreateDTO.ToProductEntity(worksheet);
 
@@ -36,8 +39,13 @@ public class ProductService
 
             product.OptionVariations = [.. generalProductOptionVariationList, .. productTypeSpecificProductOptionVariationList];
 
-            //  Go through option variations --> add their price to total
-            // Get fabric price info --> add to price totalv 
+            // Get fabric price info --> add to price total
+
+            var totalPriceProductOptionVariationList = GetProductOptionVariationListTotalPrice(product.OptionVariations.ToList());
+            var fabricPrice = await GetProductFabricPriceOutputDTO(product.OptionVariations.ToList(), cancellationToken);
+
+            product.Price = totalPriceProductOptionVariationList + fabricPrice.Price;
+
 
             await _unitOfWork.Product.AddAsync(product);
             await _unitOfWork.CommitAsync();
@@ -52,6 +60,24 @@ public class ProductService
             _logger.LogError($"CreateProductAsync Exception: {ex.Message}");
             return null;
         }
+    }
+
+    private async Task<FabricPriceOutputDTO> GetProductFabricPriceOutputDTO(List<ProductOptionVariation> productOptionVariations, CancellationToken cancellationToken = default)
+    {
+        var fabricProductOptionVariation = productOptionVariations.FirstOrDefault(ov => ov.ProductOptionId == FabricOption.ProductOption.ProductOptionId);
+        if (fabricProductOptionVariation is null)
+        {
+            throw new Exception("Fabric was not found in product option variation list");
+        }
+
+        var fabricPriceOutputDTO = await _fabricService.GetFabricPriceOutputDTOByProductOptionVariationIdAsync(fabricProductOptionVariation.ProductOptionVariationId);
+
+        if (fabricPriceOutputDTO is null)
+        {
+            throw new Exception("Fabric Price DTO was not retrieved");
+        }
+
+        return fabricPriceOutputDTO;
     }
 
     private async Task<List<ProductOptionVariation>> PopulateProductOptionVariationList(object? obj, Type type, CancellationToken cancellationToken = default)
@@ -132,6 +158,18 @@ public class ProductService
             return null;
         }
 
+    }
+
+    private decimal GetProductOptionVariationListTotalPrice(List<ProductOptionVariation> productOptionVariationList)
+    {
+        decimal total = 0.00m;
+        foreach (var productOptionVariation in productOptionVariationList)
+        {
+            decimal price = productOptionVariation.Price.GetValueOrDefault();
+            total += price;
+        }
+
+        return total;
     }
 
 
