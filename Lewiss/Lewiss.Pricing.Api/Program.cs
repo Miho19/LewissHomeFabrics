@@ -16,7 +16,18 @@ var dbConnectionString = System.Environment.GetEnvironmentVariable("DatabaseConn
 
 builder.Services.AddDbContext<PricingDbContext>(options =>
 {
-    options.UseMySql(dbConnectionString, ServerVersion.AutoDetect(dbConnectionString));
+    options.UseMySql(dbConnectionString, ServerVersion.AutoDetect(dbConnectionString)).UseSeeding((context, _) =>
+    {
+        var PricingDbContext = context as PricingDbContext;
+        PricingDbContextSeeding.SeedData(PricingDbContext!, true);
+    })
+    .UseAsyncSeeding(async (context, op, cancellationToken) =>
+    {
+        var PricingDbContext = context as PricingDbContext;
+
+        await PricingDbContextSeeding.SeedDataAsync(PricingDbContext!, op, cancellationToken);
+    });
+
 });
 
 // Repositories

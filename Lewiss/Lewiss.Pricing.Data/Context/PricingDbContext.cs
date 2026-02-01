@@ -19,6 +19,8 @@ public class PricingDbContext : DbContext
     public DbSet<KineticsCellularFabric> KineticsCellularFabric { get; set; }
     public DbSet<KineticsRollerFabric> KineticsRollerFabric { get; set; }
 
+    public DbSet<FabricPrice> FabricPrice { get; set; }
+
     public PricingDbContext(DbContextOptions<PricingDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -136,7 +138,7 @@ public class PricingDbContext : DbContext
 
         SeedKineticsRollerFabricData(modelBuilder);
         SeedKineticsCellularFabricData(modelBuilder);
-        SeedFabricPricingData(modelBuilder);
+
 
         // Called after you have added product option variations with their ids to the OptionVariationList
         modelBuilder.Entity<ProductOptionVariation>().HasData(
@@ -191,10 +193,9 @@ public class PricingDbContext : DbContext
 
     }
 
-    private void SeedFabricPricingData(ModelBuilder modelBuilder)
-    {
 
-    }
+
+
 
 
 
