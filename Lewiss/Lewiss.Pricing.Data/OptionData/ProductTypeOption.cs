@@ -4,6 +4,7 @@ namespace Lewiss.Pricing.Data.OptionData;
 
 public static class ProductTypeOption
 {
+
     public static readonly ProductOption ProductOption = new ProductOption
     {
         ProductOptionId = OptionDataUtility.GetOptionId(),
@@ -25,6 +26,11 @@ public static class ProductTypeOption
         Value = "Kinetics Roller",
         Price = 0.0m,
     };
+
+    public static List<string> GetProductTypeList()
+    {
+        return [KineticsCellular.Value, KineticsRoller.Value];
+    }
 
     public static readonly List<ProductOptionVariation> ProductOptionVariations = [
         KineticsCellular, KineticsRoller

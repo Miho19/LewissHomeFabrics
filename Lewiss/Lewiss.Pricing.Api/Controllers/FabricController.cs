@@ -16,9 +16,9 @@ public class FabricController : ControllerBase
     }
 
     [HttpGet("", Name = "GetFabrics")]
-    public async Task<IActionResult> GetFabrics([FromQuery] string fabricType, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetFabrics([FromQuery] string productType, CancellationToken cancellationToken = default)
     {
-        var fabricList = await _fabricService.GetFabricsAsync(fabricType, cancellationToken);
+        var fabricList = await _fabricService.GetFabricsAsync(productType, cancellationToken);
         if (fabricList is null || fabricList.Count == 0)
         {
             return StatusCode(404, new ProblemDetails
