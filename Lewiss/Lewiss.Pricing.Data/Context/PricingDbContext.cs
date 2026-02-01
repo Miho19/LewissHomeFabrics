@@ -136,7 +136,7 @@ public class PricingDbContext : DbContext
 
         SeedKineticsRollerFabricData(modelBuilder);
         SeedKineticsCellularFabricData(modelBuilder);
-        SeedKineticsPricingData(modelBuilder);
+        SeedFabricPricingData(modelBuilder);
 
         // Called after you have added product option variations with their ids to the OptionVariationList
         modelBuilder.Entity<ProductOptionVariation>().HasData(
@@ -191,7 +191,7 @@ public class PricingDbContext : DbContext
 
     }
 
-    private void SeedKineticsPricingData(ModelBuilder modelBuilder)
+    private void SeedFabricPricingData(ModelBuilder modelBuilder)
     {
 
     }
