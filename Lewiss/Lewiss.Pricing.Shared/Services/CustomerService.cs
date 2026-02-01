@@ -1,7 +1,7 @@
 using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Shared.CustomerDTO;
 using Lewiss.Pricing.Shared.QueryParameters;
-using Lewiss.Pricing.Shared.Worksheet;
+using Lewiss.Pricing.Shared.WorksheetDTO;
 
 namespace Lewiss.Pricing.Shared.Services;
 
@@ -28,7 +28,7 @@ public class CustomerService
     /// A <see cref="Task"/> representing the asynchronous operation, returning the CustomerEntryDTO.
     /// </returns>
     /// Needs to be updated to try catch instead of using any to check for duplication
-    public virtual async Task<CustomerEntryDTO?> CreateCustomerAsync(CustomerCreateDTO customerCreateDTO, CancellationToken cancellationToken = default)
+    public virtual async Task<CustomerEntryOutputDTO?> CreateCustomerAsync(CustomerCreateInputDTO customerCreateDTO, CancellationToken cancellationToken = default)
     {
 
         Customer customer;
@@ -57,7 +57,7 @@ public class CustomerService
     }
 
 
-    public virtual async Task<List<CustomerEntryDTO>?> GetCustomersAsync(GetCustomerQueryParameters queryParameters, CancellationToken cancellationToken = default)
+    public virtual async Task<List<CustomerEntryOutputDTO>?> GetCustomersAsync(GetCustomerQueryParameters queryParameters, CancellationToken cancellationToken = default)
     {
         var (familyName, mobile, email) = queryParameters;
         var filteredCustomerList = await _unitOfWork.Customer.GetCustomerByQueryableParameters(familyName, mobile, email, cancellationToken);
@@ -68,7 +68,7 @@ public class CustomerService
         return filteredCustomerEntryDTOList;
     }
 
-    public virtual async Task<List<WorksheetDTO>?> GetCustomerWorksheetDTOListAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
+    public virtual async Task<List<WorksheetOutputDTO>?> GetCustomerWorksheetDTOListAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
     {
         var worksheetList = await _unitOfWork.Worksheet.GetWorksheetsByExternalCustomerIdAsync(externalCustomerId, cancellationToken);
         if (worksheetList is null)
@@ -81,7 +81,7 @@ public class CustomerService
         return worksheetDTOList;
     }
 
-    public virtual async Task<CustomerEntryDTO?> GetCustomerByExternalIdAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
+    public virtual async Task<CustomerEntryOutputDTO?> GetCustomerByExternalIdAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
     {
         var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
         if (customer is null)

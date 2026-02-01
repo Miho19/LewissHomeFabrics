@@ -1,18 +1,18 @@
 using Lewiss.Pricing.Data.Model.Fabric.Type;
 
 
-namespace Lewiss.Pricing.Shared.Fabric;
+namespace Lewiss.Pricing.Shared.FabricDTO;
 
 public static class FabricExtensions
 {
-    public static KineticsCellularFabricDTO ToKineticsCellularFabricDTO(this KineticsCellularFabric kineticsCellularFabric)
+    public static KineticsCellularFabricOutputDTO ToKineticsCellularFabricOutputDTO(this KineticsCellularFabric kineticsCellularFabric)
     {
         if (kineticsCellularFabric is null)
         {
             throw new Exception("Kinetics Cellular Fabric is null");
         }
 
-        return new KineticsCellularFabricDTO
+        return new KineticsCellularFabricOutputDTO
         {
             Opacity = kineticsCellularFabric.Opacity,
             Colour = kineticsCellularFabric.Colour,
@@ -21,14 +21,14 @@ public static class FabricExtensions
         };
     }
 
-    public static KineticsRollerFabricDTO ToKineticsRollerFabricDTO(this KineticsRollerFabric kineticsRollerFabric)
+    public static KineticsRollerFabricOutputDTO ToKineticsRollerFabricOutputDTO(this KineticsRollerFabric kineticsRollerFabric)
     {
         if (kineticsRollerFabric is null)
         {
             throw new Exception("Kinetics Roller Fabric is null");
         }
 
-        return new KineticsRollerFabricDTO
+        return new KineticsRollerFabricOutputDTO
         {
             Opacity = kineticsRollerFabric.Opacity,
             Colour = kineticsRollerFabric.Colour,

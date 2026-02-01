@@ -1,5 +1,5 @@
 using Lewiss.Pricing.Data.Model.Fabric.Type;
-using Lewiss.Pricing.Shared.Fabric;
+using Lewiss.Pricing.Shared.FabricDTO;
 
 namespace Lewiss.Pricing.Api.Tests.Fixtures;
 
@@ -23,9 +23,9 @@ public static class FabricFixture
         ProductOptionVariationId = 2,
     };
 
-    public static List<IFabricDTO> GetFabricListKineticsCellular()
+    public static List<IFabricOutputDTO> GetFabricListKineticsCellular()
     {
-        return [Cotton001Translucent.ToKineticsCellularFabricDTO(), Cream005Translucent.ToKineticsCellularFabricDTO()];
+        return [Cotton001Translucent.ToKineticsCellularFabricOutputDTO(), Cream005Translucent.ToKineticsCellularFabricOutputDTO()];
     }
 
     public static KineticsRollerFabric AdagioBlack = new KineticsRollerFabric
@@ -50,9 +50,9 @@ public static class FabricFixture
         ProductOptionVariationId = 4,
     };
 
-    public static List<IFabricDTO> GetFabricListKineticsRoller()
+    public static List<IFabricOutputDTO> GetFabricListKineticsRoller()
     {
-        return [AdagioBlack.ToKineticsRollerFabricDTO(), Fenescreen10Charcoal.ToKineticsRollerFabricDTO()];
+        return [AdagioBlack.ToKineticsRollerFabricOutputDTO(), Fenescreen10Charcoal.ToKineticsRollerFabricOutputDTO()];
     }
 
 }

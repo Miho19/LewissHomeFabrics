@@ -6,7 +6,7 @@ namespace Lewiss.Pricing.Api.Tests.Fixtures;
 public static class CustomerFixture
 {
 
-    public static CustomerEntryDTO TestCustomerEntryDTO { get; } = new CustomerEntryDTO
+    public static CustomerEntryOutputDTO TestCustomerEntryDTO { get; } = new CustomerEntryOutputDTO
     {
         FamilyName = "April",
         Street = "Street Address",
@@ -18,7 +18,7 @@ public static class CustomerFixture
     };
 
     // prettier not working for some reason
-    public static CustomerCreateDTO TestCustomerCreate { get; } = new CustomerCreateDTO
+    public static CustomerCreateInputDTO TestCustomerCreate { get; } = new CustomerCreateInputDTO
     {
         FamilyName = TestCustomerEntryDTO.FamilyName,
         Street = TestCustomerEntryDTO.Street,

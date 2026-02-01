@@ -33,7 +33,7 @@ public class CustomerController : ControllerBase
     }
 
     [HttpPost("", Name = "CreateCustomer")]
-    public async Task<IActionResult> CreateCustomer([FromBody] CustomerCreateDTO customerCreateDTO, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> CreateCustomer([FromBody] CustomerCreateInputDTO customerCreateDTO, CancellationToken cancellationToken = default)
     {
         var customerEntryDto = await _customerService.CreateCustomerAsync(customerCreateDTO, cancellationToken);
         if (customerEntryDto is null)

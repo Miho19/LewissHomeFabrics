@@ -39,7 +39,7 @@ public class CustomerControllerTests
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(StatusCodes.Status200OK, okObjectResult.StatusCode);
 
-        var returnedCustomerEntryDTO = Assert.IsType<CustomerEntryDTO>(okObjectResult.Value);
+        var returnedCustomerEntryDTO = Assert.IsType<CustomerEntryOutputDTO>(okObjectResult.Value);
         Assert.Equal(testCustomerEntryDTO.FamilyName, returnedCustomerEntryDTO.FamilyName);
         Assert.Equal(testCustomerEntryDTO.Id, returnedCustomerEntryDTO.Id);
 
@@ -54,7 +54,7 @@ public class CustomerControllerTests
         var customerController = new CustomerController(customerServiceMock.Object, logger.Object);
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        customerServiceMock.Setup(p => p.GetCustomerByExternalIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync((CustomerEntryDTO)null!);
+        customerServiceMock.Setup(p => p.GetCustomerByExternalIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync((CustomerEntryOutputDTO)null!);
 
         var result = await customerController.GetCustomer(testCustomerEntryDTO.Id);
 
@@ -73,13 +73,13 @@ public class CustomerControllerTests
         var customerController = new CustomerController(customerServiceMock.Object, logger.Object);
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        customerServiceMock.Setup(p => p.CreateCustomerAsync(It.IsAny<CustomerCreateDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(testCustomerEntryDTO);
+        customerServiceMock.Setup(p => p.CreateCustomerAsync(It.IsAny<CustomerCreateInputDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(testCustomerEntryDTO);
         var result = await customerController.CreateCustomer(CustomerFixture.TestCustomerCreate);
 
         Assert.NotNull(result);
         var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
         Assert.Equal(StatusCodes.Status201Created, createdAtActionResult.StatusCode);
-        var customerEntryDTO = Assert.IsType<CustomerEntryDTO>(createdAtActionResult.Value);
+        var customerEntryDTO = Assert.IsType<CustomerEntryOutputDTO>(createdAtActionResult.Value);
         Assert.Equal(testCustomerEntryDTO.FamilyName, customerEntryDTO.FamilyName);
     }
 
@@ -93,7 +93,7 @@ public class CustomerControllerTests
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
 
-        customerServiceMock.Setup(p => p.CreateCustomerAsync(It.IsAny<CustomerCreateDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync((CustomerEntryDTO)null!);
+        customerServiceMock.Setup(p => p.CreateCustomerAsync(It.IsAny<CustomerCreateInputDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync((CustomerEntryOutputDTO)null!);
 
         var result = await customerController.CreateCustomer(CustomerFixture.TestCustomerCreate);
 

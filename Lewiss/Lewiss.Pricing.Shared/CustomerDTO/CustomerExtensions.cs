@@ -4,14 +4,14 @@ namespace Lewiss.Pricing.Shared.CustomerDTO;
 
 public static class CustomerExtensions
 {
-    public static CustomerEntryDTO ToEntryDTO(this Customer customer)
+    public static CustomerEntryOutputDTO ToEntryDTO(this Customer customer)
     {
         if (customer is null)
         {
             throw new Exception("Customer object is null");
         }
 
-        return new CustomerEntryDTO
+        return new CustomerEntryOutputDTO
         {
             Id = customer.ExternalMapping,
             FamilyName = customer.FamilyName,
@@ -23,7 +23,7 @@ public static class CustomerExtensions
         };
     }
 
-    public static Customer ToCustomerEntity(this CustomerCreateDTO customerCreateDTO)
+    public static Customer ToCustomerEntity(this CustomerCreateInputDTO customerCreateDTO)
     {
         if (customerCreateDTO is null)
         {

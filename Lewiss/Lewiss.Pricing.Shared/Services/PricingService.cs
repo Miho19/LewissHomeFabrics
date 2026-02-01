@@ -1,6 +1,5 @@
 
-using Lewiss.Pricing.Data.Model;
-using Lewiss.Pricing.Shared.Product;
+
 
 namespace Lewiss.Pricing.Shared.Services;
 

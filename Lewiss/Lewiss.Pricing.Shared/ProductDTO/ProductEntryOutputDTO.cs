@@ -1,6 +1,7 @@
-namespace Lewiss.Pricing.Shared.Product;
+namespace Lewiss.Pricing.Shared.ProductDTO;
 
-public class ProductEntryDTO
+
+public class ProductEntryOutputDTO
 {
     public required Guid Id { get; set; }
     public required Guid WorksheetId { get; set; }

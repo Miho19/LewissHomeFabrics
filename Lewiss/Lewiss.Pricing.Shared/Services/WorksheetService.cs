@@ -1,6 +1,6 @@
-using Lewiss.Pricing.Shared.CustomerDTO;
-using Lewiss.Pricing.Shared.Product;
-using Lewiss.Pricing.Shared.Worksheet;
+using Lewiss.Pricing.Data.Model;
+using Lewiss.Pricing.Shared.ProductDTO;
+using Lewiss.Pricing.Shared.WorksheetDTO;
 
 namespace Lewiss.Pricing.Shared.Services;
 
@@ -12,7 +12,7 @@ public class WorksheetService
         _unitOfWork = unitOfWork;
     }
 
-    public virtual async Task<WorksheetDTO?> CreateWorksheetAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
+    public virtual async Task<WorksheetOutputDTO?> CreateWorksheetAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
     {
         var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
         if (customer is null)
@@ -40,7 +40,7 @@ public class WorksheetService
         return worksheetDTO;
     }
 
-    private async Task<(Data.Model.Customer?, Data.Model.Worksheet?)> GetCustomerAndWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
+    private async Task<(Customer?, Worksheet?)> GetCustomerAndWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
     {
         var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
         if (customer is null)
@@ -63,7 +63,7 @@ public class WorksheetService
     }
 
 
-    public virtual async Task<WorksheetDTO?> GetWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
+    public virtual async Task<WorksheetOutputDTO?> GetWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
     {
 
         var (customer, worksheet) = await GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
@@ -76,7 +76,7 @@ public class WorksheetService
         return worksheetDTO;
     }
 
-    public virtual async Task<List<ProductEntryDTO>?> GetWorksheetProductsAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
+    public virtual async Task<List<ProductEntryOutputDTO>?> GetWorksheetProductsAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
     {
         var (customer, worksheet) = await GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
         if (customer is null || worksheet is null)

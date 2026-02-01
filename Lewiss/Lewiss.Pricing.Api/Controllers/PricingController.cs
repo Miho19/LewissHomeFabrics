@@ -1,6 +1,4 @@
-using Lewiss.Pricing.Shared.CustomerDTO;
-using Lewiss.Pricing.Shared.Product;
-using Lewiss.Pricing.Shared.QueryParameters;
+using Lewiss.Pricing.Shared.ProductDTO;
 using Lewiss.Pricing.Shared.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -88,7 +86,7 @@ public class PricingController : ControllerBase
 
 
     [HttpPost("customer/{customerId}/worksheet/{workoutId}/product", Name = "CreateProduct")]
-    public async Task<IActionResult> CreateProduct(Guid customerId, Guid workoutId, [FromBody] ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> CreateProduct(Guid customerId, Guid workoutId, [FromBody] ProductCreateInputDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
 
         var productEntryDTO = await _productService.CreateProductAsync(customerId, workoutId, productCreateDTO, cancellationToken);

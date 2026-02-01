@@ -1,10 +1,11 @@
 using System.Text.Json;
 using Lewiss.Pricing.Data.Model;
-using Lewiss.Pricing.Shared.Product;
+
+namespace Lewiss.Pricing.Shared.ProductDTO;
 
 public static class ProductExtensions
 {
-    public static Product ToProductEntity(this ProductCreateDTO productCreateDTO, Worksheet worksheet)
+    public static Product ToProductEntity(this ProductCreateInputDTO productCreateDTO, Worksheet worksheet)
     {
         if (productCreateDTO is null || worksheet is null)
         {
@@ -28,14 +29,14 @@ public static class ProductExtensions
         };
     }
 
-    public static ProductEntryDTO ToProductEntryDTO(this Product product, ProductCreateDTO productCreateDTO)
+    public static ProductEntryOutputDTO ToProductEntryDTO(this Product product, ProductCreateInputDTO productCreateDTO)
     {
         if (product is null || productCreateDTO is null)
         {
             throw new Exception("Inputs are null");
         }
 
-        return new ProductEntryDTO
+        return new ProductEntryOutputDTO
         {
             Id = product.ExternalMapping,
             WorksheetId = productCreateDTO.WorksheetId,
@@ -47,7 +48,7 @@ public static class ProductExtensions
         };
     }
 
-    public static ProductEntryDTO ToProductEntryDTO(this Product product, Guid externalWorksheetId)
+    public static ProductEntryOutputDTO ToProductEntryDTO(this Product product, Guid externalWorksheetId)
     {
         if (product is null || externalWorksheetId == Guid.Empty)
         {
@@ -72,7 +73,7 @@ public static class ProductExtensions
             throw new Exception("Variable Configuration was not populated");
         }
 
-        var productEntryDTO = new ProductEntryDTO
+        var productEntryDTO = new ProductEntryOutputDTO
         {
             Id = product.ExternalMapping,
             WorksheetId = externalWorksheetId,
@@ -131,7 +132,7 @@ public static class ProductExtensions
         return variableConfiguration;
     }
 
-    private static ProductEntryDTO? ProductEntryDTOPopulateSpecificConfiguration(ProductEntryDTO productEntryDTO, Dictionary<string, object> optionsDictionary)
+    private static ProductEntryOutputDTO? ProductEntryDTOPopulateSpecificConfiguration(ProductEntryOutputDTO productEntryDTO, Dictionary<string, object> optionsDictionary)
     {
 
         var productType = productEntryDTO.FixedConfiguration.ProductType.ToUpper();
@@ -153,7 +154,7 @@ public static class ProductExtensions
         return result;
     }
 
-    private static ProductEntryDTO? ProductEntryDTOPopulateKineticsCellular(ProductEntryDTO productEntryDTO, Dictionary<string, object> optionsDictionary)
+    private static ProductEntryOutputDTO? ProductEntryDTOPopulateKineticsCellular(ProductEntryOutputDTO productEntryDTO, Dictionary<string, object> optionsDictionary)
     {
         var optionsDictionaryJsonString = JsonSerializer.Serialize(optionsDictionary);
         var kineticsCellular = JsonSerializer.Deserialize<KineticsCellular>(optionsDictionaryJsonString);
@@ -165,7 +166,7 @@ public static class ProductExtensions
         productEntryDTO.KineticsCellular = kineticsCellular;
         return productEntryDTO;
     }
-    private static ProductEntryDTO? ProductEntryDTOPopulateKineticsRoller(ProductEntryDTO productEntryDTO, Dictionary<string, object> optionsDictionary)
+    private static ProductEntryOutputDTO? ProductEntryDTOPopulateKineticsRoller(ProductEntryOutputDTO productEntryDTO, Dictionary<string, object> optionsDictionary)
     {
         var optionsDictionaryJsonString = JsonSerializer.Serialize(optionsDictionary);
         var kineticsRoller = JsonSerializer.Deserialize<KineticsRoller>(optionsDictionaryJsonString);

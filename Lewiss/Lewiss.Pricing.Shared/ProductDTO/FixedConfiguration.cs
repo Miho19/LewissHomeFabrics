@@ -1,4 +1,4 @@
-namespace Lewiss.Pricing.Shared.Product;
+namespace Lewiss.Pricing.Shared.ProductDTO;
 
 public class FixedConfiguration
 {

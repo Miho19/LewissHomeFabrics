@@ -1,7 +1,7 @@
-namespace Lewiss.Pricing.Shared.Fabric;
+namespace Lewiss.Pricing.Shared.FabricDTO;
 
 
-public interface IFabricDTO
+public interface IFabricOutputDTO
 {
     string FabricName { get; }
     string Opacity { get; set; }

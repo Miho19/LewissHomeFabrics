@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 using Lewiss.Pricing.Data.Model.Fabric.Price;
-using Lewiss.Pricing.Shared.Fabric;
+using Lewiss.Pricing.Shared.FabricDTO;
 using Lewiss.Pricing.Shared.QueryParameters;
 
 
@@ -15,7 +15,7 @@ public class FabricService
     }
 
 
-    public virtual async Task<List<IFabricDTO>> GetFabricsAsync(string fabricType, CancellationToken cancellationToken = default)
+    public virtual async Task<List<IFabricOutputDTO>> GetFabricsAsync(string fabricType, CancellationToken cancellationToken = default)
     {
         var query = Regex.Replace(fabricType, @"\s+", String.Empty).ToLower();
 
@@ -30,7 +30,7 @@ public class FabricService
         return fabricList;
     }
 
-    private async Task<List<IFabricDTO>> GetKineticsCellularFabricListAsync(CancellationToken cancellationToken = default)
+    private async Task<List<IFabricOutputDTO>> GetKineticsCellularFabricListAsync(CancellationToken cancellationToken = default)
     {
         var fabricList = await _unitOfWork.KineticsCellularFabric.GetAllAsync();
 
@@ -39,14 +39,14 @@ public class FabricService
             return [];
         }
 
-        List<IFabricDTO> listToReturn = fabricList.Select(f => f.ToKineticsCellularFabricDTO()).ToList<IFabricDTO>();
+        List<IFabricOutputDTO> listToReturn = fabricList.Select(f => f.ToKineticsCellularFabricOutputDTO()).ToList<IFabricOutputDTO>();
 
         return listToReturn;
 
     }
 
 
-    private async Task<List<IFabricDTO>> GetKineticsRollerFabricListAsync(CancellationToken cancellationToken = default)
+    private async Task<List<IFabricOutputDTO>> GetKineticsRollerFabricListAsync(CancellationToken cancellationToken = default)
     {
 
         var fabricList = await _unitOfWork.KineticsRollerFabric.GetAllAsync();
@@ -55,12 +55,12 @@ public class FabricService
             return [];
         }
 
-        List<IFabricDTO> listToReturn = fabricList.Select(f => f.ToKineticsRollerFabricDTO()).ToList<IFabricDTO>();
+        List<IFabricOutputDTO> listToReturn = fabricList.Select(f => f.ToKineticsRollerFabricOutputDTO()).ToList<IFabricOutputDTO>();
 
         return listToReturn;
     }
 
-    private async Task<IFabricDTO?> GetKineticsRollerFabricAsync(string? fabric, string colour, string opacity, CancellationToken cancellationToken = default)
+    private async Task<IFabricOutputDTO?> GetKineticsRollerFabricAsync(string? fabric, string colour, string opacity, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(fabric))
         {
@@ -73,20 +73,20 @@ public class FabricService
             return null;
         }
 
-        return kineticsRollerFabric.ToKineticsRollerFabricDTO();
+        return kineticsRollerFabric.ToKineticsRollerFabricOutputDTO();
     }
 
-    private async Task<IFabricDTO?> GetKineticsCellularFabricAsync(string colour, string opacity, CancellationToken cancellationToken = default)
+    private async Task<IFabricOutputDTO?> GetKineticsCellularFabricAsync(string colour, string opacity, CancellationToken cancellationToken = default)
     {
         var KineticsCellularFabric = await _unitOfWork.KineticsCellularFabric.GetFabricAsync(colour, opacity, cancellationToken);
         if (KineticsCellularFabric is null)
         {
             return null;
         }
-        return KineticsCellularFabric.ToKineticsCellularFabricDTO();
+        return KineticsCellularFabric.ToKineticsCellularFabricOutputDTO();
     }
 
-    public async Task<FabricPriceDTO?> GetFabricPriceAsync(string productType, GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
+    public async Task<FabricPriceOutputDTO?> GetFabricPriceAsync(string productType, GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(productType))
         {
@@ -110,7 +110,7 @@ public class FabricService
 
 
 
-        return new FabricPriceDTO
+        return new FabricPriceOutputDTO
         {
             Price = price
         };

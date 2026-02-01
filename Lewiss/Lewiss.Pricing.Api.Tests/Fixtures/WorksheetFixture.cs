@@ -1,11 +1,11 @@
 using Lewiss.Pricing.Data.Model;
-using Lewiss.Pricing.Shared.Worksheet;
+using Lewiss.Pricing.Shared.WorksheetDTO;
 
 namespace Lewiss.Pricing.Api.Tests.Fixtures;
 
 public static class WorksheetFixture
 {
-    public static WorksheetDTO TestWorksheetDTO = new WorksheetDTO
+    public static WorksheetOutputDTO TestWorksheetDTO = new WorksheetOutputDTO
     {
         Id = Guid.CreateVersion7(DateTimeOffset.UtcNow),
         CustomerId = CustomerFixture.TestCustomer.ExternalMapping,

@@ -1,7 +1,7 @@
 using Lewiss.Pricing.Api.Controllers;
 using Lewiss.Pricing.Api.Tests.Fixtures;
 using Lewiss.Pricing.Data.Model.Fabric;
-using Lewiss.Pricing.Shared.Fabric;
+using Lewiss.Pricing.Shared.FabricDTO;
 using Lewiss.Pricing.Shared.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -33,10 +33,10 @@ public class FabricControllerTests
         Assert.NotNull(result);
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(StatusCodes.Status200OK, okObjectResult.StatusCode);
-        var fabricList = Assert.IsAssignableFrom<List<IFabricDTO>>(okObjectResult.Value);
+        var fabricList = Assert.IsAssignableFrom<List<IFabricOutputDTO>>(okObjectResult.Value);
         Assert.NotEmpty(fabricList);
 
-        var kineticsCellularFabricDTOList = fabricList.Cast<KineticsCellularFabricDTO>().ToList();
+        var kineticsCellularFabricDTOList = fabricList.Cast<KineticsCellularFabricOutputDTO>().ToList();
 
         foreach (var f in kineticsCellularFabricDTOList)
         {
@@ -59,10 +59,10 @@ public class FabricControllerTests
         Assert.NotNull(result);
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(StatusCodes.Status200OK, okObjectResult.StatusCode);
-        var fabricList = Assert.IsAssignableFrom<List<IFabricDTO>>(okObjectResult.Value);
+        var fabricList = Assert.IsAssignableFrom<List<IFabricOutputDTO>>(okObjectResult.Value);
         Assert.NotEmpty(fabricList);
 
-        var kineticsRollerFabricDTOList = fabricList.Cast<KineticsRollerFabricDTO>().ToList();
+        var kineticsRollerFabricDTOList = fabricList.Cast<KineticsRollerFabricOutputDTO>().ToList();
 
         foreach (var f in kineticsRollerFabricDTOList)
         {

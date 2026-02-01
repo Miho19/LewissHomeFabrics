@@ -1,5 +1,5 @@
 using Lewiss.Pricing.Data.Model;
-using Lewiss.Pricing.Shared.Product;
+using Lewiss.Pricing.Shared.ProductDTO;
 
 namespace Lewiss.Pricing.Api.Tests.Fixtures;
 
@@ -36,7 +36,7 @@ public static class ProductFixture
         SideChannelColour = "None",
     };
 
-    public static ProductCreateDTO TestProductCreateDTOKineticsCellular = new ProductCreateDTO
+    public static ProductCreateInputDTO TestProductCreateDTOKineticsCellular = new ProductCreateInputDTO
     {
         WorksheetId = WorksheetFixture.TestWorksheet.ExternalMapping,
         VariableConfiguration = TestKineticsCellularVariableConfiguration,
@@ -63,7 +63,7 @@ public static class ProductFixture
     };
 
 
-    public static ProductEntryDTO TestProductEntryDTOKineticsCellular = new ProductEntryDTO
+    public static ProductEntryOutputDTO TestProductEntryDTOKineticsCellular = new ProductEntryOutputDTO
     {
         Id = TestProductKineticsCellular.ExternalMapping,
         WorksheetId = WorksheetFixture.TestWorksheetDTO.Id,
@@ -118,7 +118,7 @@ public static class ProductFixture
     };
 
 
-    public static ProductCreateDTO TestProductCreateDTOKineticsRoller = new ProductCreateDTO
+    public static ProductCreateInputDTO TestProductCreateDTOKineticsRoller = new ProductCreateInputDTO
     {
         WorksheetId = WorksheetFixture.TestWorksheet.ExternalMapping,
         VariableConfiguration = TestKineticsRollerVariableConfiguration,

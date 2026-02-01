@@ -1,8 +1,7 @@
-using System.ComponentModel;
-using System.Dynamic;
-using System.Text.Json;
-using Lewiss.Pricing.Shared.Product;
-using Microsoft.Extensions.Logging;
+using Lewiss.Pricing.Data.Model;
+using Lewiss.Pricing.Shared.CustomerDTO;
+using Lewiss.Pricing.Shared.ProductDTO;
+
 
 namespace Lewiss.Pricing.Shared.Services;
 
@@ -23,7 +22,7 @@ public class ProductService
     }
 
     // This will eventually be replaced by function in PricingService and Result pattern; currently this check is duplicated
-    private async Task<(Data.Model.Customer?, Data.Model.Worksheet?)> GetCustomerAndWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
+    private async Task<(Customer?, Worksheet?)> GetCustomerAndWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
     {
         var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
         if (customer is null)
@@ -46,7 +45,7 @@ public class ProductService
     }
 
     // Need to adjust this to follow a more functional programming approach
-    public virtual async Task<ProductEntryDTO?> CreateProductAsync(Guid externalCustomerId, Guid externalWorksheetId, ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
+    public virtual async Task<ProductEntryOutputDTO?> CreateProductAsync(Guid externalCustomerId, Guid externalWorksheetId, ProductCreateInputDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
         var (customer, worksheet) = await GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId, cancellationToken);
         if (customer is null || worksheet is null)
@@ -68,7 +67,8 @@ public class ProductService
             return null;
         }
 
-
+        //  Go through option variations --> add their price to total
+        // Get fabric price info --> add to price totalv 
 
         await _unitOfWork.Product.AddAsync(product);
         await _unitOfWork.CommitAsync();
@@ -78,7 +78,7 @@ public class ProductService
         return productEntryDTO;
     }
 
-    private async Task<Data.Model.Product?> PopulateProductOptionVariationListByType(Data.Model.Product product, object? obj, Type type, CancellationToken cancellationToken = default)
+    private async Task<Product?> PopulateProductOptionVariationListByType(Product product, object? obj, Type type, CancellationToken cancellationToken = default)
     {
         if (obj is null)
         {
@@ -122,7 +122,7 @@ public class ProductService
         return product;
     }
 
-    private async Task<Data.Model.Product?> PopulateProductOptionVariationList_ProductTypeSpecificConfigurationAsync(Data.Model.Product product, ProductCreateDTO productCreateDTO, CancellationToken cancellationToken = default)
+    private async Task<Product?> PopulateProductOptionVariationList_ProductTypeSpecificConfigurationAsync(Data.Model.Product product, ProductCreateInputDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
         var productType = productCreateDTO.FixedConfiguration.ProductType.ToUpper();
         productType = String.Concat(productType.Where(c => !Char.IsWhiteSpace(c)));
@@ -143,7 +143,7 @@ public class ProductService
     }
 
 
-    public virtual async Task<ProductEntryDTO?> GetProductAsync(Guid externalCustomerId, Guid externalWorksheetId, Guid externalProductId, CancellationToken cancellationToken = default)
+    public virtual async Task<ProductEntryOutputDTO?> GetProductAsync(Guid externalCustomerId, Guid externalWorksheetId, Guid externalProductId, CancellationToken cancellationToken = default)
     {
         var (customer, worksheet) = await GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId, cancellationToken);
         if (customer is null || worksheet is null)
