@@ -27,11 +27,6 @@ public class WorksheetRepository : Repository<Worksheet>, IWorksheetRepository
 
         var worksheets = customer.CurrentWorksheets.ToList();
 
-        if (worksheets is null || worksheets.Count == 0)
-        {
-            return [];
-        }
-
         return worksheets;
     }
 

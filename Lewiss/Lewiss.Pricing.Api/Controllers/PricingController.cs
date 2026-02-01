@@ -9,22 +9,15 @@ namespace Lewiss.Pricing.Api.Controllers;
 [Route("api/v1/[controller]")]
 public class PricingController : ControllerBase
 {
-    private readonly PricingService _pricingService;
     private readonly CustomerService _customerService;
     private readonly ProductService _productService;
     private readonly WorksheetService _worksheetService;
 
-    private readonly ILogger<PricingController> _logger;
-
-    public PricingController(PricingService pricingService, CustomerService customerService, ProductService productService, WorksheetService worksheetService, ILogger<PricingController> logger)
+    public PricingController(CustomerService customerService, ProductService productService, WorksheetService worksheetService)
     {
-        _pricingService = pricingService;
         _customerService = customerService;
         _productService = productService;
         _worksheetService = worksheetService;
-
-        _logger = logger;
-
     }
 
 
@@ -35,11 +28,21 @@ public class PricingController : ControllerBase
         var worksheetDTOList = await _customerService.GetCustomerWorksheetDTOListAsync(customerId, cancellationToken);
         if (worksheetDTOList is null)
         {
-            return new ObjectResult(new ProblemDetails
+            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
                 Title = "Internal Server Error",
-                Detail = "Failed to retrieve worksheet"
+                Detail = "Something went wrong.",
+            });
+        }
+
+        if (worksheetDTOList.Count == 0)
+        {
+            return StatusCode(StatusCodes.Status404NotFound, new ProblemDetails
+            {
+                Status = StatusCodes.Status500InternalServerError,
+                Title = "Not Found",
+                Detail = "Customer worksheets not found.",
             });
         }
 
