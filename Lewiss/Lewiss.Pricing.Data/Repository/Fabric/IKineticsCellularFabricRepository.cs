@@ -4,4 +4,6 @@ using Lewiss.Pricing.Data.Repository.Generic;
 public interface IKineticsCellularFabricRepository : IRepository<KineticsCellularFabric>
 {
     Task<KineticsCellularFabric?> GetFabricAsync(string colour, string opacity, CancellationToken cancellationToken);
+
+    Task<KineticsCellularFabric?> GetFabricByProductOptionVariationIdAsync(int productOptionVariationId, CancellationToken cancellationToken);
 }

@@ -70,6 +70,12 @@ public class ProductService
             throw new Exception("Fabric was not found in product option variation list");
         }
 
+        var productTypeProductOptionVariation = productOptionVariations.FirstOrDefault(ov => ov.ProductOptionId == ProductTypeOption.ProductOption.ProductOptionId);
+        if (productTypeProductOptionVariation is null)
+        {
+            throw new Exception("Product Type was not found in product option variation list");
+        }
+
         var fabricPriceOutputDTO = await _fabricService.GetFabricPriceOutputDTOByProductOptionVariationIdAsync(fabricProductOptionVariation.ProductOptionVariationId);
 
         if (fabricPriceOutputDTO is null)

@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using Lewiss.Pricing.Data.Model.Fabric.Price;
+using Lewiss.Pricing.Data.OptionData;
 using Lewiss.Pricing.Shared.FabricDTO;
 using Lewiss.Pricing.Shared.QueryParameters;
 using Microsoft.Extensions.Logging;
@@ -160,14 +161,22 @@ public class FabricService
         return fabricDTO.Multiplier;
     }
 
-    public async Task<FabricPriceOutputDTO?> GetFabricPriceOutputDTOByProductOptionVariationIdAsync(int productOptionVariationId, CancellationToken cancellationToken = default)
+    public async Task<FabricPriceOutputDTO?> GetFabricPriceOutputDTOByProductOptionVariationIdAsync(string productType, int productOptionVariationId, int width, int height, CancellationToken cancellationToken = default)
     {
         try
         {
+            var productTypeQuery = _sharedUtilityService.GetProductTypeQueryString(productType);
+            // we have multiplier
+            var fabricOutputDTO = await GetFabricOutputDTOByProductOptionVariationIdAsync(productType, productOptionVariationId, cancellationToken);
+            var fabricPrice = await _unitOfWork.FabricPrice.GetFabricPriceByFabricPriceQueryParametersAsync(productTypeQuery, width, height, fabricOutputDTO.Opacity, cancellationToken);
+            if (fabricPrice is null)
+            {
+                return null;
+            }
 
             return new FabricPriceOutputDTO
             {
-                Price = default
+                Price = fabricPrice.Price
             };
         }
         catch (Exception ex)
@@ -175,6 +184,40 @@ public class FabricService
             _logger.LogError($"FabricService.GetFabricPriceOutputDTOByProductOptionVariationIdAsync exception: {ex.Message}");
             return null;
         }
+    }
+
+    private async Task<IFabricOutputDTO> GetFabricOutputDTOByProductOptionVariationIdAsync(string productType, int productOptionVariationId, CancellationToken cancellationToken = default)
+    {
+        var productTypeQuery = _sharedUtilityService.GetProductTypeQueryString(productType);
+
+        // this feels bad
+        if (productTypeQuery == _sharedUtilityService.GetProductTypeQueryString(ProductTypeOption.KineticsCellular.Value))
+        {
+            var kineticsCellularFabric = await _unitOfWork.KineticsCellularFabric.GetFabricByProductOptionVariationIdAsync(productOptionVariationId, cancellationToken);
+            if (kineticsCellularFabric is null)
+            {
+                throw new Exception($"Failed to retrieve Kinetics Cellular fabric by productOptionVariationId {productOptionVariationId}");
+            }
+
+            return kineticsCellularFabric.ToKineticsCellularFabricOutputDTO();
+
+        }
+        else if (productTypeQuery == _sharedUtilityService.GetProductTypeQueryString(ProductTypeOption.KineticsRoller.Value))
+        {
+            var kineticsRollerFabric = await _unitOfWork.KineticsRollerFabric.GetFabricByProductOptionVariationIdAsync(productOptionVariationId, cancellationToken);
+            if (kineticsRollerFabric is null)
+            {
+                throw new Exception($"Failed to retrieve Kinetics Roller fabric by productOptionVariationId {productOptionVariationId}");
+            }
+
+            return kineticsRollerFabric.ToKineticsRollerFabricOutputDTO();
+
+        }
+        else
+        {
+            throw new Exception("Invalid Product Type");
+        }
+
     }
 
 }

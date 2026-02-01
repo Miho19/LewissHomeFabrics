@@ -17,4 +17,9 @@ public class KineticsRollerFabricRepository : Repository<KineticsRollerFabric>, 
         return await _dbSet.FirstOrDefaultAsync(f => f.Colour == colour && f.Fabric == fabric && f.Opacity == opacity, cancellationToken);
 
     }
+
+    public async Task<KineticsRollerFabric?> GetFabricByProductOptionVariationIdAsync(int productOptionVariationId, CancellationToken cancellationToken)
+    {
+        return await _dbSet.FirstOrDefaultAsync(f => f.ProductOptionVariationId == productOptionVariationId, cancellationToken);
+    }
 }

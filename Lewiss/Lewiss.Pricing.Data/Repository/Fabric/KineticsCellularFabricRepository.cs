@@ -16,4 +16,9 @@ public class KineticsCellularFabricRepository : Repository<KineticsCellularFabri
     {
         return await _dbSet.FirstOrDefaultAsync(f => f.Colour == colour && f.Opacity == opacity, cancellationToken);
     }
+
+    public async Task<KineticsCellularFabric?> GetFabricByProductOptionVariationIdAsync(int productOptionVariationId, CancellationToken cancellationToken)
+    {
+        return await _dbSet.FirstOrDefaultAsync(f => f.ProductOptionVariationId == productOptionVariationId, cancellationToken);
+    }
 }

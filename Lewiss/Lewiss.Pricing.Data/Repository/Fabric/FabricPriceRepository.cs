@@ -18,4 +18,5 @@ public class FabricPriceRepository : Repository<FabricPrice>, IFabricPriceReposi
         return fabricPrice;
     }
 
+
 }
