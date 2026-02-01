@@ -42,7 +42,7 @@ public class ProductService
             // Get fabric price info --> add to price total
 
             var totalPriceProductOptionVariationList = GetProductOptionVariationListTotalPrice(product.OptionVariations.ToList());
-            var fabricPrice = await GetProductFabricPriceOutputDTO(product.OptionVariations.ToList(), cancellationToken);
+            var fabricPrice = await GetProductFabricPriceOutputDTO(product.OptionVariations.ToList(), product.Width, product.Height, cancellationToken);
 
             product.Price = totalPriceProductOptionVariationList + fabricPrice.Price;
 
@@ -62,7 +62,7 @@ public class ProductService
         }
     }
 
-    private async Task<FabricPriceOutputDTO> GetProductFabricPriceOutputDTO(List<ProductOptionVariation> productOptionVariations, CancellationToken cancellationToken = default)
+    private async Task<FabricPriceOutputDTO> GetProductFabricPriceOutputDTO(List<ProductOptionVariation> productOptionVariations, int width, int height, CancellationToken cancellationToken = default)
     {
         var fabricProductOptionVariation = productOptionVariations.FirstOrDefault(ov => ov.ProductOptionId == FabricOption.ProductOption.ProductOptionId);
         if (fabricProductOptionVariation is null)
@@ -76,7 +76,7 @@ public class ProductService
             throw new Exception("Product Type was not found in product option variation list");
         }
 
-        var fabricPriceOutputDTO = await _fabricService.GetFabricPriceOutputDTOByProductOptionVariationIdAsync(fabricProductOptionVariation.ProductOptionVariationId);
+        var fabricPriceOutputDTO = await _fabricService.GetFabricPriceOutputDTOByProductOptionVariationIdAsync(productTypeProductOptionVariation.Value, width, height, fabricProductOptionVariation.ProductOptionVariationId);
 
         if (fabricPriceOutputDTO is null)
         {
