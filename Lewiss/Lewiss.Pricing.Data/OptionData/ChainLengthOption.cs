@@ -18,7 +18,7 @@ public static class ChainLengthOption
 
         var stepList = new List<int>();
 
-        for (int i = start; i < end; i += step)
+        for (int i = start; i <= end; i += step)
             stepList.Add(i);
 
         var chainLengths = stepList.Select(s => new ProductOptionVariation

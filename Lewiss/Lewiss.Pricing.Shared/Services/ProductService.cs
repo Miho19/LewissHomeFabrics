@@ -68,6 +68,8 @@ public class ProductService
             return null;
         }
 
+
+
         await _unitOfWork.Product.AddAsync(product);
         await _unitOfWork.CommitAsync();
 
