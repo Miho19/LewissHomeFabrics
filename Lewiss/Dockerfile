@@ -10,8 +10,8 @@ ARG configuration=Release
 WORKDIR /src
 COPY ["Lewiss.Pricing.Api/Lewiss.Pricing.Api.csproj", "Lewiss.Pricing.Api/"]
 COPY ["Lewiss.Pricing.Api.Tests/Lewiss.Pricing.Api.Tests.csproj", "Lewiss.Pricing.Api.Tests/"]
-COPY ["Lewiss.Pricing.Api.Data/Lewiss.Pricing.Data.csproj", "Lewiss.Pricing.Api.Data/"]
-COPY ["Lewiss.Pricing.Api.Shared/Lewiss.Pricing.Shared.csproj", "Lewiss.Pricing.Api.Shared/"]
+COPY ["Lewiss.Pricing.Data/Lewiss.Pricing.Data.csproj", "Lewiss.Pricing.Data/"]
+COPY ["Lewiss.Pricing.Shared/Lewiss.Pricing.Shared.csproj", "Lewiss.Pricing.Shared/"]
 RUN dotnet restore "Lewiss.Pricing.Api/Lewiss.Pricing.Api.csproj"
 
 COPY . .

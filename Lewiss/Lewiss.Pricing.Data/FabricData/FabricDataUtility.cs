@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json;
 
 namespace Lewiss.Pricing.Data.FabricData;
@@ -6,16 +7,25 @@ namespace Lewiss.Pricing.Data.FabricData;
 
 public static class FabricDataUtility
 {
-    // public static string FabricDataBaseAddress { get; } = "./FabricData/JSONData";
 
     public static T GetJSONFileData<T>(string fileName)
     {
         try
         {
-            var FabricDataBaseAddress = "/root/lewiss-home-fabrics/Lewiss/Lewiss.Pricing.Data/FabricData/JSONData";
+
+            var executingAssemblyLocation = Assembly.GetExecutingAssembly().Location;
+            var buildDirectory = Path.GetDirectoryName(executingAssemblyLocation);
+
+            if (string.IsNullOrEmpty(buildDirectory))
+            {
+                throw new Exception("Build Directory path is null");
+            }
+
+            var dataDirectory = "FabricData/JSONData";
 
 
-            var filePath = Path.Combine(FabricDataBaseAddress, fileName);
+
+            var filePath = Path.Combine(buildDirectory, dataDirectory, fileName);
             var jsonString = File.ReadAllText(filePath);
 
             if (jsonString is null)
