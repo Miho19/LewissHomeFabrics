@@ -165,10 +165,15 @@ public class FabricService
     {
         try
         {
-            var productTypeQuery = _sharedUtilityService.GetProductTypeQueryString(productType);
+
             // we have multiplier
             var fabricOutputDTO = await GetFabricOutputDTOByProductOptionVariationIdAsync(productType, productOptionVariationId, cancellationToken);
-            var fabricPrice = await _unitOfWork.FabricPrice.GetFabricPriceByFabricPriceQueryParametersAsync(productTypeQuery, width, height, fabricOutputDTO.Opacity, cancellationToken);
+
+            var productTypeDatabaseValid = _sharedUtilityService.GetValidProductOptionTypeString(productType);
+            var fabricPrice = await _unitOfWork.FabricPrice.GetFabricPriceByFabricPriceQueryParametersAsync(productTypeDatabaseValid, width, height, fabricOutputDTO.Opacity, cancellationToken);
+            _logger.LogError($"fabric price: {fabricPrice?.Price}");
+
+
             if (fabricPrice is null)
             {
                 return null;

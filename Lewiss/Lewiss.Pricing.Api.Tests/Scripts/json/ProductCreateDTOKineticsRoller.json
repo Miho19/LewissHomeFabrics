@@ -13,14 +13,14 @@
     "fittype": "inside",
     "fixingto": "wood",
     "producttype": "Kinetics Roller",
-    "fabric": "Everyday Vinyl Collection - Polar",
+    "fabric": "Adagio Black LF",
     "operationtype": "Chain",
     "operationside": "Left"
   },
   "kineticsroller": {
     "rolltype": "Front",
     "ChainColour": "black",
-    "ChainLength": 1500,
+    "ChainLength": "1500",
     "BracketType": "Standard",
     "BracketColour": "White",
     "BottomRailType": "Flat",

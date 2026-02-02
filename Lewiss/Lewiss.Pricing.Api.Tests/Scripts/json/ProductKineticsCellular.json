@@ -1,7 +1,7 @@
 {
-  "id": "019c0841-c4b1-72fd-9b47-8cff3464af27",
+  "id": "019c1bdc-99ea-7208-9b18-86102bd1cd3d",
   "worksheetId": "019c0300-bcce-7a1f-b6f4-8151b86e2bfb",
-  "price": 0,
+  "price": 432.00000000000000000000000000,
   "variableConfiguration": {
     "location": "Kitchen",
     "width": 1200,
@@ -15,9 +15,9 @@
     "fitType": "inside",
     "fixingTo": "wood",
     "productType": "Kinetics Cellular",
-    "fabric": "Translucent White",
+    "fabric": "001 Translucent Cotton",
     "operationType": "Cord",
-    "operationSide": "Left"
+    "operationSide": "Right"
   },
   "kineticsCellular": {
     "headrailColour": "White",

@@ -1,0 +1,34 @@
+{
+  "id": "019c1bda-84d6-770f-a76b-033f26c7dc10",
+  "worksheetId": "019c0300-bcce-7a1f-b6f4-8151b86e2bfb",
+  "price": 511.25000000000000000000000000,
+  "variableConfiguration": {
+    "location": "Lounge",
+    "width": 1200,
+    "height": 900,
+    "reveal": 0,
+    "remoteNumber": 0,
+    "remoteChannel": 0,
+    "installHeight": 1200
+  },
+  "fixedConfiguration": {
+    "fitType": "inside",
+    "fixingTo": "wood",
+    "productType": "Kinetics Roller",
+    "fabric": "Adagio Black LF",
+    "operationType": "Chain",
+    "operationSide": "Left"
+  },
+  "kineticsCellular": null,
+  "kineticsRoller": {
+    "rollType": "Front",
+    "chainColour": "black",
+    "chainLength": "1500",
+    "bracketType": "Standard",
+    "bracketColour": "White",
+    "bottomRailType": "Flat",
+    "bottomRailColour": "White",
+    "pelmetType": null,
+    "pelmetColour": null
+  }
+}

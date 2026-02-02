@@ -76,7 +76,7 @@ public class ProductService
             throw new Exception("Product Type was not found in product option variation list");
         }
 
-        var fabricPriceOutputDTO = await _fabricService.GetFabricPriceOutputDTOByProductOptionVariationIdAsync(productTypeProductOptionVariation.Value, width, height, fabricProductOptionVariation.ProductOptionVariationId);
+        var fabricPriceOutputDTO = await _fabricService.GetFabricPriceOutputDTOByProductOptionVariationIdAsync(productTypeProductOptionVariation.Value, fabricProductOptionVariation.ProductOptionVariationId, width, height, cancellationToken);
 
         if (fabricPriceOutputDTO is null)
         {

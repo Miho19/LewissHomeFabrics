@@ -13,12 +13,11 @@
     "fittype": "inside",
     "fixingto": "wood",
     "producttype": "Kinetics Cellular",
-    "fabric": "Translucent White",
+    "fabric": "001 Translucent Cotton",
     "operationtype": "Cord",
-    "operationside": "Left"
+    "operationside": "Right"
   },
   "KineticsCellular": {
-    "producttype": "Kinetics Cellular",
     "headrailcolour": "White",
     "sidechannelcolour": "White"
   }

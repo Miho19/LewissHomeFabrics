@@ -7,13 +7,26 @@ if ! command -v jq &> /dev/null; then
     exit 1
 fi
 
+SCRIPT_DIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+customerEntryDTO="${SCRIPT_DIR}/json/CustomerEntryDTO.json"
+
+id=$(jq -r '.id' "$customerEntryDTO")
+
 baseaddress="http://localhost:5085/api/v1"
 
-currentaddress="${baseaddress}/pricing/customer/$1/worksheet"
+currentaddress="${baseaddress}/pricing/customer/${id}/worksheet"
 
 response=$(curl -s -X POST \
     -H "Content-Type: application/json" \
     $currentaddress
 )
 
-echo "$response" | jq .
+
+json=$(echo "$response" | jq .)
+
+
+outputFile="${SCRIPT_DIR}/json/Worksheet.json"
+
+
+echo "$json" > "$outputFile"
+

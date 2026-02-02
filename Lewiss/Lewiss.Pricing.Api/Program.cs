@@ -45,7 +45,6 @@ builder.Services.AddScoped<IFabricPriceRepository, FabricPriceRepository>();
 
 
 // Services
-builder.Services.AddScoped<PricingService>();
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<WorksheetService>();
