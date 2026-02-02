@@ -477,3 +477,11 @@ Retrieve all `Product` assoicated with a `Worksheet`
   "price": 511.25
 }
 ```
+
+### Hosting
+
+- Just a note to self
+
+```
+  docker run --network="host" --env-file ./lewiss-home-fabrics/Lewiss/Lewiss.Pricing.Api/.env lewiss-pricingapi:latest
+```
