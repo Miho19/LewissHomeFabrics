@@ -24,10 +24,11 @@ public class CustomerControllerTests
     public async Task GetCustomer_ShouldReturnOkWithCustomerEntryDTO_OnSuccess()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var logger = new Mock<ILogger<CustomerController>>();
+        var customerControllerloggerMock = new Mock<ILogger<CustomerController>>();
+        var customerServiceloggerMock = new Mock<ILogger<CustomerService>>();
 
-        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
-        var customerController = new CustomerController(customerServiceMock.Object, logger.Object);
+        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object, customerServiceloggerMock.Object);
+        var customerController = new CustomerController(customerServiceMock.Object, customerControllerloggerMock.Object);
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
         customerServiceMock.Setup(p => p.GetCustomerByExternalIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
@@ -49,9 +50,11 @@ public class CustomerControllerTests
     public async Task GetCustomer_ShouldReturnNotFound404_OnFailure_WhenDatabaseReturnsNull()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
-        var logger = new Mock<ILogger<CustomerController>>();
-        var customerController = new CustomerController(customerServiceMock.Object, logger.Object);
+        var customerControllerloggerMock = new Mock<ILogger<CustomerController>>();
+        var customerServiceloggerMock = new Mock<ILogger<CustomerService>>();
+
+        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object, customerServiceloggerMock.Object);
+        var customerController = new CustomerController(customerServiceMock.Object, customerControllerloggerMock.Object);
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
         customerServiceMock.Setup(p => p.GetCustomerByExternalIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync((CustomerEntryOutputDTO)null!);
@@ -68,9 +71,11 @@ public class CustomerControllerTests
     public async Task CreateCustomer_ShouldReturnOkCreated_OnSuccess()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
-        var logger = new Mock<ILogger<CustomerController>>();
-        var customerController = new CustomerController(customerServiceMock.Object, logger.Object);
+        var customerControllerloggerMock = new Mock<ILogger<CustomerController>>();
+        var customerServiceloggerMock = new Mock<ILogger<CustomerService>>();
+
+        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object, customerServiceloggerMock.Object);
+        var customerController = new CustomerController(customerServiceMock.Object, customerControllerloggerMock.Object);
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
         customerServiceMock.Setup(p => p.CreateCustomerAsync(It.IsAny<CustomerCreateInputDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(testCustomerEntryDTO);
@@ -87,9 +92,11 @@ public class CustomerControllerTests
     public async Task CreateCustomer_ShouldReturn500_OnFailure()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object);
-        var logger = new Mock<ILogger<CustomerController>>();
-        var customerController = new CustomerController(customerServiceMock.Object, logger.Object);
+        var customerControllerloggerMock = new Mock<ILogger<CustomerController>>();
+        var customerServiceloggerMock = new Mock<ILogger<CustomerService>>();
+
+        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object, customerServiceloggerMock.Object);
+        var customerController = new CustomerController(customerServiceMock.Object, customerControllerloggerMock.Object);
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
 

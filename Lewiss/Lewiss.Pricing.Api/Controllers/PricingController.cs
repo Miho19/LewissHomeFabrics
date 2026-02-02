@@ -36,15 +36,15 @@ public class PricingController : ControllerBase
             });
         }
 
-        if (worksheetDTOList.Count == 0)
-        {
-            return StatusCode(StatusCodes.Status404NotFound, new ProblemDetails
-            {
-                Status = StatusCodes.Status404NotFound,
-                Title = "Not Found",
-                Detail = "Customer worksheets not found.",
-            });
-        }
+        // if (worksheetDTOList.Count == 0)
+        // {
+        //     return StatusCode(StatusCodes.Status404NotFound, new ProblemDetails
+        //     {
+        //         Status = StatusCodes.Status404NotFound,
+        //         Title = "Not Found",
+        //         Detail = "Customer worksheets not found.",
+        //     });
+        // }
 
         return new OkObjectResult(worksheetDTOList);
     }

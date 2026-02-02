@@ -1,3 +1,4 @@
+using Castle.Core.Logging;
 using Lewiss.Pricing.Api.Controllers;
 using Lewiss.Pricing.Api.Tests.Fixtures;
 using Lewiss.Pricing.Data.Model.Fabric;
@@ -5,6 +6,7 @@ using Lewiss.Pricing.Shared.FabricDTO;
 using Lewiss.Pricing.Shared.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit.Abstractions;
 
@@ -22,8 +24,11 @@ public class FabricControllerTests
     public async Task GetFabricList_KineticsCellularQuery_ShouldReturn200Ok_OnSuccess()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object);
+        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
+        var fabricServiceLoggerMock = new Mock<ILogger<FabricService>>();
+        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, fabricServiceLoggerMock.Object);
         var fabricController = new FabricController(fabricServiceMock.Object);
+
         var fabricType = "Kinetics Cellular";
 
         fabricServiceMock.Setup(f => f.GetFabricsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(FabricFixture.GetFabricListKineticsCellular);
@@ -48,8 +53,11 @@ public class FabricControllerTests
     public async Task GetFabricList_KineticsRollerQuery_ShouldReturn200Ok_OnSuccess()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object);
+        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
+        var fabricServiceLoggerMock = new Mock<ILogger<FabricService>>();
+        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, fabricServiceLoggerMock.Object);
         var fabricController = new FabricController(fabricServiceMock.Object);
+
         var fabricType = "Kinetics Roller";
 
         fabricServiceMock.Setup(f => f.GetFabricsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(FabricFixture.GetFabricListKineticsRoller);
@@ -74,8 +82,11 @@ public class FabricControllerTests
     public async Task GetFabricList_KineticsRollerQuery_ShouldReturn404Ntound_OnFailure()
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object);
+        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
+        var fabricServiceLoggerMock = new Mock<ILogger<FabricService>>();
+        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, fabricServiceLoggerMock.Object);
         var fabricController = new FabricController(fabricServiceMock.Object);
+
         var fabricType = "Kinetics Roller";
 
         fabricServiceMock.Setup(f => f.GetFabricsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync([]);
