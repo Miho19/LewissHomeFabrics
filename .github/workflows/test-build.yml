@@ -29,5 +29,5 @@ jobs:
         working-directory: ./Lewiss
 
       - name: test
-        run: dotnet test --configuration Release --no-build --verboisty normal
+        run: dotnet test --configuration Release --no-build
         working-directory: ./Lewiss
