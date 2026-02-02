@@ -20,7 +20,9 @@ baseaddress="http://localhost:5085/api/v1"
 
 currentaddress="${baseaddress}/pricing/customer/${customerId}/worksheet/${worksheetId}/product"
 
-JSON_FILE_PATH="${SCRIPT_DIR}/json/ProductCreateDTOKineticsCellular.json"
+
+# JSON_FILE_PATH="${SCRIPT_DIR}/json/ProductCreateDTOKineticsCellular.json"
+JSON_FILE_PATH="${SCRIPT_DIR}/json/ProductCreateDTOKineticsRoller.json"
 
 
 response=$(curl -X POST \
@@ -34,28 +36,3 @@ json=$(echo "$response" | jq .)
 outputFile1="${SCRIPT_DIR}/json/ProductKineticsCellular.json"
 echo "$json" > "$outputFile1"
 
-
-
-
-# JSON_FILE_PATH="${SCRIPT_DIR}/json/ProductCreateDTOKineticsRoller.json"
-
-# response=$(curl  -X POST \
-#     -H "Content-Type: application/json" \
-#     --data "@$JSON_FILE_PATH" \
-#     $currentaddress
-# )
-
-# echo "$response" | jq .
-# json=$(echo "$response" | jq .)
-# outputFile2="${SCRIPT_DIR}/json/ProductKineticsRoller.json"
-# echo "$json" > "$outputFile2"
-
-
-
-
-
-
-
-# temp=$(mktemp)
-
-# jq '.worksheetid = "'"$2"'"' "$JSON_FILE_PATH" > "$temp" && mv "$temp" "$JSON_FILE_PATH"

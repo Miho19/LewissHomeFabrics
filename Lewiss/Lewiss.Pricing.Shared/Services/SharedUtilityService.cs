@@ -56,6 +56,30 @@ public class SharedUtilityService
 
     }
 
+    public string GetValidFabricOpacityStringForFabricPricing(string productType, string opacity)
+    {
+        var query = GetProductTypeQueryString(productType);
+
+        var opacityAdjusted = query switch
+        {
+            "kineticscellular" => opacity,
+            "kineticsroller" => GetValidKineticsRollerOpacityString(opacity),
+            _ => throw new Exception("Product Type supplied does not match any from the database"),
+        };
+
+        return opacityAdjusted;
+    }
+
+    private string GetValidKineticsRollerOpacityString(string opacity)
+    {
+        if (opacity == "BO")
+        {
+            opacity = "LF";
+        }
+
+        return opacity;
+    }
+
 
 
 }

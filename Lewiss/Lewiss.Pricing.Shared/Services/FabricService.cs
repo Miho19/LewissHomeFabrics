@@ -133,8 +133,8 @@ public class FabricService
         var (width, height, colour, opacity, fabric) = queryParameters;
 
         var productTypeAdjusted = _sharedUtilityService.GetValidProductOptionTypeString(productType);
-
-        var fabricPrice = await _unitOfWork.FabricPrice.GetFabricPriceByFabricPriceQueryParametersAsync(productTypeAdjusted, width, height, opacity, cancellationToken);
+        var opacityAdjusted = _sharedUtilityService.GetValidFabricOpacityStringForFabricPricing(productType, opacity);
+        var fabricPrice = await _unitOfWork.FabricPrice.GetFabricPriceByFabricPriceQueryParametersAsync(productTypeAdjusted, width, height, opacityAdjusted, cancellationToken);
 
         if (fabricPrice is null)
         {
@@ -170,10 +170,8 @@ public class FabricService
             var fabricOutputDTO = await GetFabricOutputDTOByProductOptionVariationIdAsync(productType, productOptionVariationId, cancellationToken);
 
             var productTypeDatabaseValid = _sharedUtilityService.GetValidProductOptionTypeString(productType);
-            var fabricPrice = await _unitOfWork.FabricPrice.GetFabricPriceByFabricPriceQueryParametersAsync(productTypeDatabaseValid, width, height, fabricOutputDTO.Opacity, cancellationToken);
-            _logger.LogError($"fabric price: {fabricPrice?.Price}");
-
-
+            var opacityAdjusted = _sharedUtilityService.GetValidFabricOpacityStringForFabricPricing(productType, fabricOutputDTO.Opacity);
+            var fabricPrice = await _unitOfWork.FabricPrice.GetFabricPriceByFabricPriceQueryParametersAsync(productTypeDatabaseValid, width, height, opacityAdjusted, cancellationToken);
             if (fabricPrice is null)
             {
                 return null;
