@@ -1,0 +1,33 @@
+name: .NET Test Build
+
+on:
+  push:
+    branch:
+      - main
+    pull_request:
+      branch:
+        - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: .Net Setup
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.0"
+
+      - name: dotnet restore
+        run: dotnet restore
+        working-directory: ./Lewiss
+
+      - name: build
+        run: dotnet build --configuration Release --no-restore
+        working-directory: ./Lewiss
+
+      - name: test
+        run: dotnet test --configuration Release --no-build --verboisty normal
+        working-directory: ./Lewiss
