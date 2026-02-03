@@ -50,11 +50,7 @@ builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<WorksheetService>();
 builder.Services.AddScoped<FabricService>();
 builder.Services.AddScoped<SharedUtilityService>();
-
-
-
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
 
 
 builder.Services.AddControllers();
