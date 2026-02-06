@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
@@ -21,12 +21,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Lewiss.Pricing.Api\Lewiss.Pricing.Api.csproj" />
   </ItemGroup>
-
-    <ItemGroup>
+  <ItemGroup>
     <Content Include="*.env">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-</ItemGroup>
-
-
+  </ItemGroup>
 </Project>
