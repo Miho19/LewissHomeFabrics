@@ -21,8 +21,8 @@ baseaddress="http://localhost:5085/api/v1"
 currentaddress="${baseaddress}/pricing/customer/${customerId}/worksheet/${worksheetId}/product"
 
 
-# JSON_FILE_PATH="${SCRIPT_DIR}/json/ProductCreateDTOKineticsCellular.json"
-JSON_FILE_PATH="${SCRIPT_DIR}/json/ProductCreateDTOKineticsRoller.json"
+JSON_FILE_PATH="${SCRIPT_DIR}/json/ProductCreateDTOKineticsCellular.json"
+# JSON_FILE_PATH="${SCRIPT_DIR}/json/ProductCreateDTOKineticsRoller.json"
 
 
 response=$(curl -X POST \

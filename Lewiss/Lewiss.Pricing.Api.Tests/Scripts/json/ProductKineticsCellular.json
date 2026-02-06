@@ -1,9 +1,9 @@
 {
-  "id": "019c1caf-bd7a-789b-83c5-1372a52a3586",
+  "id": "019c3157-7b31-7af0-9bdb-974035609712",
   "worksheetId": "019c0300-bcce-7a1f-b6f4-8151b86e2bfb",
-  "price": 577.20000000000000000000000000,
+  "price": 432.0000,
   "variableConfiguration": {
-    "location": "Lounge",
+    "location": "Kitchen",
     "width": 1200,
     "height": 900,
     "reveal": 0,
@@ -14,21 +14,14 @@
   "fixedConfiguration": {
     "fitType": "inside",
     "fixingTo": "wood",
-    "productType": "Kinetics Roller",
-    "fabric": "Austro Amaze BO",
-    "operationType": "Lithium-ion",
-    "operationSide": "Left"
+    "productType": "Kinetics Cellular",
+    "fabric": "001 Translucent Cotton",
+    "operationType": "Cord",
+    "operationSide": "Right"
   },
-  "kineticsCellular": null,
-  "kineticsRoller": {
-    "rollType": "Front",
-    "chainColour": "black",
-    "chainLength": "1500",
-    "bracketType": "Standard",
-    "bracketColour": "White",
-    "bottomRailType": "Flat",
-    "bottomRailColour": "White",
-    "pelmetType": null,
-    "pelmetColour": null
-  }
+  "kineticsCellular": {
+    "headrailColour": "White",
+    "sideChannelColour": "White"
+  },
+  "kineticsRoller": null
 }

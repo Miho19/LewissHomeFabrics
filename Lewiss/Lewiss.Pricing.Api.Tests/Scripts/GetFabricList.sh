@@ -11,7 +11,7 @@ fi
 
 
 baseaddress="http://localhost:5085/api/v1"
-currentaddress="${baseaddress}/fabric?fabricType=KineticsRoller"
+currentaddress="${baseaddress}/fabric?productType=KineticsRoller"
 
 response=$(curl -s \
     -H "Content-Type: application/json" \
