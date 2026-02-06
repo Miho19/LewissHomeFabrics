@@ -12,7 +12,12 @@ DotEnv.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
-var dbConnectionString = System.Environment.GetEnvironmentVariable("DatabaseConnectionString");
+var dbConnectionString = System.Environment.GetEnvironmentVariable("SQLServerDatabaseConnectionString");
+
+if (string.IsNullOrEmpty(dbConnectionString))
+{
+    throw new InvalidOperationException("Database Connection string is null");
+}
 
 builder.Services.AddDbContext<PricingDbContext>(options =>
 {
