@@ -9,6 +9,6 @@ public class VariableConfiguration
     public required int Reveal { get; set; }
     public required int RemoteNumber { get; set; }
     public required int RemoteChannel { get; set; }
-    public required decimal InstallHeight { get; set; }
+    public required int InstallHeight { get; set; }
 
 }

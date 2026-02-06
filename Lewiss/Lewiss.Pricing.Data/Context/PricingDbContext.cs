@@ -46,6 +46,18 @@ public class PricingDbContext : DbContext
         .ValueGeneratedOnAdd();
 
         modelBuilder.Entity<Worksheet>()
+        .Property(w => w.Price)
+        .HasPrecision(18, 2);
+
+        modelBuilder.Entity<Worksheet>()
+        .Property(w => w.CallOutFee)
+        .HasPrecision(18, 2);
+
+        modelBuilder.Entity<Worksheet>()
+        .Property(w => w.Discount)
+        .HasPrecision(18, 2);
+
+        modelBuilder.Entity<Worksheet>()
         .Property(w => w.ExternalMapping);
 
         modelBuilder.Entity<Worksheet>()
@@ -65,6 +77,10 @@ public class PricingDbContext : DbContext
 
         modelBuilder.Entity<Product>()
         .Property(c => c.ProductId).ValueGeneratedOnAdd();
+
+        modelBuilder.Entity<Product>()
+        .Property(c => c.Price)
+        .HasPrecision(18, 2);
 
         modelBuilder.Entity<Product>()
         .Property(c => c.ExternalMapping);
@@ -87,6 +103,11 @@ public class PricingDbContext : DbContext
         .Property(ov => ov.ProductOptionVariationId)
         .ValueGeneratedOnAdd();
 
+
+        modelBuilder.Entity<ProductOptionVariation>()
+        .Property(ov => ov.Price)
+        .HasPrecision(18, 2);
+
         modelBuilder.Entity<ProductOption>()
         .HasMany(o => o.ProductOptionVariation)
         .WithOne(ov => ov.ProductOption)
@@ -99,6 +120,10 @@ public class PricingDbContext : DbContext
         modelBuilder.Entity<KineticsRollerFabric>()
         .Property(kr => kr.KineticsRollerFabricId)
         .ValueGeneratedOnAdd();
+
+        modelBuilder.Entity<KineticsRollerFabric>()
+        .Property(kr => kr.Multiplier)
+        .HasPrecision(18, 2);
 
         modelBuilder.Entity<KineticsRollerFabric>()
         .HasOne(kr => kr.ProductOptionVariation)
@@ -118,9 +143,19 @@ public class PricingDbContext : DbContext
         .HasForeignKey<KineticsCellularFabric>(kr => kr.ProductOptionVariationId)
         .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<KineticsCellularFabric>()
+        .Property(kc => kc.Multiplier)
+        .HasPrecision(18, 2);
+
+
+
         // Fabric Price Data 
         modelBuilder.Entity<FabricPrice>()
         .HasKey(fp => fp.FabricPriceId);
+
+        modelBuilder.Entity<FabricPrice>()
+        .Property(fp => fp.Price)
+        .HasPrecision(18, 2);
 
         modelBuilder.Entity<FabricPrice>()
         .Property(fp => fp.FabricPriceId)

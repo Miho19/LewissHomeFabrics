@@ -16,7 +16,9 @@ var dbConnectionString = System.Environment.GetEnvironmentVariable("DatabaseConn
 
 builder.Services.AddDbContext<PricingDbContext>(options =>
 {
-    options.UseMySql(dbConnectionString, ServerVersion.AutoDetect(dbConnectionString)).UseSeeding((context, _) =>
+    options.UseSqlServer(connectionString: dbConnectionString);
+
+    options.UseSeeding((context, _) =>
     {
         var PricingDbContext = context as PricingDbContext;
         PricingDbContextSeeding.SeedData(PricingDbContext!, true);
@@ -29,6 +31,7 @@ builder.Services.AddDbContext<PricingDbContext>(options =>
     });
 
 });
+
 
 // Repositories
 builder.Services.AddScoped<IWorksheetRepository, WorksheetRepository>();

@@ -25,7 +25,7 @@ public static class ProductFixture
         Width = 1200,
         Height = 900,
         Reveal = 80,
-        InstallHeight = 1.20m,
+        InstallHeight = 1200,
         RemoteNumber = 0,
         RemoteChannel = 0,
     };
@@ -97,7 +97,7 @@ public static class ProductFixture
         Width = 1200,
         Height = 900,
         Reveal = 80,
-        InstallHeight = 1.20m,
+        InstallHeight = 1200,
         RemoteNumber = 1,
         RemoteChannel = 1,
     };

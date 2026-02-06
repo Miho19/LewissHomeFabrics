@@ -12,18 +12,18 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lewiss.Pricing.Data.Migrations
 {
     [DbContext(typeof(PricingDbContext))]
-    [Migration("20260131013004_AddedUniqueConstraintToFabricModels")]
-    partial class AddedUniqueConstraintToFabricModels
+    [Migration("20260206045144_InitialCreateForSQLServer")]
+    partial class InitialCreateForSQLServer
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("ProductVersion", "10.0.2")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("Lewiss.Pricing.Data.Model.Customer", b =>
                 {
@@ -31,37 +31,37 @@ namespace Lewiss.Pricing.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("CustomerId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerId"));
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("ExternalMapping")
-                        .HasColumnType("char(36)");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FamilyName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Mobile")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Street")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Suburb")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CustomerId");
 
@@ -74,28 +74,62 @@ namespace Lewiss.Pricing.Data.Migrations
                     b.ToTable("Customer");
                 });
 
-            modelBuilder.Entity("Lewiss.Pricing.Data.Model.Fabric.KineticsCellularFabric", b =>
+            modelBuilder.Entity("Lewiss.Pricing.Data.Model.Fabric.Price.FabricPrice", b =>
+                {
+                    b.Property<int>("FabricPriceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FabricPriceId"));
+
+                    b.Property<int>("Height")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Opacity")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ProductType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("int");
+
+                    b.HasKey("FabricPriceId");
+
+                    b.HasAlternateKey("Width", "Height", "Opacity", "ProductType");
+
+                    b.ToTable("FabricPrice");
+                });
+
+            modelBuilder.Entity("Lewiss.Pricing.Data.Model.Fabric.Type.KineticsCellularFabric", b =>
                 {
                     b.Property<int>("KineticsCellularFabricId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("KineticsCellularFabricId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("KineticsCellularFabricId"));
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Colour")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Multiplier")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Opacity")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ProductOptionVariationId")
                         .HasColumnType("int");
@@ -117,7 +151,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             Colour = "Cotton",
                             Multiplier = 1.0m,
                             Opacity = "Translucent",
-                            ProductOptionVariationId = 52
+                            ProductOptionVariationId = 53
                         },
                         new
                         {
@@ -126,7 +160,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             Colour = "Cream",
                             Multiplier = 1.0m,
                             Opacity = "Translucent",
-                            ProductOptionVariationId = 53
+                            ProductOptionVariationId = 54
                         },
                         new
                         {
@@ -135,7 +169,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             Colour = "Water Green",
                             Multiplier = 1.0m,
                             Opacity = "Translucent",
-                            ProductOptionVariationId = 54
+                            ProductOptionVariationId = 55
                         },
                         new
                         {
@@ -144,7 +178,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             Colour = "Agate Red",
                             Multiplier = 1.0m,
                             Opacity = "Translucent",
-                            ProductOptionVariationId = 55
+                            ProductOptionVariationId = 56
                         },
                         new
                         {
@@ -153,7 +187,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             Colour = "Gray Sheen",
                             Multiplier = 1.0m,
                             Opacity = "Translucent",
-                            ProductOptionVariationId = 56
+                            ProductOptionVariationId = 57
                         },
                         new
                         {
@@ -162,7 +196,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             Colour = "Royal Gray",
                             Multiplier = 1.0m,
                             Opacity = "Translucent",
-                            ProductOptionVariationId = 57
+                            ProductOptionVariationId = 58
                         },
                         new
                         {
@@ -171,7 +205,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             Colour = "Jean Blue",
                             Multiplier = 1.0m,
                             Opacity = "Translucent",
-                            ProductOptionVariationId = 58
+                            ProductOptionVariationId = 59
                         },
                         new
                         {
@@ -180,7 +214,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             Colour = "Black",
                             Multiplier = 1.0m,
                             Opacity = "Translucent",
-                            ProductOptionVariationId = 59
+                            ProductOptionVariationId = 60
                         },
                         new
                         {
@@ -189,7 +223,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             Colour = "Federal Blue",
                             Multiplier = 1.0m,
                             Opacity = "Translucent",
-                            ProductOptionVariationId = 60
+                            ProductOptionVariationId = 61
                         },
                         new
                         {
@@ -198,7 +232,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             Colour = "Steel Grey",
                             Multiplier = 1.0m,
                             Opacity = "Translucent",
-                            ProductOptionVariationId = 61
+                            ProductOptionVariationId = 62
                         },
                         new
                         {
@@ -207,7 +241,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             Colour = "Winter White",
                             Multiplier = 1.0m,
                             Opacity = "Translucent",
-                            ProductOptionVariationId = 62
+                            ProductOptionVariationId = 63
                         },
                         new
                         {
@@ -216,7 +250,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             Colour = "Aqua Glass",
                             Multiplier = 1.0m,
                             Opacity = "Translucent",
-                            ProductOptionVariationId = 63
+                            ProductOptionVariationId = 64
                         },
                         new
                         {
@@ -225,7 +259,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             Colour = "Warm Chocolate",
                             Multiplier = 1.0m,
                             Opacity = "Translucent",
-                            ProductOptionVariationId = 64
+                            ProductOptionVariationId = 65
                         },
                         new
                         {
@@ -234,7 +268,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             Colour = "Taupe A",
                             Multiplier = 1.0m,
                             Opacity = "Translucent",
-                            ProductOptionVariationId = 65
+                            ProductOptionVariationId = 66
                         },
                         new
                         {
@@ -243,25 +277,25 @@ namespace Lewiss.Pricing.Data.Migrations
                             Colour = "Flax Green",
                             Multiplier = 1.0m,
                             Opacity = "Translucent",
-                            ProductOptionVariationId = 66
+                            ProductOptionVariationId = 67
                         });
                 });
 
-            modelBuilder.Entity("Lewiss.Pricing.Data.Model.Fabric.KineticsRollerFabric", b =>
+            modelBuilder.Entity("Lewiss.Pricing.Data.Model.Fabric.Type.KineticsRollerFabric", b =>
                 {
                     b.Property<int>("KineticsRollerFabricId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("KineticsRollerFabricId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("KineticsRollerFabricId"));
 
                     b.Property<string>("Colour")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Fabric")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("MaxHeight")
                         .HasColumnType("int");
@@ -270,11 +304,12 @@ namespace Lewiss.Pricing.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Multiplier")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Opacity")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ProductOptionVariationId")
                         .HasColumnType("int");
@@ -298,7 +333,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             MaxWidth = 3100,
                             Multiplier = 1.25m,
                             Opacity = "LF",
-                            ProductOptionVariationId = 43
+                            ProductOptionVariationId = 44
                         },
                         new
                         {
@@ -309,7 +344,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             MaxWidth = 3100,
                             Multiplier = 1.25m,
                             Opacity = "LF",
-                            ProductOptionVariationId = 44
+                            ProductOptionVariationId = 45
                         },
                         new
                         {
@@ -320,7 +355,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             MaxWidth = 3100,
                             Multiplier = 1.25m,
                             Opacity = "LF",
-                            ProductOptionVariationId = 45
+                            ProductOptionVariationId = 46
                         },
                         new
                         {
@@ -331,7 +366,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             MaxWidth = 3000,
                             Multiplier = 0.8m,
                             Opacity = "BO",
-                            ProductOptionVariationId = 46
+                            ProductOptionVariationId = 47
                         },
                         new
                         {
@@ -342,7 +377,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             MaxWidth = 3000,
                             Multiplier = 0.8m,
                             Opacity = "BO",
-                            ProductOptionVariationId = 47
+                            ProductOptionVariationId = 48
                         },
                         new
                         {
@@ -353,7 +388,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             MaxWidth = 3000,
                             Multiplier = 0.8m,
                             Opacity = "BO",
-                            ProductOptionVariationId = 48
+                            ProductOptionVariationId = 49
                         },
                         new
                         {
@@ -364,7 +399,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             MaxWidth = 3000,
                             Multiplier = 0.9m,
                             Opacity = "SS",
-                            ProductOptionVariationId = 49
+                            ProductOptionVariationId = 50
                         },
                         new
                         {
@@ -375,7 +410,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             MaxWidth = 3000,
                             Multiplier = 0.9m,
                             Opacity = "SS",
-                            ProductOptionVariationId = 50
+                            ProductOptionVariationId = 51
                         },
                         new
                         {
@@ -386,7 +421,7 @@ namespace Lewiss.Pricing.Data.Migrations
                             MaxWidth = 3000,
                             Multiplier = 0.9m,
                             Opacity = "SS",
-                            ProductOptionVariationId = 51
+                            ProductOptionVariationId = 52
                         });
                 });
 
@@ -396,23 +431,24 @@ namespace Lewiss.Pricing.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ProductId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
                     b.Property<Guid>("ExternalMapping")
-                        .HasColumnType("char(36)");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Height")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("InstallHeight")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<int>("InstallHeight")
+                        .HasColumnType("int");
 
                     b.Property<string>("Location")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("RemoteChannel")
                         .HasColumnType("int");
@@ -442,11 +478,11 @@ namespace Lewiss.Pricing.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ProductOptionId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductOptionId"));
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ProductOptionId");
 
@@ -546,17 +582,18 @@ namespace Lewiss.Pricing.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ProductOptionVariationId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductOptionVariationId"));
 
                     b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ProductOptionId")
                         .HasColumnType("int");
 
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ProductOptionVariationId");
 
@@ -772,257 +809,264 @@ namespace Lewiss.Pricing.Data.Migrations
                         {
                             ProductOptionVariationId = 30,
                             Price = 0.00m,
-                            ProductOptionId = 12,
-                            Value = "Standard"
+                            ProductOptionId = 11,
+                            Value = "3000"
                         },
                         new
                         {
                             ProductOptionVariationId = 31,
                             Price = 0.00m,
                             ProductOptionId = 12,
-                            Value = "Extra Large"
+                            Value = "Standard"
                         },
                         new
                         {
                             ProductOptionVariationId = 32,
                             Price = 0.00m,
-                            ProductOptionId = 13,
-                            Value = "White"
+                            ProductOptionId = 12,
+                            Value = "Extra Large"
                         },
                         new
                         {
                             ProductOptionVariationId = 33,
                             Price = 0.00m,
                             ProductOptionId = 13,
-                            Value = "Black"
+                            Value = "White"
                         },
                         new
                         {
                             ProductOptionVariationId = 34,
+                            Price = 0.00m,
+                            ProductOptionId = 13,
+                            Value = "Black"
+                        },
+                        new
+                        {
+                            ProductOptionVariationId = 35,
                             Price = 0.00m,
                             ProductOptionId = 14,
                             Value = "Flat"
                         },
                         new
                         {
-                            ProductOptionVariationId = 35,
+                            ProductOptionVariationId = 36,
                             Price = 25.00m,
                             ProductOptionId = 14,
                             Value = "Deluxe"
                         },
                         new
                         {
-                            ProductOptionVariationId = 36,
-                            Price = 0.00m,
-                            ProductOptionId = 15,
-                            Value = "White"
-                        },
-                        new
-                        {
                             ProductOptionVariationId = 37,
                             Price = 0.00m,
                             ProductOptionId = 15,
-                            Value = "Black"
+                            Value = "White"
                         },
                         new
                         {
                             ProductOptionVariationId = 38,
                             Price = 0.00m,
                             ProductOptionId = 15,
-                            Value = "Silver"
+                            Value = "Black"
                         },
                         new
                         {
                             ProductOptionVariationId = 39,
                             Price = 0.00m,
                             ProductOptionId = 15,
-                            Value = "Off White"
+                            Value = "Silver"
                         },
                         new
                         {
                             ProductOptionVariationId = 40,
+                            Price = 0.00m,
+                            ProductOptionId = 15,
+                            Value = "Off White"
+                        },
+                        new
+                        {
+                            ProductOptionVariationId = 41,
                             Price = 0.00m,
                             ProductOptionId = 16,
                             Value = "None"
                         },
                         new
                         {
-                            ProductOptionVariationId = 41,
+                            ProductOptionVariationId = 42,
                             Price = 0.00m,
                             ProductOptionId = 17,
                             Value = "White"
                         },
                         new
                         {
-                            ProductOptionVariationId = 42,
+                            ProductOptionVariationId = 43,
                             Price = 0.00m,
                             ProductOptionId = 17,
                             Value = "Black"
                         },
                         new
                         {
-                            ProductOptionVariationId = 43,
+                            ProductOptionVariationId = 44,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "Adagio Black LF"
                         },
                         new
                         {
-                            ProductOptionVariationId = 44,
+                            ProductOptionVariationId = 45,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "Adagio Chilli LF"
                         },
                         new
                         {
-                            ProductOptionVariationId = 45,
+                            ProductOptionVariationId = 46,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "Adagio Taupe LF"
                         },
                         new
                         {
-                            ProductOptionVariationId = 46,
+                            ProductOptionVariationId = 47,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "Austro Amaze BO"
                         },
                         new
                         {
-                            ProductOptionVariationId = 47,
+                            ProductOptionVariationId = 48,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "Austro Anchor BO"
                         },
                         new
                         {
-                            ProductOptionVariationId = 48,
+                            ProductOptionVariationId = 49,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "Austro Apple BO"
                         },
                         new
                         {
-                            ProductOptionVariationId = 49,
+                            ProductOptionVariationId = 50,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "Fenescreen 10% Charcoal SS"
                         },
                         new
                         {
-                            ProductOptionVariationId = 50,
+                            ProductOptionVariationId = 51,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "Fenescreen 10% Coyote SS"
                         },
                         new
                         {
-                            ProductOptionVariationId = 51,
+                            ProductOptionVariationId = 52,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "Fenescreen 10% Glacier White SS"
                         },
                         new
                         {
-                            ProductOptionVariationId = 52,
+                            ProductOptionVariationId = 53,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "001 Translucent Cotton"
                         },
                         new
                         {
-                            ProductOptionVariationId = 53,
+                            ProductOptionVariationId = 54,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "005 Translucent Cream"
                         },
                         new
                         {
-                            ProductOptionVariationId = 54,
+                            ProductOptionVariationId = 55,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "014 Translucent Water Green"
                         },
                         new
                         {
-                            ProductOptionVariationId = 55,
+                            ProductOptionVariationId = 56,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "019 Translucent Agate Red"
                         },
                         new
                         {
-                            ProductOptionVariationId = 56,
+                            ProductOptionVariationId = 57,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "021 Translucent Gray Sheen"
                         },
                         new
                         {
-                            ProductOptionVariationId = 57,
+                            ProductOptionVariationId = 58,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "023 Translucent Royal Gray"
                         },
                         new
                         {
-                            ProductOptionVariationId = 58,
+                            ProductOptionVariationId = 59,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "024 Translucent Jean Blue"
                         },
                         new
                         {
-                            ProductOptionVariationId = 59,
+                            ProductOptionVariationId = 60,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "025 Translucent Black"
                         },
                         new
                         {
-                            ProductOptionVariationId = 60,
+                            ProductOptionVariationId = 61,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "026 Translucent Federal Blue"
                         },
                         new
                         {
-                            ProductOptionVariationId = 61,
+                            ProductOptionVariationId = 62,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "030 Translucent Steel Grey"
                         },
                         new
                         {
-                            ProductOptionVariationId = 62,
+                            ProductOptionVariationId = 63,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "070 Translucent Winter White"
                         },
                         new
                         {
-                            ProductOptionVariationId = 63,
+                            ProductOptionVariationId = 64,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "102 Translucent Aqua Glass"
                         },
                         new
                         {
-                            ProductOptionVariationId = 64,
+                            ProductOptionVariationId = 65,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "333 Translucent Warm Chocolate"
                         },
                         new
                         {
-                            ProductOptionVariationId = 65,
+                            ProductOptionVariationId = 66,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "416 Translucent Taupe A"
                         },
                         new
                         {
-                            ProductOptionVariationId = 66,
+                            ProductOptionVariationId = 67,
                             Price = 0.00m,
                             ProductOptionId = 4,
                             Value = "512 Translucent Flax Green"
@@ -1035,28 +1079,31 @@ namespace Lewiss.Pricing.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("WorksheetId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WorksheetId"));
 
                     b.Property<decimal>("CallOutFee")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("ExternalMapping")
-                        .HasColumnType("char(36)");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("NewBuild")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(65,30)");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("WorksheetId");
 
@@ -1080,22 +1127,22 @@ namespace Lewiss.Pricing.Data.Migrations
                     b.ToTable("ProductProductOptionVariation");
                 });
 
-            modelBuilder.Entity("Lewiss.Pricing.Data.Model.Fabric.KineticsCellularFabric", b =>
+            modelBuilder.Entity("Lewiss.Pricing.Data.Model.Fabric.Type.KineticsCellularFabric", b =>
                 {
                     b.HasOne("Lewiss.Pricing.Data.Model.ProductOptionVariation", "ProductOptionVariation")
                         .WithOne()
-                        .HasForeignKey("Lewiss.Pricing.Data.Model.Fabric.KineticsCellularFabric", "ProductOptionVariationId")
+                        .HasForeignKey("Lewiss.Pricing.Data.Model.Fabric.Type.KineticsCellularFabric", "ProductOptionVariationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ProductOptionVariation");
                 });
 
-            modelBuilder.Entity("Lewiss.Pricing.Data.Model.Fabric.KineticsRollerFabric", b =>
+            modelBuilder.Entity("Lewiss.Pricing.Data.Model.Fabric.Type.KineticsRollerFabric", b =>
                 {
                     b.HasOne("Lewiss.Pricing.Data.Model.ProductOptionVariation", "ProductOptionVariation")
                         .WithOne()
-                        .HasForeignKey("Lewiss.Pricing.Data.Model.Fabric.KineticsRollerFabric", "ProductOptionVariationId")
+                        .HasForeignKey("Lewiss.Pricing.Data.Model.Fabric.Type.KineticsRollerFabric", "ProductOptionVariationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
