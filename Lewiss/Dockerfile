@@ -10,10 +10,12 @@ USER app
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG configuration=Release
 WORKDIR /src
+
 COPY ["Lewiss.Pricing.Api/Lewiss.Pricing.Api.csproj", "Lewiss.Pricing.Api/"]
 COPY ["Lewiss.Pricing.Api.Tests/Lewiss.Pricing.Api.Tests.csproj", "Lewiss.Pricing.Api.Tests/"]
 COPY ["Lewiss.Pricing.Data/Lewiss.Pricing.Data.csproj", "Lewiss.Pricing.Data/"]
 COPY ["Lewiss.Pricing.Shared/Lewiss.Pricing.Shared.csproj", "Lewiss.Pricing.Shared/"]
+
 RUN dotnet restore "Lewiss.Pricing.Api/Lewiss.Pricing.Api.csproj"
 
 COPY . .
