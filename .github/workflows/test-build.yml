@@ -76,8 +76,7 @@ jobs:
           subject-name: ${{ env.REGISTRY}}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
-          
-    steps:
+
       - name: Azure Login
         uses: azure/login@8c334a195cbb38e46038007b304988d888bf676a
         with:
