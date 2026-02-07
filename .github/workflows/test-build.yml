@@ -35,7 +35,7 @@ jobs:
         run: dotnet test --configuration Release --no-build
         working-directory: ./Lewiss
 
-  docker-build-push:
+  docker-build-push-deploy-azure:
     needs: build-and-test
     runs-on: ubuntu-24.04
     permissions:
@@ -76,14 +76,7 @@ jobs:
           subject-name: ${{ env.REGISTRY}}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
-
-  azure-push-to-web-service:
-    needs: docker-build-push
-    runs-on: ubuntu-24.04
-    permissions:
-      id-token: write
-      contents: read
-
+          
     steps:
       - name: Azure Login
         uses: azure/login@8c334a195cbb38e46038007b304988d888bf676a
