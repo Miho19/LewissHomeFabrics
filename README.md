@@ -21,14 +21,14 @@ Used to retrieve an `Customer`
 
 ```bash
     curl -s -H 'Accept: application/json' \
-    http://localhost:5085/api/v1/customer/019bff20-6de5-732c-a872-751a20bf9a4b
+    https://lewiss-dev-server-cjcpcgh4f8a4cpau.newzealandnorth-01.azurewebsites.net/api/v1/customer/019c3ba4-4a05-70fe-9269-f6fdd4c309cb
 ```
 
 #### JSON Response Body
 
 ```json
 {
-  "id": "019bff20-6de5-732c-a872-751a20bf9a4b",
+  "id": "019c3ba4-4a05-70fe-9269-f6fdd4c309cb",
   "familyName": "April",
   "street": "12 street",
   "city": "city",
@@ -67,14 +67,14 @@ Creates a new `Customer` in the system.
     curl -s -X POST \
     -H "Content-Type: application/json" \
     -d @Customer.json \
-    http://localhost:5085/api/v1/customer
+    https://lewiss-dev-server-cjcpcgh4f8a4cpau.newzealandnorth-01.azurewebsites.net/api/v1/customer
 ```
 
 #### JSON Response Body
 
 ```json
 {
-  "id": "019bff20-6de5-732c-a872-751a20bf9a4b",
+  "id": "019c3ba4-4a05-70fe-9269-f6fdd4c309cb",
   "familyName": "April",
   "street": "12 street",
   "city": "city",
@@ -98,7 +98,7 @@ Creates a new `Customer` in the system.
 
 ```bash
     curl -s -H 'Accept: application/json' \
-    http://localhost:5085/api/v1/customer?familyname=April
+    https://lewiss-dev-server-cjcpcgh4f8a4cpau.newzealandnorth-01.azurewebsites.net/api/v1/customer?familyname=April
 ```
 
 #### JSON Response Body
@@ -125,11 +125,11 @@ Retrieve a `Worksheet`
 
 #### Request
 
-`GET /customer/id/worksheet/id`
+`GET pricing/customer/id/worksheet/id`
 
 ```bash
     curl -s -H 'Accept: application/json' \
-    http://localhost:5085/api/v1/pricing/customer/019bff20-6de5-732c-a872-751a20bf9a4b/worksheet/019c0300-bcce-7a1f-b6f4-8151b86e2bfb
+    https://lewiss-dev-server-cjcpcgh4f8a4cpau.newzealandnorth-01.azurewebsites.net/api/v1/pricing/customer/019bff20-6de5-732c-a872-751a20bf9a4b/worksheet/019c0300-bcce-7a1f-b6f4-8151b86e2bfb
 ```
 
 #### JSON Response Body
@@ -151,11 +151,11 @@ Retrieves all `Worksheet` assoicated with the `Customer`
 
 #### Request
 
-`GET /customer/id/worksheet`
+`GET pricing/customer/id/worksheet`
 
 ```bash
     curl -s -H 'Accept: application/json' \
-    http://localhost:5085/api/v1/pricing/customer/019bff20-6de5-732c-a872-751a20bf9a4b/worksheet
+    https://lewiss-dev-server-cjcpcgh4f8a4cpau.newzealandnorth-01.azurewebsites.net/api/v1/pricing/customer/019bff20-6de5-732c-a872-751a20bf9a4b/worksheet
 ```
 
 #### JSON Response Body
@@ -187,12 +187,12 @@ Creates a new `Worksheet`
 
 #### Request
 
-`POST /customer/id/worksheet`
+`POST pricing/customer/id/worksheet`
 
 ```bash
     curl -s -X POST \
     -H "Content-Type: application/json" \
-    http://localhost:5085/api/v1/pricing/customer/019bff20-6de5-732c-a872-751a20bf9a4b/worksheet
+    https://lewiss-dev-server-cjcpcgh4f8a4cpau.newzealandnorth-01.azurewebsites.net/api/v1/pricing/customer/019bff20-6de5-732c-a872-751a20bf9a4b/worksheet
 ```
 
 #### JSON Response Body
@@ -214,11 +214,11 @@ Retrieves a `Product` from a `Worksheet` assoicated with a `Customer`
 
 #### Request
 
-`GET /customer/id/worksheet/id/product/id`
+`GET pricing/customer/id/worksheet/id/product/id`
 
 ```bash
     curl -s -H 'Accept: application/json' \
-    http://localhost:5085/api/v1/pricing/customer/019bff20-6de5-732c-a872-751a20bf9a4b/worksheet/019c0300-bcce-7a1f-b6f4-8151b86e2bfb/product/019c0841-c4b1-72fd-9b47-8cff3464af27
+    https://lewiss-dev-server-cjcpcgh4f8a4cpau.newzealandnorth-01.azurewebsites.net/api/v1/pricing/customer/019bff20-6de5-732c-a872-751a20bf9a4b/worksheet/019c0300-bcce-7a1f-b6f4-8151b86e2bfb/product/019c0841-c4b1-72fd-9b47-8cff3464af27
 ```
 
 #### JSON Reponse Body
@@ -293,13 +293,13 @@ Create a `Product` for a `Worksheet` assoicated with a `Customer`
 }
 ```
 
-`POST /customer/id/worksheet/id/product`
+`POST pricing/customer/id/worksheet/id/product`
 
 ```bash
     curl -s -X POST \
     -H "Content-Type: application/json" \
     -d @Customer.json \
-    http://localhost:5085/api/v1/pricing/customer/019bff20-6de5-732c-a872-751a20bf9a4b/worksheet/019c0300-bcce-7a1f-b6f4-8151b86e2bfb/product
+    https://lewiss-dev-server-cjcpcgh4f8a4cpau.newzealandnorth-01.azurewebsites.net/api/v1/pricing/customer/019bff20-6de5-732c-a872-751a20bf9a4b/worksheet/019c0300-bcce-7a1f-b6f4-8151b86e2bfb/product
 ```
 
 #### JSON Response Body
@@ -347,11 +347,11 @@ Retrieve all `Product` assoicated with a `Worksheet`
 
 #### Request
 
-`GET /customer/id/worksheet/id/product`
+`GET pricing/customer/id/worksheet/id/product`
 
 ```bash
     curl -s -H 'Accept: application/json' \
-    http://localhost:5085/api/v1/pricing/customer/019bff20-6de5-732c-a872-751a20bf9a4b/worksheet/019c0300-bcce-7a1f-b6f4-8151b86e2bfb/product
+    https://lewiss-dev-server-cjcpcgh4f8a4cpau.newzealandnorth-01.azurewebsites.net/api/v1/pricing/customer/019bff20-6de5-732c-a872-751a20bf9a4b/worksheet/019c0300-bcce-7a1f-b6f4-8151b86e2bfb/product
 ```
 
 #### JSON Response Body
@@ -467,7 +467,7 @@ Retrieve all `Product` assoicated with a `Worksheet`
 
 ```bash
     curl -s -H 'Accept: application/json' \
-    http://localhost:5085/api/v1/fabric/kineticsRoller?width=1200&height=900&colour=Black&fabric=Adagio&opacity=LF
+    https://lewiss-dev-server-cjcpcgh4f8a4cpau.newzealandnorth-01.azurewebsites.net/api/v1/fabric/kineticsRoller?width=1200&height=900&colour=Black&fabric=Adagio&opacity=LF
 ```
 
 #### JSON Response Body
