@@ -17,12 +17,15 @@ id=$(jq -r '.id' "$customerEntryDTO")
 baseaddress="https://lewiss-dev-server-cjcpcgh4f8a4cpau.newzealandnorth-01.azurewebsites.net/api/v1/"
 
 
-currentAddress="${baseAddress}/customer/${id}"
+currentAddress="${baseaddress}/customer/${id}"
 
-response=$(curl -s \
+
+response=$(curl \
     -H "Content-Type: application/json" \
     $currentAddress
 )
+
+echo "${response}"
 
 json=$(echo "$response" | jq .)
 

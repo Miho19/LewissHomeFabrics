@@ -12,7 +12,7 @@ customerEntryDTO="${SCRIPT_DIR}/json/CustomerEntryDTO.json"
 
 id=$(jq -r '.id' "$customerEntryDTO")
 
-baseaddress="http://localhost:5085/api/v1"
+baseaddress="https://lewiss-dev-server-cjcpcgh4f8a4cpau.newzealandnorth-01.azurewebsites.net/api/v1/"
 
 currentaddress="${baseaddress}/pricing/customer/${id}/worksheet"
 

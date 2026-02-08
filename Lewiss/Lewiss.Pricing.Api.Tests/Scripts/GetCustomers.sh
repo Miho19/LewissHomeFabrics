@@ -11,9 +11,9 @@ SCRIPT_DIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 
 
 
-baseAddress="http://localhost:5085/api/v1"
+baseaddress="https://lewiss-dev-server-cjcpcgh4f8a4cpau.newzealandnorth-01.azurewebsites.net/api/v1/"
 
-currentAddress="${baseAddress}/customer?familyName=April"
+currentAddress="${baseaddress}/customer?familyName=April"
 
 response=$(curl -s \
     -H "Content-Type: application/json" \

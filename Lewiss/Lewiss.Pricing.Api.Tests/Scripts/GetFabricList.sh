@@ -10,7 +10,7 @@ if ! command -v jq &> /dev/null; then
 fi
 
 
-baseaddress="http://localhost:5085/api/v1"
+baseaddress="https://lewiss-dev-server-cjcpcgh4f8a4cpau.newzealandnorth-01.azurewebsites.net/api/v1/"
 currentaddress="${baseaddress}/fabric?productType=KineticsRoller"
 
 response=$(curl -s \

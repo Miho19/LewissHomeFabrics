@@ -16,7 +16,7 @@ customerId=$(jq -r '.id' "$customerEntryDTO")
 worksheetId=$(jq -r '.id' "$worksheetDTO")
 
 
-baseaddress="http://localhost:5085/api/v1"
+baseaddress="https://lewiss-dev-server-cjcpcgh4f8a4cpau.newzealandnorth-01.azurewebsites.net/api/v1/"
 
 currentaddress="${baseaddress}/pricing/customer/${customerId}/worksheet/${worksheetId}/product"
 
