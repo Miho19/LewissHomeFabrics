@@ -14,6 +14,7 @@ customerEntryDTO="${SCRIPT_DIR}/json/CustomerEntryDTO.json"
 id=$(jq -r '.id' "$customerEntryDTO")
 
 baseAddress="http://localhost:5085/api/v1"
+baseaddress="https://lewissdev.azurewebsites.net/api/v1"
 
 currentAddress="${baseAddress}/customer/${id}"
 

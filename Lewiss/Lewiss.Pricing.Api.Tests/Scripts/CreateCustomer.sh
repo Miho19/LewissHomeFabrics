@@ -12,7 +12,9 @@ JSON_FILE_PATH="${SCRIPT_DIR}/json/Customer.json"
 output_file_path="${SCRIPT_DIR}/json/CustomerEntryDTO.json"
 
 
-baseaddress="http://localhost:5085/api/v1"
+
+
+baseaddress="https://lewissdev.azurewebsites.net/api/v1"
 
 currentaddress="${baseaddress}/customer"
 

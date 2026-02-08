@@ -1,4 +1,4 @@
-name: .NET Test Build
+name: .NET Server build test delploy
 
 on:
   push:
