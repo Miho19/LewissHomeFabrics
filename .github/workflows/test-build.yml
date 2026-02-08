@@ -2,9 +2,9 @@ name: .NET Test Build
 
 on:
   push:
-    branches: [Release]
+    branches: [main]
   pull_request:
-    branches: [Release]
+    branches: [main]
 
 env:
   REGISTRY: ghcr.io
@@ -88,4 +88,7 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{env.AZURE_WEBAPP_NAME}}
-          images: ${{ env.REGISTRY}}/${{ env.IMAGE_NAME}}@${{ steps.push.outputs.digest }}
+          images: ${{ steps.meta.outputs.tags }}
+      - name: echo out some details
+        run: |
+          echo "tags: ${{ steps.meta.outputs.tags }}"
