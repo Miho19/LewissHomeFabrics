@@ -9,7 +9,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  AZURE_WEBAPP_NAME: lewissdev
+  AZURE_WEBAPP_NAME: lewiss-dev-server
 
 jobs:
   build-and-test:
