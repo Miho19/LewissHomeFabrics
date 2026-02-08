@@ -14,7 +14,7 @@ output_file_path="${SCRIPT_DIR}/json/CustomerEntryDTO.json"
 
 
 
-baseaddress="https://lewissdev.azurewebsites.net/api/v1"
+baseaddress="https://lewiss-dev-server-cjcpcgh4f8a4cpau.newzealandnorth-01.azurewebsites.net/api/v1/"
 
 currentaddress="${baseaddress}/customer"
 

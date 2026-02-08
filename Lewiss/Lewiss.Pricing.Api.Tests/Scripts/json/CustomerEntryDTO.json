@@ -1,5 +1,9 @@
 {
-  "title": "Internal Server Error",
-  "status": 500,
-  "detail": "Failed to create customer"
+  "id": "019c3ba4-4a05-70fe-9269-f6fdd4c309cb",
+  "familyName": "April",
+  "street": "12 street",
+  "city": "city",
+  "suburb": "suburb",
+  "mobile": "123 345 67543",
+  "email": "email.address@hotmail.com"
 }

@@ -22,19 +22,6 @@ if (string.IsNullOrEmpty(dbConnectionString))
 builder.Services.AddDbContext<PricingDbContext>(options =>
 {
     options.UseSqlServer(connectionString: dbConnectionString);
-
-    options.UseSeeding((context, _) =>
-    {
-        var PricingDbContext = context as PricingDbContext;
-        PricingDbContextSeeding.SeedData(PricingDbContext!, true);
-    })
-    .UseAsyncSeeding(async (context, op, cancellationToken) =>
-    {
-        var PricingDbContext = context as PricingDbContext;
-
-        await PricingDbContextSeeding.SeedDataAsync(PricingDbContext!, op, cancellationToken);
-    });
-
 });
 
 
@@ -72,6 +59,16 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+}
+
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var pricingDbContext = services.GetRequiredService<PricingDbContext>();
+    await PricingDbContextSeeding.SeedDataAsync(pricingDbContext);
 }
 
 app.UseHttpsRedirection();

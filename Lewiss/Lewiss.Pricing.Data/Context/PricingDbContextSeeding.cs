@@ -4,38 +4,17 @@ using Microsoft.EntityFrameworkCore;
 
 public static class PricingDbContextSeeding
 {
-    public static void SeedData(PricingDbContext context, bool anyStoreManagementOperationPerformed)
-    {
-        if (!context.FabricPrice.Any())
-        {
-            SeedNewFabricPriceData(context, anyStoreManagementOperationPerformed);
-            return;
-        }
 
-        // To add later; for when we want to update existing pricing
-    }
-
-    private static void SeedNewFabricPriceData(PricingDbContext context, bool anyStoreManagementOperationPerformed)
-    {
-
-        var kineticsLF = FabricPriceDataGenerator.GetPriceModelList(FabricPriceDataGenerator.KineticsRollerLFJSONFile);
-        var kineticsSS = FabricPriceDataGenerator.GetPriceModelList(FabricPriceDataGenerator.KineticsRollerSSJSONFile);
-        var kineticsTranslucent = FabricPriceDataGenerator.GetPriceModelList(FabricPriceDataGenerator.KineticsCellularTranslucentJSONFile);
-
-        context.AddRange([.. kineticsLF, .. kineticsSS, .. kineticsTranslucent]);
-        context.SaveChanges();
-    }
-
-    public static async Task SeedDataAsync(PricingDbContext context, bool anyStoreManagementOperationPerformed, CancellationToken cancellationToken = default)
+    public static async Task SeedDataAsync(PricingDbContext context, CancellationToken cancellationToken = default)
     {
         if (!await context.FabricPrice.AnyAsync(cancellationToken))
         {
-            await SeedNewFabricPriceDataAsync(context, anyStoreManagementOperationPerformed, cancellationToken);
+            await SeedNewFabricPriceDataAsync(context, cancellationToken);
             return;
         }
     }
 
-    private static async Task SeedNewFabricPriceDataAsync(PricingDbContext context, bool anyStoreManagementOperationPerformed, CancellationToken cancellationToken = default)
+    private static async Task SeedNewFabricPriceDataAsync(PricingDbContext context, CancellationToken cancellationToken = default)
     {
         var kineticsLF = FabricPriceDataGenerator.GetPriceModelList(FabricPriceDataGenerator.KineticsRollerLFJSONFile);
         var kineticsSS = FabricPriceDataGenerator.GetPriceModelList(FabricPriceDataGenerator.KineticsRollerSSJSONFile);
