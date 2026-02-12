@@ -16,26 +16,11 @@ public class CustomerService
         _logger = logger;
     }
 
-    /// <summary>
-    /// Persists a new customer to the database asynchronously.
-    /// </summary>
-    /// <param name="customerCreateDTO">The customer details to persist</param>
-    /// <param name="cancellationToken">
-    /// A token that can be used to propagate notification that the operation should be canceled.
-    /// </param>
-    /// <remarks>
-    /// Adds the new customer to the database if it is not already present.
-    /// Changes are tracked and committed by the injected <see cref="IUnitOfWork"/>
-    /// </remarks>
-    /// <returns>
-    /// A <see cref="Task"/> representing the asynchronous operation, returning the CustomerEntryDTO.
-    /// </returns>
-    /// Needs to be updated to try catch instead of using any to check for duplication
     public virtual async Task<CustomerEntryOutputDTO?> CreateCustomerAsync(CustomerCreateInputDTO customerCreateDTO, CancellationToken cancellationToken = default)
     {
         try
         {
-            // Query database for duplicate entry and just return the entry
+            // Query database for duplicate entry and just return the entry if found
             var queryParameters = new GetCustomerQueryParameters
             {
                 FamilyName = customerCreateDTO.FamilyName,

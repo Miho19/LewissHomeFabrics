@@ -3,6 +3,8 @@ using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.Services;
 using Microsoft.AspNetCore.Mvc;
 
+namespace Lewiss.Pricing.Api.Controllers;
+
 [ApiController]
 [Route("api/v1/[controller]")]
 public class CustomerController : ControllerBase
@@ -44,6 +46,7 @@ public class CustomerController : ControllerBase
                 Title = "Internal Server Error",
                 Detail = "Failed to create customer",
             });
+
         }
 
         return new CreatedAtActionResult(actionName: "GetCustomer", controllerName: "Customer", routeValues: new { customerId = customerEntryDto.Id }, value: customerEntryDto);
