@@ -14,7 +14,7 @@ public class CustomerRepository : Repository<Customer>, ICustomerRepository
 
     public async Task<Customer?> GetCustomerByExternalIdAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
     {
-        return await _dbSet.FirstOrDefaultAsync(c => c.ExternalMapping == externalCustomerId);
+        return await _dbSet.FirstOrDefaultAsync(c => c.ExternalMapping == externalCustomerId, cancellationToken);
     }
 
     public async Task<List<Customer>> GetCustomerByQueryableParameters(string? familyName, string? mobile, string? email, CancellationToken cancellationToken = default)

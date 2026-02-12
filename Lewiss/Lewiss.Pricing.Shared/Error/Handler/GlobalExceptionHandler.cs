@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Lewiss.Pricing.Shared.Exceptions;
+namespace Lewiss.Pricing.Shared.Error.Handlers;
 
 public class GlobalExceptionHandler : IExceptionHandler
 {
@@ -25,6 +25,7 @@ public class GlobalExceptionHandler : IExceptionHandler
 
         httpContext.Response.StatusCode = exception switch
         {
+            BaseException baseException => baseException.StatusCode,
             ApplicationException => StatusCodes.Status400BadRequest,
             _ => StatusCodes.Status500InternalServerError
         };

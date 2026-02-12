@@ -1,8 +1,11 @@
 using System.Text.RegularExpressions;
 using Lewiss.Pricing.Data.Model.Fabric.Price;
 using Lewiss.Pricing.Data.OptionData;
+using Lewiss.Pricing.Shared.Error;
 using Lewiss.Pricing.Shared.FabricDTO;
 using Lewiss.Pricing.Shared.QueryParameters;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
 
 
@@ -21,6 +24,7 @@ public class FabricService
     }
 
 
+    // to get rid of switch statements, we will switch to strategy resolver pattern using dictionary
     public virtual async Task<List<IFabricOutputDTO>> GetFabricsAsync(string productType, CancellationToken cancellationToken = default)
     {
 
@@ -30,7 +34,7 @@ public class FabricService
         {
             "kineticscellular" => await GetKineticsCellularFabricListAsync(cancellationToken),
             "kineticsroller" => await GetKineticsRollerFabricListAsync(cancellationToken),
-            _ => throw new Exception($"Not a valid product type {productType}"),
+            _ => throw new InvalidQueryParameterException("Product type is invalid")
         };
 
         return fabricList;
@@ -45,7 +49,7 @@ public class FabricService
 
         if (fabricList is null || fabricList.Count == 0)
         {
-            throw new Exception("Could not retrieve all Kinetic Cellular fabrics");
+            throw new BaseException(StatusCodes.Status500InternalServerError, "Could not retrieve Kinetic Cellular fabrics");
         }
 
         List<IFabricOutputDTO> listToReturn = fabricList.Select(f => f.ToKineticsCellularFabricOutputDTO()).ToList<IFabricOutputDTO>();
@@ -61,7 +65,7 @@ public class FabricService
         var fabricList = await _unitOfWork.KineticsRollerFabric.GetAllAsync();
         if (fabricList is null || fabricList.Count == 0)
         {
-            throw new Exception("Could not retrieve all Kinetic Roller fabrics");
+            throw new BaseException(StatusCodes.Status500InternalServerError, "Could not retrieve Kinetic Roller fabrics");
         }
 
         List<IFabricOutputDTO> listToReturn = fabricList.Select(f => f.ToKineticsRollerFabricOutputDTO()).ToList<IFabricOutputDTO>();
@@ -95,18 +99,18 @@ public class FabricService
         return KineticsCellularFabric.ToKineticsCellularFabricOutputDTO();
     }
 
-    public async Task<FabricPriceOutputDTO?> GetFabricPriceAsync(string productType, GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
+    public async Task<FabricPriceOutputDTO> GetFabricPriceAsync(string productType, GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
     {
 
         if (string.IsNullOrEmpty(productType))
         {
-            throw new Exception("Product Type is null");
+            throw new InvalidQueryParameterException("Product type is invalid");
         }
 
         var priceModel = await GetFabricPriceModelAsync(productType, queryParameters, cancellationToken);
         var fabricMultiplier = await GetFabricMultiplier(productType, queryParameters, cancellationToken);
 
-        // just to be explicit
+
         decimal price = priceModel.Price * fabricMultiplier;
         return new FabricPriceOutputDTO
         {
@@ -126,7 +130,7 @@ public class FabricService
 
         if (fabricPrice is null)
         {
-            throw new Exception($"Failed to retrieve Fabric Price Model for {productTypeAdjusted} {width}x{height} {opacity}");
+            throw new NotFoundException($"Price not found for {productTypeAdjusted} {width}x{height} {opacity}");
         }
 
         return fabricPrice;
@@ -143,7 +147,7 @@ public class FabricService
         {
             "kineticscellular" => await GetKineticsCellularFabricAsync(colour, opacity, cancellationToken),
             "kineticsroller" => await GetKineticsRollerFabricAsync(fabric, colour, opacity, cancellationToken),
-            _ => throw new Exception("Invalid Product Type"),
+            _ => throw new InvalidQueryParameterException("Product type is invalid"),
         };
 
         return fabricDTO.Multiplier;
@@ -179,7 +183,7 @@ public class FabricService
             var kineticsCellularFabric = await _unitOfWork.KineticsCellularFabric.GetFabricByProductOptionVariationIdAsync(productOptionVariationId, cancellationToken);
             if (kineticsCellularFabric is null)
             {
-                throw new Exception($"Failed to retrieve Kinetics Cellular fabric by productOptionVariationId {productOptionVariationId}");
+                throw new NotFoundException($"Failed to retrieve Kinetics Cellular fabric");
             }
 
             return kineticsCellularFabric.ToKineticsCellularFabricOutputDTO();
@@ -190,7 +194,7 @@ public class FabricService
             var kineticsRollerFabric = await _unitOfWork.KineticsRollerFabric.GetFabricByProductOptionVariationIdAsync(productOptionVariationId, cancellationToken);
             if (kineticsRollerFabric is null)
             {
-                throw new Exception($"Failed to retrieve Kinetics Roller fabric by productOptionVariationId {productOptionVariationId}");
+                throw new Exception($"Failed to retrieve Kinetics Roller fabric");
             }
 
             return kineticsRollerFabric.ToKineticsRollerFabricOutputDTO();
@@ -198,7 +202,7 @@ public class FabricService
         }
         else
         {
-            throw new Exception("Invalid Product Type");
+            throw new InvalidQueryParameterException("Product type is invalid");
         }
 
     }

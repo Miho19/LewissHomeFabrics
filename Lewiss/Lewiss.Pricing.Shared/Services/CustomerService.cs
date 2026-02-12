@@ -1,5 +1,6 @@
 using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Shared.CustomerDTO;
+using Lewiss.Pricing.Shared.Error;
 using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.WorksheetDTO;
 using Microsoft.Extensions.Logging;
@@ -16,10 +17,9 @@ public class CustomerService
         _logger = logger;
     }
 
-    public virtual async Task<CustomerEntryOutputDTO?> CreateCustomerAsync(CustomerCreateInputDTO customerCreateDTO, CancellationToken cancellationToken = default)
+    public virtual async Task<CustomerEntryOutputDTO> CreateCustomerAsync(CustomerCreateInputDTO customerCreateDTO, CancellationToken cancellationToken = default)
     {
 
-        // Query database for duplicate entry and just return the entry if found
         var queryParameters = new GetCustomerQueryParameters
         {
             FamilyName = customerCreateDTO.FamilyName,
@@ -34,11 +34,9 @@ public class CustomerService
             return queryCustomerList[0];
         }
 
-
         var customer = customerCreateDTO.ToCustomerEntity();
         await _unitOfWork.Customer.AddAsync(customer);
         await _unitOfWork.CommitAsync();
-
 
         var customerEntryDto = customer.ToEntryDTO();
         return customerEntryDto;
@@ -53,7 +51,7 @@ public class CustomerService
 
         if (filteredCustomerList.Count == 0)
         {
-            return [];
+            throw new NotFoundException($"No customers found by query\nfamilyName: {familyName}\nmobile: {mobile}\nemail: {email}");
         }
 
         var filteredCustomerEntryDTOList = filteredCustomerList.Select(c => c.ToEntryDTO()).ToList();
@@ -68,12 +66,12 @@ public class CustomerService
         var worksheetList = await _unitOfWork.Worksheet.GetWorksheetsByExternalCustomerIdAsync(externalCustomerId, cancellationToken);
         if (worksheetList is null)
         {
-            return null;
+            throw new NotFoundException($"Customer not found by id: {externalCustomerId}");
         }
 
         if (worksheetList.Count == 0)
         {
-            return [];
+            throw new NotFoundException($"No worksheets exist for customer: {externalCustomerId}");
         }
 
         var worksheetDTOList = worksheetList.Select(w => w.ToWorksheetDTO(externalCustomerId)).ToList();
@@ -89,14 +87,12 @@ public class CustomerService
         var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
         if (customer is null)
         {
-            return null;
+            throw new NotFoundException($"Customer not found by id: {externalCustomerId}");
         }
 
         var customerEntryDto = customer.ToEntryDTO();
 
         return customerEntryDto;
-
-
     }
 
 }
