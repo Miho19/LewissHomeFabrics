@@ -62,15 +62,6 @@ if (app.Environment.IsDevelopment())
 }
 
 
-
-// using (var scope = app.Services.CreateScope())
-// {
-//     var services = scope.ServiceProvider;
-
-//     var pricingDbContext = services.GetRequiredService<PricingDbContext>();
-//     await PricingDbContextSeeding.SeedDataAsync(pricingDbContext);
-// }
-
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
