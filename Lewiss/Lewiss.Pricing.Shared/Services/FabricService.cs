@@ -23,25 +23,19 @@ public class FabricService
 
     public virtual async Task<List<IFabricOutputDTO>> GetFabricsAsync(string productType, CancellationToken cancellationToken = default)
     {
-        try
+
+        var queryProductType = _sharedUtilityService.GetProductTypeQueryString(productType);
+
+        var fabricList = queryProductType switch
         {
-            var queryProductType = _sharedUtilityService.GetProductTypeQueryString(productType);
+            "kineticscellular" => await GetKineticsCellularFabricListAsync(cancellationToken),
+            "kineticsroller" => await GetKineticsRollerFabricListAsync(cancellationToken),
+            _ => throw new Exception($"Not a valid product type {productType}"),
+        };
 
-            var fabricList = queryProductType switch
-            {
-                "kineticscellular" => await GetKineticsCellularFabricListAsync(cancellationToken),
-                "kineticsroller" => await GetKineticsRollerFabricListAsync(cancellationToken),
-                _ => throw new Exception($"Not a valid product type {productType}"),
-            };
+        return fabricList;
 
-            return fabricList;
 
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"FabricService.GetFabricsAsync exception: ${ex.Message}");
-            return [];
-        }
 
     }
 
@@ -103,28 +97,22 @@ public class FabricService
 
     public async Task<FabricPriceOutputDTO?> GetFabricPriceAsync(string productType, GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
     {
-        try
-        {
-            if (string.IsNullOrEmpty(productType))
-            {
-                throw new Exception("Product Type is null");
-            }
 
-            var priceModel = await GetFabricPriceModelAsync(productType, queryParameters, cancellationToken);
-            var fabricMultiplier = await GetFabricMultiplier(productType, queryParameters, cancellationToken);
-
-            // just to be explicit
-            decimal price = priceModel.Price * fabricMultiplier;
-            return new FabricPriceOutputDTO
-            {
-                Price = price
-            };
-        }
-        catch (Exception ex)
+        if (string.IsNullOrEmpty(productType))
         {
-            _logger.LogError($"FabricService.GetFabricPriceAsync exception: {ex.Message}");
-            return null;
+            throw new Exception("Product Type is null");
         }
+
+        var priceModel = await GetFabricPriceModelAsync(productType, queryParameters, cancellationToken);
+        var fabricMultiplier = await GetFabricMultiplier(productType, queryParameters, cancellationToken);
+
+        // just to be explicit
+        decimal price = priceModel.Price * fabricMultiplier;
+        return new FabricPriceOutputDTO
+        {
+            Price = price
+        };
+
 
     }
 
@@ -163,30 +151,22 @@ public class FabricService
 
     public async Task<FabricPriceOutputDTO?> GetFabricPriceOutputDTOByProductOptionVariationIdAsync(string productType, int productOptionVariationId, int width, int height, CancellationToken cancellationToken = default)
     {
-        try
+
+        var fabricOutputDTO = await GetFabricOutputDTOByProductOptionVariationIdAsync(productType, productOptionVariationId, cancellationToken);
+
+        var productTypeDatabaseValid = _sharedUtilityService.GetValidProductOptionTypeString(productType);
+        var opacityAdjusted = _sharedUtilityService.GetValidFabricOpacityStringForFabricPricing(productType, fabricOutputDTO.Opacity);
+        var fabricPrice = await _unitOfWork.FabricPrice.GetFabricPriceByFabricPriceQueryParametersAsync(productTypeDatabaseValid, width, height, opacityAdjusted, cancellationToken);
+        if (fabricPrice is null)
         {
-
-            // we have multiplier
-            var fabricOutputDTO = await GetFabricOutputDTOByProductOptionVariationIdAsync(productType, productOptionVariationId, cancellationToken);
-
-            var productTypeDatabaseValid = _sharedUtilityService.GetValidProductOptionTypeString(productType);
-            var opacityAdjusted = _sharedUtilityService.GetValidFabricOpacityStringForFabricPricing(productType, fabricOutputDTO.Opacity);
-            var fabricPrice = await _unitOfWork.FabricPrice.GetFabricPriceByFabricPriceQueryParametersAsync(productTypeDatabaseValid, width, height, opacityAdjusted, cancellationToken);
-            if (fabricPrice is null)
-            {
-                return null;
-            }
-
-            return new FabricPriceOutputDTO
-            {
-                Price = fabricPrice.Price * fabricOutputDTO.Multiplier
-            };
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"FabricService.GetFabricPriceOutputDTOByProductOptionVariationIdAsync exception: {ex.Message}");
             return null;
         }
+
+        return new FabricPriceOutputDTO
+        {
+            Price = fabricPrice.Price * fabricOutputDTO.Multiplier
+        };
+
     }
 
     private async Task<IFabricOutputDTO> GetFabricOutputDTOByProductOptionVariationIdAsync(string productType, int productOptionVariationId, CancellationToken cancellationToken = default)

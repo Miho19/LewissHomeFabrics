@@ -19,17 +19,6 @@ public class FabricController : ControllerBase
     public async Task<IActionResult> GetFabrics([FromQuery] string productType, CancellationToken cancellationToken = default)
     {
         var fabricList = await _fabricService.GetFabricsAsync(productType, cancellationToken);
-        if (fabricList.Count == 0)
-        {
-            return StatusCode(StatusCodes.Status404NotFound, new ProblemDetails
-            {
-                Status = StatusCodes.Status404NotFound,
-                Title = "Not Found",
-                Detail = "Fabric list not found.",
-            });
-        }
-
-
         return new OkObjectResult(fabricList);
     }
 
@@ -37,18 +26,6 @@ public class FabricController : ControllerBase
     public async Task<IActionResult> GetFabricPrice(string productType, [FromQuery] GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
     {
         var fabricPriceDTO = await _fabricService.GetFabricPriceAsync(productType, queryParameters, cancellationToken);
-
-        if (fabricPriceDTO is null)
-        {
-            return StatusCode(StatusCodes.Status404NotFound, new ProblemDetails
-            {
-                Status = StatusCodes.Status404NotFound,
-                Title = "Not Found",
-                Detail = "Fabric price not found.",
-            });
-        }
-
-
         return new OkObjectResult(fabricPriceDTO);
     }
 

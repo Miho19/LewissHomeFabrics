@@ -5,6 +5,7 @@ using Lewiss.Pricing.Data.Repository.Fabric;
 using Lewiss.Pricing.Data.Repository.ProductOptionRepository;
 using Lewiss.Pricing.Data.Repository.ProductRepository;
 using Lewiss.Pricing.Data.Repository.WorksheetRepository;
+using Lewiss.Pricing.Shared.Exceptions;
 using Lewiss.Pricing.Shared.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +24,17 @@ builder.Services.AddDbContext<PricingDbContext>(options =>
 {
     options.UseSqlServer(connectionString: dbConnectionString);
 });
+
+
+builder.Services.AddProblemDetails(configure =>
+{
+    configure.CustomizeProblemDetails = context =>
+    {
+        context.ProblemDetails.Extensions.TryAdd("requestId", context.HttpContext.TraceIdentifier);
+    };
+});
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 
 // Repositories
@@ -61,6 +73,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 

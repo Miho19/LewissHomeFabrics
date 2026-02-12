@@ -26,25 +26,6 @@ public class PricingController : ControllerBase
     public async Task<IActionResult> GetCustomerWorksheet(Guid customerId, CancellationToken cancellationToken = default)
     {
         var worksheetDTOList = await _customerService.GetCustomerWorksheetDTOListAsync(customerId, cancellationToken);
-        if (worksheetDTOList is null)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Internal Server Error",
-                Detail = "Something went wrong.",
-            });
-        }
-
-        // if (worksheetDTOList.Count == 0)
-        // {
-        //     return StatusCode(StatusCodes.Status404NotFound, new ProblemDetails
-        //     {
-        //         Status = StatusCodes.Status404NotFound,
-        //         Title = "Not Found",
-        //         Detail = "Customer worksheets not found.",
-        //     });
-        // }
 
         return new OkObjectResult(worksheetDTOList);
     }
@@ -55,15 +36,6 @@ public class PricingController : ControllerBase
     public async Task<IActionResult> GetWorksheet(Guid customerId, Guid worksheetId, CancellationToken cancellationToken = default)
     {
         var worksheetDTO = await _worksheetService.GetWorksheetAsync(customerId, worksheetId, cancellationToken);
-        if (worksheetDTO is null)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Internal Server Error",
-                Detail = "Something went wrong.",
-            });
-        }
 
         return new OkObjectResult(worksheetDTO);
     }
@@ -73,15 +45,6 @@ public class PricingController : ControllerBase
     public async Task<IActionResult> CreateWorksheet(Guid customerId, CancellationToken cancellationToken = default)
     {
         var worksheetDTO = await _worksheetService.CreateWorksheetAsync(customerId, cancellationToken);
-        if (worksheetDTO is null)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Internal Server Error",
-                Detail = "Something went wrong.",
-            });
-        }
 
         return new CreatedAtActionResult("GetWorksheet", "Pricing", new { worksheetId = worksheetDTO.Id, customerId }, worksheetDTO);
     }
@@ -93,15 +56,6 @@ public class PricingController : ControllerBase
     {
 
         var productEntryDTO = await _productService.CreateProductAsync(customerId, workoutId, productCreateDTO, cancellationToken);
-        if (productEntryDTO is null)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Internal Server Error",
-                Detail = "Something went wrong.",
-            });
-        }
 
         return new OkObjectResult(productEntryDTO);
     }
@@ -109,47 +63,14 @@ public class PricingController : ControllerBase
     [HttpGet("customer/{customerId}/worksheet/{worksheetId}/product/{productId}", Name = "GetProduct")]
     public async Task<IActionResult> GetProduct(Guid customerId, Guid worksheetId, Guid productId, CancellationToken cancellationToken = default)
     {
-
         var productEntryDTO = await _productService.GetProductAsync(customerId, worksheetId, productId, cancellationToken);
-        if (productEntryDTO is null)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Internal Server Error",
-                Detail = "Something went wrong.",
-            });
-        }
-
         return new OkObjectResult(productEntryDTO);
     }
 
     [HttpGet("customer/{customerId}/worksheet/{worksheetId}/product", Name = "GetWorksheetProduct")]
     public async Task<IActionResult> GetWorksheetProduct(Guid customerId, Guid worksheetId, CancellationToken cancellationToken = default)
     {
-
         var productEntryDTOList = await _worksheetService.GetWorksheetProductsAsync(customerId, worksheetId, cancellationToken);
-        if (productEntryDTOList is null)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, new ProblemDetails
-            {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "Internal Server Error",
-                Detail = "Something went wrong.",
-            });
-        }
-
-        if (productEntryDTOList.Count == 0)
-        {
-            return StatusCode(StatusCodes.Status404NotFound, new ProblemDetails
-            {
-                Status = StatusCodes.Status404NotFound,
-                Title = "Not Found",
-                Detail = "There are no products for this worksheet.",
-            });
-        }
-
-
         return new OkObjectResult(productEntryDTOList);
     }
 
