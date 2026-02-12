@@ -49,7 +49,7 @@ public class FabricService
 
         if (fabricList is null || fabricList.Count == 0)
         {
-            throw new BaseException(StatusCodes.Status500InternalServerError, "Could not retrieve Kinetic Cellular fabrics");
+            throw new InternalSystemException("Could not retrieve Kinetic Cellular fabrics");
         }
 
         List<IFabricOutputDTO> listToReturn = fabricList.Select(f => f.ToKineticsCellularFabricOutputDTO()).ToList<IFabricOutputDTO>();
@@ -65,7 +65,7 @@ public class FabricService
         var fabricList = await _unitOfWork.KineticsRollerFabric.GetAllAsync();
         if (fabricList is null || fabricList.Count == 0)
         {
-            throw new BaseException(StatusCodes.Status500InternalServerError, "Could not retrieve Kinetic Roller fabrics");
+            throw new InternalSystemException("Could not retrieve Kinetic Roller fabrics");
         }
 
         List<IFabricOutputDTO> listToReturn = fabricList.Select(f => f.ToKineticsRollerFabricOutputDTO()).ToList<IFabricOutputDTO>();
@@ -77,13 +77,13 @@ public class FabricService
     {
         if (string.IsNullOrEmpty(fabric))
         {
-            throw new Exception("Kinetics Roller fabrics required a fabric to query for");
+            throw new InvalidQueryParameterException("Fabric is invalid");
         }
 
         var kineticsRollerFabric = await _unitOfWork.KineticsRollerFabric.GetFabricAsync(fabric, colour, opacity, cancellationToken);
         if (kineticsRollerFabric is null)
         {
-            throw new Exception($"Could not find Kinetics Roller fabric for fabric {fabric} colour {colour} opacity {opacity}");
+            throw new NotFoundException($"Kinetics Roller fabric not found.\nfabric: {fabric}\ncolour: {colour}\nopacity: {opacity}");
         }
 
         return kineticsRollerFabric.ToKineticsRollerFabricOutputDTO();
@@ -94,7 +94,7 @@ public class FabricService
         var KineticsCellularFabric = await _unitOfWork.KineticsCellularFabric.GetFabricAsync(colour, opacity, cancellationToken);
         if (KineticsCellularFabric is null)
         {
-            throw new Exception($"Could not find Kinetics Cellular fabric for colour: {colour} opacity: {opacity}");
+            throw new NotFoundException($"Kinetics Cellular fabric not found.\ncolour: {colour}\nopacity: {opacity}");
         }
         return KineticsCellularFabric.ToKineticsCellularFabricOutputDTO();
     }
@@ -153,7 +153,7 @@ public class FabricService
         return fabricDTO.Multiplier;
     }
 
-    public async Task<FabricPriceOutputDTO?> GetFabricPriceOutputDTOByProductOptionVariationIdAsync(string productType, int productOptionVariationId, int width, int height, CancellationToken cancellationToken = default)
+    public async Task<FabricPriceOutputDTO> GetFabricPriceOutputDTOByProductOptionVariationIdAsync(string productType, int productOptionVariationId, int width, int height, CancellationToken cancellationToken = default)
     {
 
         var fabricOutputDTO = await GetFabricOutputDTOByProductOptionVariationIdAsync(productType, productOptionVariationId, cancellationToken);
@@ -163,7 +163,7 @@ public class FabricService
         var fabricPrice = await _unitOfWork.FabricPrice.GetFabricPriceByFabricPriceQueryParametersAsync(productTypeDatabaseValid, width, height, opacityAdjusted, cancellationToken);
         if (fabricPrice is null)
         {
-            return null;
+            throw new NotFoundException($"Price not found for {_sharedUtilityService.GetValidProductOptionTypeString(productType)} {width}x{height} {fabricOutputDTO.Opacity}");
         }
 
         return new FabricPriceOutputDTO
@@ -183,7 +183,7 @@ public class FabricService
             var kineticsCellularFabric = await _unitOfWork.KineticsCellularFabric.GetFabricByProductOptionVariationIdAsync(productOptionVariationId, cancellationToken);
             if (kineticsCellularFabric is null)
             {
-                throw new NotFoundException($"Failed to retrieve Kinetics Cellular fabric");
+                throw new NotFoundException($"Kinetics Cellular fabric not found");
             }
 
             return kineticsCellularFabric.ToKineticsCellularFabricOutputDTO();
@@ -194,7 +194,7 @@ public class FabricService
             var kineticsRollerFabric = await _unitOfWork.KineticsRollerFabric.GetFabricByProductOptionVariationIdAsync(productOptionVariationId, cancellationToken);
             if (kineticsRollerFabric is null)
             {
-                throw new Exception($"Failed to retrieve Kinetics Roller fabric");
+                throw new NotFoundException($"Kinetics Roller fabric not found");
             }
 
             return kineticsRollerFabric.ToKineticsRollerFabricOutputDTO();

@@ -2,6 +2,7 @@ using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Data.Model.Fabric.Price;
 using Lewiss.Pricing.Data.OptionData;
 using Lewiss.Pricing.Shared.CustomerDTO;
+using Lewiss.Pricing.Shared.Error;
 using Lewiss.Pricing.Shared.FabricDTO;
 using Lewiss.Pricing.Shared.ProductDTO;
 using Microsoft.Extensions.Logging;
@@ -27,7 +28,7 @@ public class ProductService
     public virtual async Task<ProductEntryOutputDTO?> CreateProductAsync(Guid externalCustomerId, Guid externalWorksheetId, ProductCreateInputDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
 
-        var (customer, worksheet) = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId, cancellationToken);
+        var (_, worksheet) = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId, cancellationToken);
 
         var product = productCreateDTO.ToProductEntity(worksheet);
 
@@ -61,21 +62,16 @@ public class ProductService
         var fabricProductOptionVariation = productOptionVariations.FirstOrDefault(ov => ov.ProductOptionId == FabricOption.ProductOption.ProductOptionId);
         if (fabricProductOptionVariation is null)
         {
-            throw new Exception("Fabric was not found in product option variation list");
+            throw new InvalidQueryParameterException("Fabric must be supplied");
         }
 
         var productTypeProductOptionVariation = productOptionVariations.FirstOrDefault(ov => ov.ProductOptionId == ProductTypeOption.ProductOption.ProductOptionId);
         if (productTypeProductOptionVariation is null)
         {
-            throw new Exception("Product Type was not found in product option variation list");
+            throw new InvalidQueryParameterException("Product type is invalid");
         }
 
         var fabricPriceOutputDTO = await _fabricService.GetFabricPriceOutputDTOByProductOptionVariationIdAsync(productTypeProductOptionVariation.Value, fabricProductOptionVariation.ProductOptionVariationId, width, height, cancellationToken);
-
-        if (fabricPriceOutputDTO is null)
-        {
-            throw new Exception("Fabric Price DTO was not retrieved");
-        }
 
         return fabricPriceOutputDTO;
     }
@@ -84,7 +80,8 @@ public class ProductService
     {
         if (obj is null)
         {
-            throw new Exception("Input object is null");
+            throw new InternalSystemException("Something went wrong");
+
         }
 
         List<ProductOptionVariation> productOptionVariations = [];
@@ -104,10 +101,13 @@ public class ProductService
                 continue;
             }
 
-            var productVariation = productOption.ProductOptionVariation.FirstOrDefault(pv => pv.Value.ToString().ToUpper() == propertyValue?.ToString()?.ToUpper());
+            var valueAsString = (string)propertyValue;
+
+            var productVariation = productOption.ProductOptionVariation.FirstOrDefault(pv => pv.Value == valueAsString);
             if (productVariation is null)
             {
-                throw new Exception($"For Option {productOption}, {propertyValue} is not a valid value");
+                throw new InvalidQueryParameterException($"{propertyValue} is not valid for {productOption.Name}");
+
             }
 
             productOptionVariations.Add(productVariation);
@@ -129,7 +129,7 @@ public class ProductService
         {
             "kineticscellular" => await PopulateProductOptionVariationList(productCreateDTO.KineticsCellular, typeof(KineticsCellular), cancellationToken),
             "kineticsroller" => await PopulateProductOptionVariationList(productCreateDTO.KineticsRoller, typeof(KineticsRoller), cancellationToken),
-            _ => throw new Exception("Invalid Product Type"),
+            _ => throw new InvalidQueryParameterException("Product type is invalid")
         };
 
         return result;
@@ -144,7 +144,7 @@ public class ProductService
         var product = await _unitOfWork.Product.GetProductByExternalIdAsync(externalProductId, cancellationToken);
         if (product is null)
         {
-            throw new Exception($"Failed to retrieve product external Id: {externalProductId}");
+            throw new NotFoundException($"Product not found\nid: {externalProductId}");
         }
 
         var productEntryDTO = product.ToProductEntryDTO(externalWorksheetId);
