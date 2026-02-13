@@ -1,5 +1,7 @@
+using FluentResults;
 using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Shared.CustomerDTO;
+using Lewiss.Pricing.Shared.CustomError;
 using Lewiss.Pricing.Shared.Error;
 using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.WorksheetDTO;
@@ -17,7 +19,7 @@ public class CustomerService
         _logger = logger;
     }
 
-    public virtual async Task<CustomerEntryOutputDTO> CreateCustomerAsync(CustomerCreateInputDTO customerCreateDTO, CancellationToken cancellationToken = default)
+    public virtual async Task<Result<CustomerEntryOutputDTO>> CreateCustomerAsync(CustomerCreateInputDTO customerCreateDTO, CancellationToken cancellationToken = default)
     {
 
         var queryParameters = new GetCustomerQueryParameters
@@ -31,7 +33,7 @@ public class CustomerService
 
         if (queryCustomerList.Count != 0)
         {
-            return queryCustomerList[0];
+            Result.Fail(new CustomerAlreadyExists("Customer", queryParameters));
         }
 
         var customer = customerCreateDTO.ToCustomerEntity();
@@ -39,19 +41,19 @@ public class CustomerService
         await _unitOfWork.CommitAsync();
 
         var customerEntryDto = customer.ToEntryDTO();
-        return customerEntryDto;
+        return Result.Ok(customerEntryDto);
 
     }
 
 
-    public virtual async Task<List<CustomerEntryOutputDTO>> GetCustomersAsync(GetCustomerQueryParameters queryParameters, CancellationToken cancellationToken = default)
+    public virtual async Task<Result<List<CustomerEntryOutputDTO>>> GetCustomersAsync(GetCustomerQueryParameters queryParameters, CancellationToken cancellationToken = default)
     {
         var (familyName, mobile, email) = queryParameters;
         var filteredCustomerList = await _unitOfWork.Customer.GetCustomerByQueryableParameters(familyName, mobile, email, cancellationToken);
 
         if (filteredCustomerList.Count == 0)
         {
-            throw new NotFoundException($"No customers found by query\nfamilyName: {familyName}\nmobile: {mobile}\nemail: {email}");
+            return Result.Ok(new List<CustomerEntryOutputDTO>());
         }
 
         var filteredCustomerEntryDTOList = filteredCustomerList.Select(c => c.ToEntryDTO()).ToList();
@@ -81,13 +83,13 @@ public class CustomerService
 
     }
 
-    public virtual async Task<CustomerEntryOutputDTO?> GetCustomerByExternalIdAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
+    public virtual async Task<Result<CustomerEntryOutputDTO>> GetCustomerByExternalIdAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
     {
 
         var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
         if (customer is null)
         {
-            throw new NotFoundException($"Customer not found by id: {externalCustomerId}");
+            return Result.Fail(new NotFoundResource("Customer", externalCustomerId));
         }
 
         var customerEntryDto = customer.ToEntryDTO();

@@ -6,11 +6,6 @@ public static class CustomerExtensions
 {
     public static CustomerEntryOutputDTO ToEntryDTO(this Customer customer)
     {
-        if (customer is null)
-        {
-            throw new Exception("Customer object is null");
-        }
-
         return new CustomerEntryOutputDTO
         {
             Id = customer.ExternalMapping,
@@ -25,11 +20,6 @@ public static class CustomerExtensions
 
     public static Customer ToCustomerEntity(this CustomerCreateInputDTO customerCreateDTO)
     {
-        if (customerCreateDTO is null)
-        {
-            throw new Exception("Customer Create DTO is null");
-        }
-
         return new Customer
         {
             ExternalMapping = Guid.CreateVersion7(DateTimeOffset.UtcNow),
