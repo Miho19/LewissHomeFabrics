@@ -1,3 +1,4 @@
+using Lewiss.Pricing.Shared.CustomError;
 using Lewiss.Pricing.Shared.ProductDTO;
 using Lewiss.Pricing.Shared.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,20 @@ public class PricingController : ControllerBase
     [HttpGet("customer/{customerId}/worksheet", Name = "GetCustomerWorksheet")]
     public async Task<IActionResult> GetCustomerWorksheet(Guid customerId, CancellationToken cancellationToken = default)
     {
-        var worksheetDTOList = await _customerService.GetCustomerWorksheetDTOListAsync(customerId, cancellationToken);
+        var result = await _customerService.GetCustomerWorksheetDTOListAsync(customerId, cancellationToken);
+
+        if (result.IsFailed)
+        {
+            if (result.Errors.Any(e => e is NotFoundResource))
+            {
+                return NotFound("Customer not found.");
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+
+        }
+
+        var worksheetDTOList = result.Value;
 
         return new OkObjectResult(worksheetDTOList);
     }

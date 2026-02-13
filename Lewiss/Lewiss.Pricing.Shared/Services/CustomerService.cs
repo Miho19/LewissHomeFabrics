@@ -1,8 +1,6 @@
 using FluentResults;
-using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Shared.CustomerDTO;
 using Lewiss.Pricing.Shared.CustomError;
-using Lewiss.Pricing.Shared.Error;
 using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.WorksheetDTO;
 using Microsoft.Extensions.Logging;
@@ -29,7 +27,15 @@ public class CustomerService
             Email = customerCreateDTO.Email,
         };
 
-        var queryCustomerList = await GetCustomersAsync(queryParameters, cancellationToken);
+        var customerQueryResult = await GetCustomersAsync(queryParameters, cancellationToken);
+
+        if (customerQueryResult.IsFailed)
+        {
+            return Result.Fail(new Error("Exceptional error occurred."));
+        }
+
+        var queryCustomerList = customerQueryResult.Value;
+
 
         if (queryCustomerList.Count != 0)
         {
@@ -63,17 +69,24 @@ public class CustomerService
 
     }
 
-    public virtual async Task<List<WorksheetOutputDTO>> GetCustomerWorksheetDTOListAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Currently we are relying on _unitOfWork.Worksheet.GetWorksheetsByExternalCustomerIdAsync to return null if the customer is not found... fix later
+    /// </summary>
+    /// <param name="externalCustomerId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="NotFoundException"></exception>
+    public virtual async Task<Result<List<WorksheetOutputDTO>>> GetCustomerWorksheetDTOListAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
     {
         var worksheetList = await _unitOfWork.Worksheet.GetWorksheetsByExternalCustomerIdAsync(externalCustomerId, cancellationToken);
         if (worksheetList is null)
         {
-            throw new NotFoundException($"Customer not found by id: {externalCustomerId}");
+            return Result.Fail(new NotFoundResource("Customer", externalCustomerId));
         }
 
         if (worksheetList.Count == 0)
         {
-            throw new NotFoundException($"No worksheets exist for customer: {externalCustomerId}");
+            return Result.Ok(new List<WorksheetOutputDTO>());
         }
 
         var worksheetDTOList = worksheetList.Select(w => w.ToWorksheetDTO(externalCustomerId)).ToList();

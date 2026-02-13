@@ -5,7 +5,7 @@ using Lewiss.Pricing.Data.Repository.Fabric;
 using Lewiss.Pricing.Data.Repository.ProductOptionRepository;
 using Lewiss.Pricing.Data.Repository.ProductRepository;
 using Lewiss.Pricing.Data.Repository.WorksheetRepository;
-using Lewiss.Pricing.Shared.Error.Handlers;
+using Lewiss.Pricing.Shared.CustomError;
 using Lewiss.Pricing.Shared.Services;
 using Microsoft.EntityFrameworkCore;
 

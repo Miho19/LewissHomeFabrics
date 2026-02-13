@@ -1,6 +1,8 @@
 using System.Text.RegularExpressions;
+using FluentResults;
 using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Data.OptionData;
+using Lewiss.Pricing.Shared.CustomError;
 using Lewiss.Pricing.Shared.Error;
 
 namespace Lewiss.Pricing.Shared.Services;
@@ -14,26 +16,27 @@ public class SharedUtilityService
     }
 
 
-    public async Task<(Customer, Worksheet)> GetCustomerAndWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
+    public async Task<Result<(Customer, Worksheet)>> GetCustomerAndWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
     {
         var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
         if (customer is null)
         {
-            throw new NotFoundException($"Customer not found by id: {externalCustomerId}");
+            return Result.Fail(new NotFoundResource("Customer", externalCustomerId));
         }
 
         var worksheet = await _unitOfWork.Worksheet.GetWorksheetByExternalIdAsync(externalWorksheetId, cancellationToken);
         if (worksheet is null)
         {
-            throw new NotFoundException($"Worksheet not found by id: {externalWorksheetId}");
+            return Result.Fail(new NotFoundResource("Worksheet", externalWorksheetId));
+
         }
 
         if (worksheet.CustomerId != customer.CustomerId)
         {
-            throw new InvalidQueryParameterException("Worksheet does not belong to Customer");
+            return Result.Fail(new ResourceNotOwned("Customer", externalCustomerId, "Worksheet", externalWorksheetId));
         }
 
-        return (customer, worksheet);
+        return Result.Ok((customer, worksheet));
     }
 
 
