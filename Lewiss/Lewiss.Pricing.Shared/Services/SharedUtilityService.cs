@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Data.OptionData;
+using Lewiss.Pricing.Shared.Error;
 
 namespace Lewiss.Pricing.Shared.Services;
 
@@ -18,18 +19,18 @@ public class SharedUtilityService
         var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
         if (customer is null)
         {
-            throw new Exception("Customer not found");
+            throw new NotFoundException($"Customer not found by id: {externalCustomerId}");
         }
 
         var worksheet = await _unitOfWork.Worksheet.GetWorksheetByExternalIdAsync(externalWorksheetId, cancellationToken);
         if (worksheet is null)
         {
-            throw new Exception("Worksheet not found");
+            throw new NotFoundException($"Worksheet not found by id: {externalWorksheetId}");
         }
 
         if (worksheet.CustomerId != customer.CustomerId)
         {
-            throw new Exception("Customer Id does not match Worksheet Customer Id");
+            throw new InvalidQueryParameterException("Worksheet does not belong to Customer");
         }
 
         return (customer, worksheet);
@@ -49,7 +50,7 @@ public class SharedUtilityService
         {
             "kineticscellular" => ProductTypeOption.KineticsCellular.Value,
             "kineticsroller" => ProductTypeOption.KineticsRoller.Value,
-            _ => throw new Exception("Product Type supplied does not match any from the database"),
+            _ => throw new InvalidQueryParameterException("Product type is invalid"),
         };
 
         return productTypeAdjusted;
@@ -64,7 +65,7 @@ public class SharedUtilityService
         {
             "kineticscellular" => opacity,
             "kineticsroller" => GetValidKineticsRollerOpacityString(opacity),
-            _ => throw new Exception("Product Type supplied does not match any from the database"),
+            _ => throw new InvalidQueryParameterException("Product type is invalid"),
         };
 
         return opacityAdjusted;

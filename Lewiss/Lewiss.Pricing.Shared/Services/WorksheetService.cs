@@ -1,4 +1,5 @@
 using Lewiss.Pricing.Data.Model;
+using Lewiss.Pricing.Shared.Error;
 using Lewiss.Pricing.Shared.ProductDTO;
 using Lewiss.Pricing.Shared.WorksheetDTO;
 using Microsoft.Extensions.Logging;
@@ -24,7 +25,7 @@ public class WorksheetService
         var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
         if (customer is null)
         {
-            throw new Exception($"Customer Not Found by external Id: {externalCustomerId}");
+            throw new NotFoundException($"Customer not found by id: {externalCustomerId}");
         }
 
         var worksheet = new Worksheet
