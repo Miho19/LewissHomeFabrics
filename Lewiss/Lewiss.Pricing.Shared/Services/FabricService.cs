@@ -98,7 +98,7 @@ public class FabricService
         return Result.Ok(KineticsCellularFabric.ToKineticsCellularFabricOutputDTO());
     }
 
-    public async Task<Result<FabricPriceOutputDTO>> GetFabricPriceAsync(string productType, GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
+    public async Task<Result<FabricPriceOutputDTO>> GetFabricPriceAsync(string productType, GetFabricQueryParameters queryParameters, CancellationToken cancellationToken = default)
     {
 
         if (string.IsNullOrEmpty(productType))
@@ -129,7 +129,7 @@ public class FabricService
 
     }
 
-    private async Task<Result<FabricPrice>> GetFabricPriceModelAsync(string productType, GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
+    private async Task<Result<FabricPrice>> GetFabricPriceModelAsync(string productType, GetFabricQueryParameters queryParameters, CancellationToken cancellationToken = default)
     {
         var (width, height, colour, opacity, fabric) = queryParameters;
 
@@ -162,7 +162,7 @@ public class FabricService
 
 
     // again need an interface...
-    private async Task<Result<decimal>> GetFabricMultiplier(string productType, GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
+    private async Task<Result<decimal>> GetFabricMultiplier(string productType, GetFabricQueryParameters queryParameters, CancellationToken cancellationToken = default)
     {
         var (width, height, colour, opacity, fabric) = queryParameters;
 

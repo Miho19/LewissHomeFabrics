@@ -23,7 +23,7 @@ public class FabricController : ControllerBase
     }
 
     [HttpGet("{productType}", Name = "GetFabricPrice")]
-    public async Task<IActionResult> GetFabricPrice(string productType, [FromQuery] GetFabricPriceQueryParameters queryParameters, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetFabricPrice(string productType, [FromQuery] GetFabricQueryParameters queryParameters, CancellationToken cancellationToken = default)
     {
         var fabricPriceDTO = await _fabricService.GetFabricPriceAsync(productType, queryParameters, cancellationToken);
         return new OkObjectResult(fabricPriceDTO);
