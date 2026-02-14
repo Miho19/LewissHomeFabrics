@@ -96,9 +96,12 @@ public class ProductService
             return Result.Fail(new ValidationError("Product Type", "null"));
         }
 
-        var fabricPriceOutputDTO = await _fabricService.GetFabricPriceOutputDTOByProductOptionVariationIdAsync(productTypeProductOptionVariation.Value, fabricProductOptionVariation.ProductOptionVariationId, width, height, cancellationToken);
-
-        return Result.Ok(fabricPriceOutputDTO);
+        var fabricPriceOutputDTOResult = await _fabricService.GetFabricPriceOutputDTOByProductOptionVariationIdAsync(productTypeProductOptionVariation.Value, fabricProductOptionVariation.ProductOptionVariationId, width, height, cancellationToken);
+        if (fabricPriceOutputDTOResult.IsFailed)
+        {
+            return Result.Fail(fabricPriceOutputDTOResult.Errors);
+        }
+        return Result.Ok(fabricPriceOutputDTOResult.Value);
     }
 
     private async Task<Result<List<ProductOptionVariation>>> PopulateProductOptionVariationList(object? obj, Type type, CancellationToken cancellationToken = default)
