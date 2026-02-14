@@ -7,7 +7,7 @@ using Lewiss.Pricing.Shared.ProductDTO;
 namespace Lewiss.Pricing.Shared.ProductStrategy;
 
 
-public class KineticsRollerProduct : IProductStrategy<KineticsRollerFabric>
+public class KineticsRollerProductStrategy : IProductStrategy<KineticsRollerFabric>
 {
     public string ProductType => ProductTypeOption.KineticsRoller.Value;
 

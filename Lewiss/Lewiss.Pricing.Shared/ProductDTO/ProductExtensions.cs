@@ -26,18 +26,25 @@ public static class ProductExtensions
 
     public static ProductEntryOutputDTO ToProductEntryDTO(this Product product, ProductCreateInputDTO productCreateDTO)
     {
-        if (product is null || productCreateDTO is null)
-        {
-            throw new Exception("Inputs are null");
-        }
 
         return new ProductEntryOutputDTO
         {
             Id = product.ExternalMapping,
             WorksheetId = productCreateDTO.WorksheetId,
             Price = product.Price,
-            VariableConfiguration = productCreateDTO.VariableConfiguration,
-            FixedConfiguration = productCreateDTO.FixedConfiguration,
+            Location = product.Location,
+            Width = product.Width,
+            Height = product.Height,
+            Reveal = product.Reveal,
+            RemoteNumber = product.RemoteNumber,
+            RemoteChannel = product.RemoteChannel,
+            InstallHeight = product.InstallHeight,
+            FitType = productCreateDTO.FitType,
+            FixingTo = productCreateDTO.FixingTo,
+            ProductType = productCreateDTO.ProductType,
+            Fabric = productCreateDTO.Fabric,
+            OperationType = productCreateDTO.OperationType,
+            OperationSide = productCreateDTO.OperationSide,
             KineticsCellular = productCreateDTO.KineticsCellular,
             KineticsRoller = productCreateDTO.KineticsRoller,
         };

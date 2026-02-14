@@ -6,6 +6,7 @@ using Lewiss.Pricing.Data.Repository.ProductOptionRepository;
 using Lewiss.Pricing.Data.Repository.ProductRepository;
 using Lewiss.Pricing.Data.Repository.WorksheetRepository;
 using Lewiss.Pricing.Shared.CustomError;
+using Lewiss.Pricing.Shared.ProductStrategy;
 using Lewiss.Pricing.Shared.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -42,12 +43,12 @@ builder.Services.AddScoped<IWorksheetRepository, WorksheetRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductOptionRepository, ProductOptionRepository>();
-
 builder.Services.AddScoped<IKineticsCellularFabricRepository, KineticsCellularFabricRepository>();
 builder.Services.AddScoped<IKineticsRollerFabricRepository, KineticsRollerFabricRepository>();
-
-
 builder.Services.AddScoped<IFabricPriceRepository, FabricPriceRepository>();
+
+
+
 
 
 
@@ -58,6 +59,12 @@ builder.Services.AddScoped<WorksheetService>();
 builder.Services.AddScoped<FabricService>();
 builder.Services.AddScoped<SharedUtilityService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Product strategy patterns
+builder.Services.AddScoped<ProductStrategyResolver>();
+builder.Services.AddScoped<KineticsRollerProductStrategy>();
+builder.Services.AddScoped<KineticsCellularProductStrategy>();
+
 
 
 builder.Services.AddControllers();

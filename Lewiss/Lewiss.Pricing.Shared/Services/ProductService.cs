@@ -4,6 +4,7 @@ using Lewiss.Pricing.Data.OptionData;
 using Lewiss.Pricing.Shared.CustomError;
 using Lewiss.Pricing.Shared.FabricDTO;
 using Lewiss.Pricing.Shared.ProductDTO;
+using Lewiss.Pricing.Shared.ProductStrategy;
 using Microsoft.Extensions.Logging;
 
 
@@ -15,12 +16,18 @@ public class ProductService
     private readonly SharedUtilityService _sharedUtilityService;
     private readonly ILogger<ProductService> _logger;
     private readonly FabricService _fabricService;
+    private readonly ProductStrategyResolver _productStrategyResolver;
 
-    public ProductService(IUnitOfWork unitOfWork, SharedUtilityService sharedUtilityService, FabricService fabricService, ILogger<ProductService> logger)
+    public ProductService(IUnitOfWork unitOfWork,
+    SharedUtilityService sharedUtilityService,
+    FabricService fabricService,
+    ProductStrategyResolver productStrategyResolver,
+    ILogger<ProductService> logger)
     {
         _unitOfWork = unitOfWork;
         _sharedUtilityService = sharedUtilityService;
         _fabricService = fabricService;
+        _productStrategyResolver = productStrategyResolver;
         _logger = logger;
     }
 
@@ -35,50 +42,29 @@ public class ProductService
     public virtual async Task<Result<ProductEntryOutputDTO>> CreateProductAsync(Guid externalCustomerId, Guid externalWorksheetId, ProductCreateInputDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
 
-
-        var result = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
-        if (result.IsFailed)
+        var productStategyResolverResult = _productStrategyResolver.GetProductStrategy<dynamic>(productCreateDTO.ProductType);
+        if (productStategyResolverResult.IsFailed)
         {
-            return Result.Fail(result.Errors);
+            return Result.Fail(productStategyResolverResult.Errors);
         }
 
-        var (_, worksheet) = result.Value;
-
-        var productModel = productCreateDTO.ToProductEntity(worksheet);
-
-        var populateGeneralConfigurationResult = await PopulateProductOptionVariationList(productCreateDTO, typeof(ProductCreateInputDTO), cancellationToken);
-        if (populateGeneralConfigurationResult.IsFailed)
+        var customerAndWorksheetResult = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
+        if (customerAndWorksheetResult.IsFailed)
         {
-            return Result.Fail(populateGeneralConfigurationResult.Errors);
+            return Result.Fail(customerAndWorksheetResult.Errors);
         }
 
-        var GeneralConfigurationList = populateGeneralConfigurationResult.Value;
+        var (_, worksheet) = customerAndWorksheetResult.Value;
 
+        var productStrategy = productStategyResolverResult.Value;
 
-        var productTypeSpecificProductOptionVariationListResult = await PopulateProductOptionVariationList_ProductTypeSpecificConfigurationAsync(productCreateDTO, cancellationToken);
-        if (productTypeSpecificProductOptionVariationListResult.IsFailed)
+        var createProductResult = await productStrategy.CreateProductAsync(externalCustomerId, productCreateDTO, worksheet, cancellationToken);
+        if (createProductResult.IsFailed)
         {
-            return Result.Fail(productTypeSpecificProductOptionVariationListResult.Errors);
+            return Result.Fail(createProductResult.Errors);
         }
 
-        var productTypeSpecificProductOptionVariationList = productTypeSpecificProductOptionVariationListResult.Value;
-
-        product.OptionVariations = [.. GeneralConfigurationList, .. productTypeSpecificProductOptionVariationList];
-
-        // Get fabric price info --> add to price total
-
-        var totalPriceProductOptionVariationList = GetProductOptionVariationListTotalPrice(product.OptionVariations.ToList());
-        var fabricPriceResult = await GetProductFabricPriceOutputDTO(product.OptionVariations.ToList(), product.Width, product.Height, cancellationToken);
-        if (fabricPriceResult.IsFailed)
-        {
-            return Result.Fail(fabricPriceResult.Errors);
-        }
-
-        var fabricPrice = fabricPriceResult.Value;
-
-
-        product.Price = totalPriceProductOptionVariationList + fabricPrice.Price;
-
+        var product = createProductResult.Value;
 
         await _unitOfWork.Product.AddAsync(product);
         await _unitOfWork.CommitAsync();
@@ -113,7 +99,7 @@ public class ProductService
         return Result.Ok(fabricPriceOutputDTOResult.Value);
     }
 
-    private async Task<Result<List<ProductOptionVariation>>> PopulateProductOptionVariationList(object? obj, Type type, CancellationToken cancellationToken = default)
+    public virtual async Task<Result<List<ProductOptionVariation>>> PopulateProductOptionVariationList(object? obj, Type type, CancellationToken cancellationToken = default)
     {
         if (obj is null)
         {
@@ -153,24 +139,6 @@ public class ProductService
         return Result.Ok(productOptionVariations);
 
     }
-
-
-
-    private async Task<Result<List<ProductOptionVariation>>> PopulateProductOptionVariationList_ProductTypeSpecificConfigurationAsync(ProductCreateInputDTO productCreateDTO, CancellationToken cancellationToken = default)
-    {
-
-        var queryProductType = _sharedUtilityService.GetProductTypeQueryString(productCreateDTO.FixedConfiguration.ProductType);
-
-        var result = queryProductType switch
-        {
-            "kineticscellular" => await PopulateProductOptionVariationList(productCreateDTO.KineticsCellular, typeof(KineticsCellular), cancellationToken),
-            "kineticsroller" => await PopulateProductOptionVariationList(productCreateDTO.KineticsRoller, typeof(KineticsRoller), cancellationToken),
-            _ => Result.Fail(new ValidationError("Product Type", productCreateDTO.FixedConfiguration.ProductType)),
-        };
-
-        return result;
-    }
-
 
     public virtual async Task<Result<ProductEntryOutputDTO>> GetProductAsync(Guid externalCustomerId, Guid externalWorksheetId, Guid externalProductId, CancellationToken cancellationToken = default)
     {

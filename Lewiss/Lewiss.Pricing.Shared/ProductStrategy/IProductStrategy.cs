@@ -10,11 +10,11 @@ namespace Lewiss.Pricing.Shared.ProductStrategy;
 
 
 
-public interface IProductStrategy<FabricType>
+public interface IProductStrategy<T>
 {
     string ProductType { get; }
 
-    Task<Result<Product>> CreateProductAsync(Guid externalCustomerId, Guid externalWorksheetId, ProductCreateInputDTO productCreateDTO, CancellationToken cancellationToken = default);
+    Task<Result<Product>> CreateProductAsync(Guid externalCustomerId, ProductCreateInputDTO productCreateDTO, Worksheet worksheet, CancellationToken cancellationToken = default);
 
     // Task<Result<List<FabricType>>> GetFabricListAsync(CancellationToken cancellationToken);
 
