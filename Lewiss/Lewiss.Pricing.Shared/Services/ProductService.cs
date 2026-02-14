@@ -24,8 +24,17 @@ public class ProductService
         _logger = logger;
     }
 
+    /** 
+        When creating product
+        0. Validate the product type and use strategy interface
+        1. Check to make sure customer owns worksheet
+        2. convert create dto to product model
+        3. 
+    */
+
     public virtual async Task<Result<ProductEntryOutputDTO>> CreateProductAsync(Guid externalCustomerId, Guid externalWorksheetId, ProductCreateInputDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
+
 
         var result = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
         if (result.IsFailed)
@@ -35,15 +44,15 @@ public class ProductService
 
         var (_, worksheet) = result.Value;
 
-        var product = productCreateDTO.ToProductEntity(worksheet);
+        var productModel = productCreateDTO.ToProductEntity(worksheet);
 
-        var populateFixedConfigurationListResult = await PopulateProductOptionVariationList(productCreateDTO.FixedConfiguration, typeof(FixedConfiguration), cancellationToken);
-        if (populateFixedConfigurationListResult.IsFailed)
+        var populateGeneralConfigurationResult = await PopulateProductOptionVariationList(productCreateDTO, typeof(ProductCreateInputDTO), cancellationToken);
+        if (populateGeneralConfigurationResult.IsFailed)
         {
-            return Result.Fail(populateFixedConfigurationListResult.Errors);
+            return Result.Fail(populateGeneralConfigurationResult.Errors);
         }
 
-        var fixedConfigurationList = populateFixedConfigurationListResult.Value;
+        var GeneralConfigurationList = populateGeneralConfigurationResult.Value;
 
 
         var productTypeSpecificProductOptionVariationListResult = await PopulateProductOptionVariationList_ProductTypeSpecificConfigurationAsync(productCreateDTO, cancellationToken);
@@ -54,7 +63,7 @@ public class ProductService
 
         var productTypeSpecificProductOptionVariationList = productTypeSpecificProductOptionVariationListResult.Value;
 
-        product.OptionVariations = [.. fixedConfigurationList, .. productTypeSpecificProductOptionVariationList];
+        product.OptionVariations = [.. GeneralConfigurationList, .. productTypeSpecificProductOptionVariationList];
 
         // Get fabric price info --> add to price total
 

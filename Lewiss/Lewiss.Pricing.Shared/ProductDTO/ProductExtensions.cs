@@ -7,18 +7,18 @@ public static class ProductExtensions
 {
     public static Product ToProductEntity(this ProductCreateInputDTO productCreateDTO, Worksheet worksheet)
     {
-        var variableConfiguration = productCreateDTO.VariableConfiguration;
 
         return new Product
         {
             ExternalMapping = Guid.CreateVersion7(DateTimeOffset.UtcNow),
-            InstallHeight = variableConfiguration.InstallHeight,
-            Location = variableConfiguration.Location,
-            Width = variableConfiguration.Width,
-            Height = variableConfiguration.Height,
-            Reveal = variableConfiguration.Reveal,
-            RemoteNumber = variableConfiguration.RemoteNumber,
-            RemoteChannel = variableConfiguration.RemoteChannel,
+            Price = 0.00m,
+            Location = productCreateDTO.Location,
+            Width = productCreateDTO.Width,
+            Height = productCreateDTO.Height,
+            Reveal = productCreateDTO.Reveal,
+            InstallHeight = productCreateDTO.InstallHeight,
+            RemoteNumber = productCreateDTO.RemoteNumber,
+            RemoteChannel = productCreateDTO.RemoteChannel,
             WorksheetId = worksheet.WorksheetId,
             Worksheet = worksheet
         };
