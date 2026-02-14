@@ -3,7 +3,7 @@ using FluentResults;
 using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Data.OptionData;
 using Lewiss.Pricing.Shared.CustomError;
-using Lewiss.Pricing.Shared.Error;
+
 
 namespace Lewiss.Pricing.Shared.Services;
 
@@ -45,7 +45,9 @@ public class SharedUtilityService
         return Regex.Replace(productType, @"\s+", String.Empty).ToLower();
     }
 
-    public string GetValidProductOptionTypeString(string productType)
+    // Will be replaced by interface / strategy pattern
+
+    public Result<string> GetValidProductOptionTypeString(string productType)
     {
         var query = GetProductTypeQueryString(productType);
 
@@ -53,14 +55,19 @@ public class SharedUtilityService
         {
             "kineticscellular" => ProductTypeOption.KineticsCellular.Value,
             "kineticsroller" => ProductTypeOption.KineticsRoller.Value,
-            _ => throw new InvalidQueryParameterException("Product type is invalid"),
+            _ => "unknown"
         };
 
-        return productTypeAdjusted;
+        if (productTypeAdjusted.Equals("unknown", StringComparison.CurrentCultureIgnoreCase))
+        {
+            return Result.Fail(new ValidationError("Product Type", productType));
+        }
+
+        return Result.Ok(productTypeAdjusted);
 
     }
 
-    public string GetValidFabricOpacityStringForFabricPricing(string productType, string opacity)
+    public Result<string> GetValidFabricOpacityStringForFabricPricing(string productType, string opacity)
     {
         var query = GetProductTypeQueryString(productType);
 
@@ -68,20 +75,24 @@ public class SharedUtilityService
         {
             "kineticscellular" => opacity,
             "kineticsroller" => GetValidKineticsRollerOpacityString(opacity),
-            _ => throw new InvalidQueryParameterException("Product type is invalid"),
+            _ => "unknown"
         };
 
-        return opacityAdjusted;
+        if (opacityAdjusted.Equals("unknown", StringComparison.CurrentCultureIgnoreCase))
+        {
+            return Result.Fail(new ValidationError("Product Type", productType));
+        }
+
+        return Result.Ok(opacityAdjusted);
     }
 
     private string GetValidKineticsRollerOpacityString(string opacity)
     {
-        if (opacity == "BO")
-        {
-            opacity = "LF";
-        }
+        if (opacity.Equals("ss", StringComparison.CurrentCultureIgnoreCase))
+            return "SS";
 
-        return opacity;
+        return "LF";
+
     }
 
 

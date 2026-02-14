@@ -7,11 +7,6 @@ public static class ProductExtensions
 {
     public static Product ToProductEntity(this ProductCreateInputDTO productCreateDTO, Worksheet worksheet)
     {
-        if (productCreateDTO is null || worksheet is null)
-        {
-            throw new Exception("Inputs are null");
-        }
-
         var variableConfiguration = productCreateDTO.VariableConfiguration;
 
         return new Product

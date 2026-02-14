@@ -1,5 +1,6 @@
+using FluentResults;
 using Lewiss.Pricing.Data.Model;
-using Lewiss.Pricing.Shared.Error;
+using Lewiss.Pricing.Shared.CustomError;
 using Lewiss.Pricing.Shared.ProductDTO;
 using Lewiss.Pricing.Shared.WorksheetDTO;
 using Microsoft.Extensions.Logging;
@@ -19,13 +20,13 @@ public class WorksheetService
         _logger = logger;
     }
 
-    public virtual async Task<WorksheetOutputDTO> CreateWorksheetAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
+    public virtual async Task<Result<WorksheetOutputDTO>> CreateWorksheetAsync(Guid externalCustomerId, CancellationToken cancellationToken = default)
     {
 
         var customer = await _unitOfWork.Customer.GetCustomerByExternalIdAsync(externalCustomerId, cancellationToken);
         if (customer is null)
         {
-            throw new NotFoundException($"Customer not found by id: {externalCustomerId}");
+            return Result.Fail(new NotFoundResource("Customer", externalCustomerId));
         }
 
         var worksheet = new Worksheet
@@ -45,30 +46,46 @@ public class WorksheetService
 
         var worksheetDTO = worksheet.ToWorksheetDTO(externalCustomerId);
 
-        return worksheetDTO;
+        return Result.Ok(worksheetDTO);
 
     }
 
 
-    public virtual async Task<WorksheetOutputDTO?> GetWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
+    public virtual async Task<Result<WorksheetOutputDTO>> GetWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
     {
 
-        var (customer, worksheet) = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
+        var result = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
+        if (result.IsFailed)
+        {
+            return Result.Fail(result.Errors);
+        }
+
+        var (_, worksheet) = result.Value;
         var worksheetDTO = worksheet.ToWorksheetDTO(externalCustomerId);
-        return worksheetDTO;
+        return Result.Ok(worksheetDTO);
 
     }
 
-    public virtual async Task<List<ProductEntryOutputDTO>?> GetWorksheetProductsAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
+    public virtual async Task<Result<List<ProductEntryOutputDTO>>> GetWorksheetProductsAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
     {
 
-        var (customer, worksheet) = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
+        var result = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
+        if (result.IsFailed)
+        {
+            return Result.Fail(result.Errors);
+        }
+
+        var (_, worksheet) = result.Value;
 
         var productList = await _unitOfWork.Worksheet.GetWorksheetProductsAsync(worksheet, cancellationToken);
+        if (productList.Count == 0)
+        {
+            return Result.Ok(new List<ProductEntryOutputDTO>());
+        }
 
         var productEntryDTOList = productList.Select(p => p.ToProductEntryDTO(worksheet.ExternalMapping)).ToList();
 
-        return productEntryDTOList;
+        return Result.Ok(productEntryDTOList);
 
     }
 
