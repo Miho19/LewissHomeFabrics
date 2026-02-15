@@ -1,15 +1,20 @@
 using FluentResults;
 using Lewiss.Pricing.Data.Model;
+using Lewiss.Pricing.Data.Model.Fabric.Price;
 using Lewiss.Pricing.Data.Model.Fabric.Type;
 using Lewiss.Pricing.Data.OptionData;
+using Lewiss.Pricing.Shared.FabricDTO;
 using Lewiss.Pricing.Shared.ProductDTO;
 using Lewiss.Pricing.Shared.ProductStrategy;
+using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.Services;
 
 namespace Lewiss.Pricing.Shared.ProductStrategy;
 
-public class KineticsCellularProductStrategy : IProductStrategy<KineticsCellularFabric>
+public class KineticsCellularProductStrategy : IProductStrategy
 {
+
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ProductService _productService;
 
     private readonly SharedUtilityService _sharedUtilityService;
@@ -17,8 +22,9 @@ public class KineticsCellularProductStrategy : IProductStrategy<KineticsCellular
     public string ProductType => ProductTypeOption.KineticsCellular.Value;
 
 
-    public KineticsCellularProductStrategy(ProductService productService, SharedUtilityService sharedUtilityService)
+    public KineticsCellularProductStrategy(IUnitOfWork unitOfWork, ProductService productService, SharedUtilityService sharedUtilityService)
     {
+        _unitOfWork = unitOfWork;
         _productService = productService;
         _sharedUtilityService = sharedUtilityService;
     }
@@ -27,9 +33,6 @@ public class KineticsCellularProductStrategy : IProductStrategy<KineticsCellular
     {
         var productModel = productCreateDTO.ToProductEntity(worksheet);
 
-        /// from here
-        /// 
-        /// 
         var populateGeneralConfigurationResult = await _productService.PopulateProductOptionVariationList(productCreateDTO, typeof(ProductCreateInputDTO), cancellationToken);
         if (populateGeneralConfigurationResult.IsFailed)
         {
@@ -39,19 +42,18 @@ public class KineticsCellularProductStrategy : IProductStrategy<KineticsCellular
         var GeneralConfigurationList = populateGeneralConfigurationResult.Value;
 
 
-        var productTypeSpecificProductOptionVariationListResult = await PopulateProductOptionVariationList_ProductTypeSpecificConfigurationAsync(productCreateDTO, cancellationToken);
-        if (productTypeSpecificProductOptionVariationListResult.IsFailed)
+        var kineticsCellularProductOptionVariationListResult = await _productService.PopulateProductOptionVariationList(productCreateDTO.KineticsCellular, typeof(KineticsCellular), cancellationToken);
+        if (kineticsCellularProductOptionVariationListResult.IsFailed)
         {
-            return Result.Fail(productTypeSpecificProductOptionVariationListResult.Errors);
+            return Result.Fail(kineticsCellularProductOptionVariationListResult.Errors);
         }
 
-        var productTypeSpecificProductOptionVariationList = productTypeSpecificProductOptionVariationListResult.Value;
+        var kineticsCellularroductOptionVariationList = kineticsCellularProductOptionVariationListResult.Value;
+        productModel.OptionVariations = [.. GeneralConfigurationList, .. kineticsCellularroductOptionVariationList];
 
-        product.OptionVariations = [.. GeneralConfigurationList, .. productTypeSpecificProductOptionVariationList];
+        var totalPriceProductOptionVariationList = _productService.GetProductOptionVariationListTotalPrice(productModel.OptionVariations.ToList());
 
-        // Get fabric price info --> add to price total
 
-        var totalPriceProductOptionVariationList = GetProductOptionVariationListTotalPrice(product.OptionVariations.ToList());
         var fabricPriceResult = await GetProductFabricPriceOutputDTO(product.OptionVariations.ToList(), product.Width, product.Height, cancellationToken);
         if (fabricPriceResult.IsFailed)
         {
@@ -66,5 +68,23 @@ public class KineticsCellularProductStrategy : IProductStrategy<KineticsCellular
 
 
         return Result.Ok();
+    }
+
+    public async Task<Result<List<FabricOutputDTO>>> GetFabricListAsync(CancellationToken cancellationToken)
+    {
+        var fabricList = await _unitOfWork.KineticsCellularFabric.GetAllAsync();
+        if (fabricList is null || fabricList.Count == 0)
+        {
+            return Result.Fail(new Error("Internal Server Issue."));
+        }
+
+        var fabricOutputDTOList = fabricList.Select(f => f.ToFabricOutputDTO()).ToList();
+
+        return Result.Ok(fabricOutputDTOList);
+    }
+
+    public Task<Result<FabricOutputDTO>> GetFabricAsync(GetFabricQueryParameters getFabricQueryParameters, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
 }

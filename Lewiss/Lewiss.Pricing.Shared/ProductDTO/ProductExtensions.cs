@@ -52,27 +52,10 @@ public static class ProductExtensions
 
     public static ProductEntryOutputDTO ToProductEntryDTO(this Product product, Guid externalWorksheetId)
     {
-        if (product is null || externalWorksheetId == Guid.Empty)
-        {
-            throw new Exception("Inputs are null");
-        }
-
         var optionsDictionary = ProductOptionsToDictionary(product);
         if (optionsDictionary.Count == 0)
         {
             throw new Exception("Product options variations are empty");
-        }
-
-        var fixedConfiguration = ProductOptionsDictionaryToFixedConfiguration(optionsDictionary);
-        if (fixedConfiguration is null)
-        {
-            throw new Exception("Fixed Configuration was not populated");
-        }
-
-        var variableConfiguration = ProductToVariableConfiguration(product);
-        if (variableConfiguration is null)
-        {
-            throw new Exception("Variable Configuration was not populated");
         }
 
         var productEntryDTO = new ProductEntryOutputDTO

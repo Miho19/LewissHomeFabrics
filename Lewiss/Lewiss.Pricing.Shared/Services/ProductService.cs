@@ -85,11 +85,6 @@ public class ProductService
             return Result.Fail(new ValidationError("Fabric", "null"));
         }
 
-        var productTypeProductOptionVariation = productOptionVariations.FirstOrDefault(ov => ov.ProductOptionId == ProductTypeOption.ProductOption.ProductOptionId);
-        if (productTypeProductOptionVariation is null)
-        {
-            return Result.Fail(new ValidationError("Product Type", "null"));
-        }
 
         var fabricPriceOutputDTOResult = await _fabricService.GetFabricPriceOutputDTOByProductOptionVariationIdAsync(productTypeProductOptionVariation.Value, fabricProductOptionVariation.ProductOptionVariationId, width, height, cancellationToken);
         if (fabricPriceOutputDTOResult.IsFailed)
@@ -162,7 +157,7 @@ public class ProductService
 
     }
 
-    private decimal GetProductOptionVariationListTotalPrice(List<ProductOptionVariation> productOptionVariationList)
+    public decimal GetProductOptionVariationListTotalPrice(List<ProductOptionVariation> productOptionVariationList)
     {
         decimal total = 0.00m;
         foreach (var productOptionVariation in productOptionVariationList)

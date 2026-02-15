@@ -22,12 +22,12 @@ public class FabricController : ControllerBase
         return new OkObjectResult(fabricList);
     }
 
-    [HttpGet("{productType}", Name = "GetFabricPrice")]
-    public async Task<IActionResult> GetFabricPrice(string productType, [FromQuery] GetFabricQueryParameters queryParameters, CancellationToken cancellationToken = default)
-    {
-        var fabricPriceDTO = await _fabricService.GetFabricPriceAsync(productType, queryParameters, cancellationToken);
-        return new OkObjectResult(fabricPriceDTO);
-    }
+    // [HttpGet("{productType}", Name = "GetFabricPrice")]
+    // public async Task<IActionResult> GetFabricPrice(string productType, [FromQuery] GetFabricQueryParameters queryParameters, CancellationToken cancellationToken = default)
+    // {
+    //     var fabricPriceDTO = await _fabricService.GetFabricPriceAsync(productType, queryParameters, cancellationToken);
+    //     return new OkObjectResult(fabricPriceDTO);
+    // }
 
 
 }

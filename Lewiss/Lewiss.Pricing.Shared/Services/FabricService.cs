@@ -4,6 +4,7 @@ using Lewiss.Pricing.Data.Model.Fabric.Price;
 using Lewiss.Pricing.Data.OptionData;
 using Lewiss.Pricing.Shared.CustomError;
 using Lewiss.Pricing.Shared.FabricDTO;
+using Lewiss.Pricing.Shared.ProductStrategy;
 using Lewiss.Pricing.Shared.QueryParameters;
 using Microsoft.Extensions.Logging;
 
@@ -14,120 +15,67 @@ public class FabricService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly SharedUtilityService _sharedUtilityService;
+    private readonly ProductStrategyResolver _productStrategyResolver;
+
     private readonly ILogger<FabricService> _logger;
-    public FabricService(IUnitOfWork unitOfWork, SharedUtilityService sharedUtilityService, ILogger<FabricService> logger)
+    public FabricService(IUnitOfWork unitOfWork, SharedUtilityService sharedUtilityService, ProductStrategyResolver productStrategyResolver, ILogger<FabricService> logger)
     {
         _unitOfWork = unitOfWork;
         _sharedUtilityService = sharedUtilityService;
+        _productStrategyResolver = productStrategyResolver;
         _logger = logger;
     }
 
 
-    // to get rid of switch statements, we will switch to strategy resolver pattern using dictionary
-    public virtual async Task<Result<List<IFabricOutputDTO>>> GetFabricsAsync(string productType, CancellationToken cancellationToken = default)
+    public virtual async Task<Result<List<FabricOutputDTO>>> GetFabricsAsync(string productType, CancellationToken cancellationToken = default)
     {
 
-        var queryProductType = _sharedUtilityService.GetProductTypeQueryString(productType);
-
-        var fabricListResult = queryProductType switch
+        var productStategyResolverResult = _productStrategyResolver.GetProductStrategy(productType);
+        if (productStategyResolverResult.IsFailed)
         {
-            "kineticscellular" => await GetKineticsCellularFabricListAsync(cancellationToken),
-            "kineticsroller" => await GetKineticsRollerFabricListAsync(cancellationToken),
-            _ => Result.Fail(new ValidationError("Product Type", productType))
-        };
+            return Result.Fail(productStategyResolverResult.Errors);
+        }
 
-        return fabricListResult;
+        var productStrategy = productStategyResolverResult.Value;
+
+        var fabricListResult = await productStrategy.GetFabricListAsync(cancellationToken);
+        if (fabricListResult.IsFailed)
+        {
+            return Result.Fail(fabricListResult.Errors);
+        }
+
+        return Result.Ok(fabricListResult.Value);
     }
 
-    // example of where interface will be better
-    private async Task<Result<List<IFabricOutputDTO>>> GetKineticsCellularFabricListAsync(CancellationToken cancellationToken = default)
-    {
-        var fabricList = await _unitOfWork.KineticsCellularFabric.GetAllAsync();
 
-        if (fabricList is null || fabricList.Count == 0)
-        {
-            return Result.Fail(new Error("Internal Server Issue"));
-        }
+    // public async Task<Result<FabricPriceOutputDTO>> GetFabricPriceAsync(string productType, GetFabricQueryParameters queryParameters, CancellationToken cancellationToken = default)
+    // {
 
-        List<IFabricOutputDTO> listToReturn = fabricList.Select(f => f.ToKineticsCellularFabricOutputDTO()).ToList<IFabricOutputDTO>();
+    //     if (string.IsNullOrEmpty(productType))
+    //     {
+    //         return Result.Fail(new ValidationError("Product Type", productType));
+    //     }
 
-        return Result.Ok(listToReturn);
+    //     var priceModelResult = await GetFabricPriceModelAsync(productType, queryParameters, cancellationToken);
+    //     if (priceModelResult.IsFailed)
+    //     {
+    //         return Result.Fail(priceModelResult.Errors);
+    //     }
 
-    }
+    //     var priceModel = priceModelResult.Value;
+    //     var fabricMultiplierResult = await GetFabricMultiplier(productType, queryParameters, cancellationToken);
+    //     if (fabricMultiplierResult.IsFailed)
+    //     {
+    //         return Result.Fail(fabricMultiplierResult.Errors);
+    //     }
 
-    // example of where interface will be better
-    private async Task<Result<List<IFabricOutputDTO>>> GetKineticsRollerFabricListAsync(CancellationToken cancellationToken = default)
-    {
-
-        var fabricList = await _unitOfWork.KineticsRollerFabric.GetAllAsync();
-        if (fabricList is null || fabricList.Count == 0)
-        {
-            return Result.Fail(new Error("Internal Server Issue"));
-        }
-
-        List<IFabricOutputDTO> listToReturn = fabricList.Select(f => f.ToKineticsRollerFabricOutputDTO()).ToList<IFabricOutputDTO>();
-
-        return Result.Ok(listToReturn);
-    }
-    private async Task<Result<KineticsRollerFabricOutputDTO>> GetKineticsRollerFabricAsync(string? fabric, string colour, string opacity, CancellationToken cancellationToken = default)
-    {
-        if (string.IsNullOrEmpty(fabric))
-        {
-            return Result.Fail(new ValidationError("Fabric", "null"));
-        }
-
-        var kineticsRollerFabric = await _unitOfWork.KineticsRollerFabric.GetFabricAsync(fabric, colour, opacity, cancellationToken);
-        if (kineticsRollerFabric is null)
-        {
-            return Result.Fail(new ValidationError("Kinetics Roller Fabric", $"fabric: {fabric}\ncolour: {colour}\nopacity: {opacity}"));
-        }
-
-        var kineticsRollerFabricOutputDTO = kineticsRollerFabric.ToKineticsRollerFabricOutputDTO();
-
-        return Result.Ok(kineticsRollerFabricOutputDTO);
-    }
-
-    private async Task<Result<KineticsCellularFabricOutputDTO>> GetKineticsCellularFabricAsync(string colour, string opacity, CancellationToken cancellationToken = default)
-    {
-        var KineticsCellularFabric = await _unitOfWork.KineticsCellularFabric.GetFabricAsync(colour, opacity, cancellationToken);
-        if (KineticsCellularFabric is null)
-        {
-            return Result.Fail(new ValidationError("Kinetics Cellular Faibrc", $"colour: {colour}\nopacity: {opacity}"));
-
-        }
-        return Result.Ok(KineticsCellularFabric.ToKineticsCellularFabricOutputDTO());
-    }
-
-    public async Task<Result<FabricPriceOutputDTO>> GetFabricPriceAsync(string productType, GetFabricQueryParameters queryParameters, CancellationToken cancellationToken = default)
-    {
-
-        if (string.IsNullOrEmpty(productType))
-        {
-            return Result.Fail(new ValidationError("Product Type", productType));
-        }
-
-        var priceModelResult = await GetFabricPriceModelAsync(productType, queryParameters, cancellationToken);
-        if (priceModelResult.IsFailed)
-        {
-            return Result.Fail(priceModelResult.Errors);
-        }
-
-        var priceModel = priceModelResult.Value;
-        var fabricMultiplierResult = await GetFabricMultiplier(productType, queryParameters, cancellationToken);
-        if (fabricMultiplierResult.IsFailed)
-        {
-            return Result.Fail(fabricMultiplierResult.Errors);
-        }
-
-        var fabricMultiplier = fabricMultiplierResult.Value;
-        decimal price = priceModel.Price * fabricMultiplier;
-        return Result.Ok(new FabricPriceOutputDTO
-        {
-            Price = price
-        });
-
-
-    }
+    //     var fabricMultiplier = fabricMultiplierResult.Value;
+    //     decimal price = priceModel.Price * fabricMultiplier;
+    //     return Result.Ok(new FabricPriceOutputDTO
+    //     {
+    //         Price = price
+    //     });
+    // }
 
     private async Task<Result<FabricPrice>> GetFabricPriceModelAsync(string productType, GetFabricQueryParameters queryParameters, CancellationToken cancellationToken = default)
     {
