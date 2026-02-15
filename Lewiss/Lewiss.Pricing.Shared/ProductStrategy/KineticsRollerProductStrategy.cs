@@ -2,8 +2,10 @@ using FluentResults;
 using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Data.Model.Fabric.Type;
 using Lewiss.Pricing.Data.OptionData;
+using Lewiss.Pricing.Shared.CustomError;
 using Lewiss.Pricing.Shared.FabricDTO;
 using Lewiss.Pricing.Shared.ProductDTO;
+using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.Services;
 
 namespace Lewiss.Pricing.Shared.ProductStrategy;
@@ -43,6 +45,24 @@ public class KineticsRollerProductStrategy : IProductStrategy
         var fabricOutputDTOList = fabricList.Select(f => f.ToToFabricOutputDTO()).ToList();
 
         return Result.Ok(fabricOutputDTOList);
+    }
+
+    public Task<Result<FabricOutputDTO>> GetFabricAsync(GetFabricQueryParameters getFabricQueryParameters, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    private async Task<Result<KineticsRollerFabric>> GetFabricByProductOptionVariationId(int productOptionVariationId, CancellationToken cancellationToken)
+    {
+        var kineticsRollerFabric = await _unitOfWork.KineticsRollerFabric.GetFabricByProductOptionVariationIdAsync(productOptionVariationId, cancellationToken);
+        if (kineticsRollerFabric is null)
+        {
+            return Result.Fail(new NotFoundResource("Kinetics Roller Fabirc", ""));
+
+        }
+
+        return Result.Ok(kineticsRollerFabric);
+
     }
 
 }

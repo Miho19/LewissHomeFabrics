@@ -3,6 +3,7 @@ using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Data.Model.Fabric.Price;
 using Lewiss.Pricing.Data.Model.Fabric.Type;
 using Lewiss.Pricing.Data.OptionData;
+using Lewiss.Pricing.Shared.CustomError;
 using Lewiss.Pricing.Shared.FabricDTO;
 using Lewiss.Pricing.Shared.ProductDTO;
 using Lewiss.Pricing.Shared.ProductStrategy;
@@ -33,25 +34,32 @@ public class KineticsCellularProductStrategy : IProductStrategy
     {
         var productModel = productCreateDTO.ToProductEntity(worksheet);
 
-        var populateGeneralConfigurationResult = await _productService.PopulateProductOptionVariationList(productCreateDTO, typeof(ProductCreateInputDTO), cancellationToken);
-        if (populateGeneralConfigurationResult.IsFailed)
+        var productModelProductOptionVariationListResult = await GenerateProductOptionVariationListAsync(productCreateDTO, cancellationToken);
+        if (productModelProductOptionVariationListResult.IsFailed)
         {
-            return Result.Fail(populateGeneralConfigurationResult.Errors);
+            return Result.Fail(productModelProductOptionVariationListResult.Errors);
         }
 
-        var GeneralConfigurationList = populateGeneralConfigurationResult.Value;
+        productModel.OptionVariations = productModelProductOptionVariationListResult.Value;
 
-
-        var kineticsCellularProductOptionVariationListResult = await _productService.PopulateProductOptionVariationList(productCreateDTO.KineticsCellular, typeof(KineticsCellular), cancellationToken);
-        if (kineticsCellularProductOptionVariationListResult.IsFailed)
+        var productPriceAsyncResult = await GenerateProductPriceAsync(productModel, cancellationToken);
+        if (productPriceAsyncResult.IsFailed)
         {
-            return Result.Fail(kineticsCellularProductOptionVariationListResult.Errors);
+            return Result.Fail(productPriceAsyncResult.Errors);
         }
 
-        var kineticsCellularroductOptionVariationList = kineticsCellularProductOptionVariationListResult.Value;
-        productModel.OptionVariations = [.. GeneralConfigurationList, .. kineticsCellularroductOptionVariationList];
+
+        productModel.Price = productPriceAsyncResult.Value;
+
 
         var totalPriceProductOptionVariationList = _productService.GetProductOptionVariationListTotalPrice(productModel.OptionVariations.ToList());
+
+        var fabricOptionVariation = productModel.OptionVariations.FirstOrDefault(ov => ov.ProductOptionId == FabricOption.ProductOption.ProductOptionId);
+        if (fabricOptionVariation is null)
+        {
+
+        }
+
 
 
         var fabricPriceResult = await GetProductFabricPriceOutputDTO(product.OptionVariations.ToList(), product.Width, product.Height, cancellationToken);
@@ -70,6 +78,35 @@ public class KineticsCellularProductStrategy : IProductStrategy
         return Result.Ok();
     }
 
+    private async Task<Result<List<ProductOptionVariation>>> GenerateProductOptionVariationListAsync(ProductCreateInputDTO productCreateDTO, CancellationToken cancellationToken = default)
+    {
+        var populateGeneralConfigurationResult = await _productService.PopulateProductOptionVariationList(productCreateDTO, typeof(ProductCreateInputDTO), cancellationToken);
+        if (populateGeneralConfigurationResult.IsFailed)
+        {
+            return Result.Fail(populateGeneralConfigurationResult.Errors);
+        }
+
+        var GeneralConfigurationList = populateGeneralConfigurationResult.Value;
+
+
+        var kineticsCellularProductOptionVariationListResult = await _productService.PopulateProductOptionVariationList(productCreateDTO.KineticsCellular, typeof(KineticsCellular), cancellationToken);
+        if (kineticsCellularProductOptionVariationListResult.IsFailed)
+        {
+            return Result.Fail(kineticsCellularProductOptionVariationListResult.Errors);
+        }
+
+        var kineticsCellularroductOptionVariationList = kineticsCellularProductOptionVariationListResult.Value;
+
+        List<ProductOptionVariation> OptionVariations = [.. GeneralConfigurationList, .. kineticsCellularroductOptionVariationList];
+
+        return Result.Ok(OptionVariations);
+    }
+
+    private async Task<Result<decimal>> GenerateProductPriceAsync(Product product, CancellationToken cancellationToken = default)
+    {
+        return Result.Ok(0.00m);
+    }
+
     public async Task<Result<List<FabricOutputDTO>>> GetFabricListAsync(CancellationToken cancellationToken)
     {
         var fabricList = await _unitOfWork.KineticsCellularFabric.GetAllAsync();
@@ -86,5 +123,18 @@ public class KineticsCellularProductStrategy : IProductStrategy
     public Task<Result<FabricOutputDTO>> GetFabricAsync(GetFabricQueryParameters getFabricQueryParameters, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
+    }
+
+
+    private async Task<Result<KineticsCellularFabric>> GetFabricByProductOptionVariationId(int productOptionVariationId, CancellationToken cancellationToken)
+    {
+        var kineticsCellularFabric = await _unitOfWork.KineticsCellularFabric.GetFabricByProductOptionVariationIdAsync(productOptionVariationId, cancellationToken);
+        if (kineticsCellularFabric is null)
+        {
+            return Result.Fail(new NotFoundResource("Kinetics Cellular Fabirc", ""));
+        }
+
+        return Result.Ok(kineticsCellularFabric);
+
     }
 }
