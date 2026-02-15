@@ -1,7 +1,9 @@
 using FluentResults;
 using Lewiss.Pricing.Data.Model;
+using Lewiss.Pricing.Data.OptionData;
 using Lewiss.Pricing.Shared.CustomError;
 using Lewiss.Pricing.Shared.ProductDTO;
+using Lewiss.Pricing.Shared.ProductStrategy;
 using Lewiss.Pricing.Shared.WorksheetDTO;
 using Microsoft.Extensions.Logging;
 
@@ -11,12 +13,15 @@ public class WorksheetService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly SharedUtilityService _sharedUtilityService;
+    private readonly ProductStrategyResolver _productStrategyResolver;
     private readonly ILogger<WorksheetService> _logger;
 
-    public WorksheetService(IUnitOfWork unitOfWork, SharedUtilityService sharedUtilityService, ILogger<WorksheetService> logger)
+    public WorksheetService(IUnitOfWork unitOfWork, SharedUtilityService sharedUtilityService, ProductStrategyResolver productStrategyResolver, ILogger<WorksheetService> logger)
     {
         _unitOfWork = unitOfWork;
         _sharedUtilityService = sharedUtilityService;
+        _productStrategyResolver = productStrategyResolver;
+
         _logger = logger;
     }
 
@@ -83,9 +88,36 @@ public class WorksheetService
             return Result.Ok(new List<ProductEntryOutputDTO>());
         }
 
-        var productEntryDTOList = productList.Select(p => p.ToProductEntryDTO(worksheet.ExternalMapping)).ToList();
+        var productEntryDTOResultList = productList.Select(p =>
+        {
 
-        return Result.Ok(productEntryDTOList);
+            var productStrategyResult = _productStrategyResolver.GetProductStrategyByProduct(p);
+            if (productStrategyResult.IsFailed)
+            {
+                return Result.Fail(productStrategyResult.Errors);
+            }
+
+            var productStrategy = productStrategyResult.Value;
+
+            var toProductEntryDTOResult = productStrategy.ProductToEntryDTO(p, externalWorksheetId);
+
+            if (toProductEntryDTOResult.IsFailed)
+            {
+                return Result.Fail(toProductEntryDTOResult.Errors);
+            }
+
+            return Result.Ok(toProductEntryDTOResult.Value);
+
+        }).Merge();
+
+
+        if (productEntryDTOResultList.IsFailed)
+        {
+            return Result.Fail(productEntryDTOResultList.Errors);
+        }
+
+
+        return Result.Ok(productEntryDTOResultList.Value.ToList());
 
     }
 

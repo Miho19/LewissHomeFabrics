@@ -31,18 +31,10 @@ public class ProductService
         _logger = logger;
     }
 
-    /** 
-        When creating product
-        0. Validate the product type and use strategy interface
-        1. Check to make sure customer owns worksheet
-        2. convert create dto to product model
-        3. 
-    */
-
     public virtual async Task<Result<ProductEntryOutputDTO>> CreateProductAsync(Guid externalCustomerId, Guid externalWorksheetId, ProductCreateInputDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
 
-        var productStategyResolverResult = _productStrategyResolver.GetProductStrategy<dynamic>(productCreateDTO.ProductType);
+        var productStategyResolverResult = _productStrategyResolver.GetProductStrategyByProductTypeString(productCreateDTO.ProductType);
         if (productStategyResolverResult.IsFailed)
         {
             return Result.Fail(productStategyResolverResult.Errors);
@@ -76,24 +68,7 @@ public class ProductService
 
     }
 
-    private async Task<Result<FabricPriceOutputDTO>> GetProductFabricPriceOutputDTO(List<ProductOptionVariation> productOptionVariations, int width, int height, CancellationToken cancellationToken = default)
-    {
-        var fabricProductOptionVariation = productOptionVariations.FirstOrDefault(ov => ov.ProductOptionId == FabricOption.ProductOption.ProductOptionId);
-        if (fabricProductOptionVariation is null)
-        {
-            // this should never be null but i have to figure out why i put this test here
-            return Result.Fail(new ValidationError("Fabric", "null"));
-        }
-
-
-        var fabricPriceOutputDTOResult = await _fabricService.GetFabricPriceOutputDTOByProductOptionVariationIdAsync(productTypeProductOptionVariation.Value, fabricProductOptionVariation.ProductOptionVariationId, width, height, cancellationToken);
-        if (fabricPriceOutputDTOResult.IsFailed)
-        {
-            return Result.Fail(fabricPriceOutputDTOResult.Errors);
-        }
-        return Result.Ok(fabricPriceOutputDTOResult.Value);
-    }
-
+    // there might be a better way to do this
     public virtual async Task<Result<List<ProductOptionVariation>>> PopulateProductOptionVariationList(object? obj, Type type, CancellationToken cancellationToken = default)
     {
         if (obj is null)
@@ -150,9 +125,21 @@ public class ProductService
             return Result.Fail(new NotFoundResource("Product", externalProductId));
         }
 
-        var productEntryDTO = product.ToProductEntryDTO(externalWorksheetId);
+        var productStrategyResult = _productStrategyResolver.GetProductStrategyByProduct(product);
+        if (productStrategyResult.IsFailed)
+        {
+            return Result.Fail(productStrategyResult.Errors);
+        }
 
-        return Result.Ok(productEntryDTO);
+        var productStrategy = productStrategyResult.Value;
+
+        var productEntryDTOResult = productStrategy.ProductToEntryDTO(product, externalWorksheetId);
+        if (productEntryDTOResult.IsFailed)
+        {
+            return Result.Fail(productEntryDTOResult.Errors);
+        }
+
+        return Result.Ok(productEntryDTOResult.Value);
 
 
     }
@@ -169,7 +156,30 @@ public class ProductService
         return total;
     }
 
+    public Result<Dictionary<string, object>> ProductOptionsToDictionary(Product product)
+    {
+        if (product.OptionVariations is null || product.OptionVariations.Count == 0)
+        {
+            return Result.Fail(new Error("Product Option Variations list is empty"));
+        }
 
+        var optionsDictionary = new Dictionary<string, object>();
+
+        foreach (var op in product.OptionVariations)
+        {
+            if (op.ProductOption is null)
+                continue;
+
+            optionsDictionary.Add(op.ProductOption.Name, op.Value);
+        }
+
+        if (optionsDictionary.Count == 0)
+        {
+            return Result.Fail(new Error("Product Option Variations dictionary is empty"));
+        }
+
+        return Result.Ok(optionsDictionary);
+    }
 
 }
 

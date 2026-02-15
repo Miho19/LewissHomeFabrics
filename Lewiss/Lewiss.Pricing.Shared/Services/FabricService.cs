@@ -1,11 +1,7 @@
 
 using FluentResults;
-using Lewiss.Pricing.Data.Model.Fabric.Price;
-using Lewiss.Pricing.Data.OptionData;
-using Lewiss.Pricing.Shared.CustomError;
 using Lewiss.Pricing.Shared.FabricDTO;
 using Lewiss.Pricing.Shared.ProductStrategy;
-using Lewiss.Pricing.Shared.QueryParameters;
 using Microsoft.Extensions.Logging;
 
 
@@ -30,7 +26,7 @@ public class FabricService
     public virtual async Task<Result<List<FabricOutputDTO>>> GetFabricsAsync(string productType, CancellationToken cancellationToken = default)
     {
 
-        var productStategyResolverResult = _productStrategyResolver.GetProductStrategy(productType);
+        var productStategyResolverResult = _productStrategyResolver.GetProductStrategyByProductTypeString(productType);
         if (productStategyResolverResult.IsFailed)
         {
             return Result.Fail(productStategyResolverResult.Errors);
@@ -45,170 +41,6 @@ public class FabricService
         }
 
         return Result.Ok(fabricListResult.Value);
-    }
-
-
-    // public async Task<Result<FabricPriceOutputDTO>> GetFabricPriceAsync(string productType, GetFabricQueryParameters queryParameters, CancellationToken cancellationToken = default)
-    // {
-
-    //     if (string.IsNullOrEmpty(productType))
-    //     {
-    //         return Result.Fail(new ValidationError("Product Type", productType));
-    //     }
-
-    //     var priceModelResult = await GetFabricPriceModelAsync(productType, queryParameters, cancellationToken);
-    //     if (priceModelResult.IsFailed)
-    //     {
-    //         return Result.Fail(priceModelResult.Errors);
-    //     }
-
-    //     var priceModel = priceModelResult.Value;
-    //     var fabricMultiplierResult = await GetFabricMultiplier(productType, queryParameters, cancellationToken);
-    //     if (fabricMultiplierResult.IsFailed)
-    //     {
-    //         return Result.Fail(fabricMultiplierResult.Errors);
-    //     }
-
-    //     var fabricMultiplier = fabricMultiplierResult.Value;
-    //     decimal price = priceModel.Price * fabricMultiplier;
-    //     return Result.Ok(new FabricPriceOutputDTO
-    //     {
-    //         Price = price
-    //     });
-    // }
-
-    private async Task<Result<FabricPrice>> GetFabricPriceModelAsync(string productType, GetFabricQueryParameters queryParameters, CancellationToken cancellationToken = default)
-    {
-        var (width, height, colour, opacity, fabric) = queryParameters;
-
-        var productTypeAdjustedResult = _sharedUtilityService.GetValidProductOptionTypeString(productType);
-        if (productTypeAdjustedResult.IsFailed)
-        {
-            return Result.Fail(new ValidationError("Product Type", productType));
-        }
-
-        var productTypeAdjusted = productTypeAdjustedResult.Value;
-
-        var opacityAdjustedResult = _sharedUtilityService.GetValidFabricOpacityStringForFabricPricing(productType, opacity);
-        if (opacityAdjustedResult.IsFailed)
-        {
-            return Result.Fail(new ValidationError("Opacity", opacity));
-        }
-
-        var opacityAdjusted = opacityAdjustedResult.Value;
-
-        var fabricPrice = await _unitOfWork.FabricPrice.GetFabricPriceByFabricPriceQueryParametersAsync(productTypeAdjusted, width, height, opacityAdjusted, cancellationToken);
-
-        if (fabricPrice is null)
-        {
-            return Result.Fail(new NotFoundResource("Fabric Price", $"{productTypeAdjusted} {width}x{height} {opacity}"));
-        }
-
-        return Result.Ok(fabricPrice);
-
-    }
-
-
-    // again need an interface...
-    private async Task<Result<decimal>> GetFabricMultiplier(string productType, GetFabricQueryParameters queryParameters, CancellationToken cancellationToken = default)
-    {
-        var (width, height, colour, opacity, fabric) = queryParameters;
-
-        var productTypeQuery = _sharedUtilityService.GetProductTypeQueryString(productType);
-
-        if (productTypeQuery.Equals("kineticscellular", StringComparison.CurrentCultureIgnoreCase))
-        {
-            var result = await GetKineticsCellularFabricAsync(colour, opacity, cancellationToken);
-            if (result.IsFailed)
-            {
-                return Result.Fail(result.Errors);
-            }
-            return Result.Ok(result.Value.Multiplier);
-        }
-        else if (productTypeQuery.Equals("kineticsroller", StringComparison.CurrentCultureIgnoreCase))
-        {
-            var result = await GetKineticsRollerFabricAsync(fabric, colour, opacity, cancellationToken);
-            if (result.IsFailed)
-            {
-                return Result.Fail(result.Errors);
-            }
-            return Result.Ok(result.Value.Multiplier);
-        }
-
-        return Result.Fail(new ValidationError("Product Type", productType));
-    }
-
-    public async Task<Result<FabricPriceOutputDTO>> GetFabricPriceOutputDTOByProductOptionVariationIdAsync(string productType, int productOptionVariationId, int width, int height, CancellationToken cancellationToken = default)
-    {
-
-        var fabricOutputDTOResult = await GetFabricOutputDTOByProductOptionVariationIdAsync(productType, productOptionVariationId, cancellationToken);
-        if (fabricOutputDTOResult.IsFailed)
-        {
-            return Result.Fail(fabricOutputDTOResult.Errors);
-        }
-
-        var fabricOutputDTO = fabricOutputDTOResult.Value;
-
-        var productTypeDatabaseValidResult = _sharedUtilityService.GetValidProductOptionTypeString(productType);
-        if (productTypeDatabaseValidResult.IsFailed)
-        {
-            return Result.Fail(productTypeDatabaseValidResult.Errors);
-        }
-
-        var productTypeDatabaseValid = productTypeDatabaseValidResult.Value;
-
-        var opacityAdjustedResult = _sharedUtilityService.GetValidFabricOpacityStringForFabricPricing(productType, fabricOutputDTO.Opacity);
-        if (opacityAdjustedResult.IsFailed)
-        {
-            return Result.Fail(new ValidationError("Opacity", fabricOutputDTO.Opacity));
-        }
-
-        var opacityAdjusted = opacityAdjustedResult.Value;
-
-        var fabricPrice = await _unitOfWork.FabricPrice.GetFabricPriceByFabricPriceQueryParametersAsync(productTypeDatabaseValid, width, height, opacityAdjusted, cancellationToken);
-        if (fabricPrice is null)
-        {
-            return Result.Fail(new NotFoundResource("Fabric Price", $"{_sharedUtilityService.GetValidProductOptionTypeString(productType)} {width}x{height} {fabricOutputDTO.Opacity}"));
-        }
-
-        return Result.Ok(new FabricPriceOutputDTO
-        {
-            Price = fabricPrice.Price * fabricOutputDTO.Multiplier
-        });
-
-    }
-
-    private async Task<Result<IFabricOutputDTO>> GetFabricOutputDTOByProductOptionVariationIdAsync(string productType, int productOptionVariationId, CancellationToken cancellationToken = default)
-    {
-        var productTypeQuery = _sharedUtilityService.GetProductTypeQueryString(productType);
-
-        // this feels bad
-        if (productTypeQuery == _sharedUtilityService.GetProductTypeQueryString(ProductTypeOption.KineticsCellular.Value))
-        {
-            var kineticsCellularFabric = await _unitOfWork.KineticsCellularFabric.GetFabricByProductOptionVariationIdAsync(productOptionVariationId, cancellationToken);
-            if (kineticsCellularFabric is null)
-            {
-                return Result.Fail(new NotFoundResource("Kinetics Cellular Fabirc", ""));
-            }
-
-            // this is why we need interface...
-            return Result.Ok(kineticsCellularFabric.ToKineticsCellularFabricOutputDTO() as IFabricOutputDTO);
-
-        }
-        else if (productTypeQuery == _sharedUtilityService.GetProductTypeQueryString(ProductTypeOption.KineticsRoller.Value))
-        {
-            var kineticsRollerFabric = await _unitOfWork.KineticsRollerFabric.GetFabricByProductOptionVariationIdAsync(productOptionVariationId, cancellationToken);
-            if (kineticsRollerFabric is null)
-            {
-                return Result.Fail(new NotFoundResource("Kinetics Roller Fabirc", ""));
-            }
-
-            return Result.Ok(kineticsRollerFabric.ToKineticsRollerFabricOutputDTO() as IFabricOutputDTO);
-
-        }
-
-        return Result.Fail(new ValidationError("Product Type", productType));
-
     }
 
 }

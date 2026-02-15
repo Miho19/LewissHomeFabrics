@@ -20,8 +20,6 @@ public interface IProductStrategy
 
     Task<Result<FabricOutputDTO>> GetFabricAsync(GetFabricQueryParameters getFabricQueryParameters, CancellationToken cancellationToken);
 
-    // Task<Result<FabricPrice>> GetFabricPriceAsync(GetFabricQueryParameters getFabricQueryParameters, CancellationToken cancellationToken);
-
-
+    Result<ProductEntryOutputDTO> ProductToEntryDTO(Product product, Guid worksheetId);
 
 }
