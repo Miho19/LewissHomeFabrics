@@ -5,7 +5,7 @@ namespace Lewiss.Pricing.Api.Tests.Fixtures;
 
 public static class WorksheetFixture
 {
-    public static WorksheetOutputDTO TestWorksheetDTO = new WorksheetOutputDTO
+    public readonly static WorksheetOutputDTO TestWorksheetDTO = new WorksheetOutputDTO
     {
         Id = Guid.CreateVersion7(DateTimeOffset.UtcNow),
         CustomerId = CustomerFixture.TestCustomer.ExternalMapping,
@@ -15,7 +15,7 @@ public static class WorksheetFixture
         Discount = 0.00m,
     };
 
-    public static Worksheet TestWorksheet = new Worksheet()
+    public readonly static Worksheet TestWorksheet = new Worksheet()
     {
         WorksheetId = 1,
         ExternalMapping = TestWorksheetDTO.Id,

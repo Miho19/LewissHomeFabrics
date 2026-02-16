@@ -1,8 +1,10 @@
 using Castle.Core.Logging;
+using FluentResults;
 using Lewiss.Pricing.Api.Controllers;
 using Lewiss.Pricing.Api.Tests.Fixtures;
 using Lewiss.Pricing.Data.Model.Fabric;
 using Lewiss.Pricing.Shared.FabricDTO;
+using Lewiss.Pricing.Shared.ProductStrategy;
 using Lewiss.Pricing.Shared.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,23 +27,26 @@ public class FabricControllerTests
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
+        var serviceProviderMock = new Mock<IServiceProvider>();
+        var productStrategyResolverMock = new Mock<ProductStrategyResolver>(serviceProviderMock.Object);
+
         var fabricServiceLoggerMock = new Mock<ILogger<FabricService>>();
-        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, fabricServiceLoggerMock.Object);
+        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, fabricServiceLoggerMock.Object);
         var fabricController = new FabricController(fabricServiceMock.Object);
 
         var fabricType = "Kinetics Cellular";
 
-        fabricServiceMock.Setup(f => f.GetFabricsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(FabricFixture.GetFabricListKineticsCellular);
+        fabricServiceMock.Setup(f => f.GetFabricsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Ok(FabricFixture.GetFabricListKineticsCellular()));
 
         var result = await fabricController.GetFabrics(fabricType);
 
         Assert.NotNull(result);
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(StatusCodes.Status200OK, okObjectResult.StatusCode);
-        var fabricList = Assert.IsAssignableFrom<List<IFabricOutputDTO>>(okObjectResult.Value);
+        var fabricList = Assert.IsAssignableFrom<List<FabricOutputDTO>>(okObjectResult.Value);
         Assert.NotEmpty(fabricList);
 
-        var kineticsCellularFabricDTOList = fabricList.Cast<KineticsCellularFabricOutputDTO>().ToList();
+        var kineticsCellularFabricDTOList = fabricList.Cast<FabricOutputDTO>().ToList();
 
         foreach (var f in kineticsCellularFabricDTOList)
         {
@@ -54,23 +59,26 @@ public class FabricControllerTests
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
+        var serviceProviderMock = new Mock<IServiceProvider>();
+        var productStrategyResolverMock = new Mock<ProductStrategyResolver>(serviceProviderMock.Object);
+
         var fabricServiceLoggerMock = new Mock<ILogger<FabricService>>();
-        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, fabricServiceLoggerMock.Object);
+        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, fabricServiceLoggerMock.Object);
         var fabricController = new FabricController(fabricServiceMock.Object);
 
         var fabricType = "Kinetics Roller";
 
-        fabricServiceMock.Setup(f => f.GetFabricsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(FabricFixture.GetFabricListKineticsRoller);
+        fabricServiceMock.Setup(f => f.GetFabricsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Ok(FabricFixture.GetFabricListKineticsRoller()));
 
         var result = await fabricController.GetFabrics(fabricType);
 
         Assert.NotNull(result);
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(StatusCodes.Status200OK, okObjectResult.StatusCode);
-        var fabricList = Assert.IsAssignableFrom<List<IFabricOutputDTO>>(okObjectResult.Value);
+        var fabricList = Assert.IsAssignableFrom<List<FabricOutputDTO>>(okObjectResult.Value);
         Assert.NotEmpty(fabricList);
 
-        var kineticsRollerFabricDTOList = fabricList.Cast<KineticsRollerFabricOutputDTO>().ToList();
+        var kineticsRollerFabricDTOList = fabricList.Cast<FabricOutputDTO>().ToList();
 
         foreach (var f in kineticsRollerFabricDTOList)
         {
@@ -83,13 +91,16 @@ public class FabricControllerTests
     {
         var unitOfWorkMock = new Mock<IUnitOfWork>();
         var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
+        var serviceProviderMock = new Mock<IServiceProvider>();
+        var productStrategyResolverMock = new Mock<ProductStrategyResolver>(serviceProviderMock.Object);
+
         var fabricServiceLoggerMock = new Mock<ILogger<FabricService>>();
-        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, fabricServiceLoggerMock.Object);
+        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, fabricServiceLoggerMock.Object);
         var fabricController = new FabricController(fabricServiceMock.Object);
 
         var fabricType = "Kinetics Roller";
 
-        fabricServiceMock.Setup(f => f.GetFabricsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync([]);
+        fabricServiceMock.Setup(f => f.GetFabricsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Ok(new List<FabricOutputDTO>()));
 
         var result = await fabricController.GetFabrics(fabricType);
 

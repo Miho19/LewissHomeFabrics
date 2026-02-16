@@ -1,11 +1,14 @@
+using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Data.Model.Fabric.Type;
+using Lewiss.Pricing.Data.OptionData;
 using Lewiss.Pricing.Shared.FabricDTO;
+using Lewiss.Pricing.Shared.ProductStrategy;
 
 namespace Lewiss.Pricing.Api.Tests.Fixtures;
 
 public static class FabricFixture
 {
-    public static KineticsCellularFabric Cotton001Translucent = new KineticsCellularFabric
+    public readonly static KineticsCellularFabric Cotton001Translucent = new KineticsCellularFabric
     {
         Code = "001",
         Colour = "Cotton",
@@ -14,7 +17,7 @@ public static class FabricFixture
         ProductOptionVariationId = 1,
     };
 
-    public static KineticsCellularFabric Cream005Translucent = new KineticsCellularFabric
+    public readonly static KineticsCellularFabric Cream005Translucent = new KineticsCellularFabric
     {
         Code = "005",
         Colour = "Cream",
@@ -23,12 +26,12 @@ public static class FabricFixture
         ProductOptionVariationId = 2,
     };
 
-    public static List<IFabricOutputDTO> GetFabricListKineticsCellular()
+    public static List<FabricOutputDTO> GetFabricListKineticsCellular()
     {
-        return [Cotton001Translucent.ToKineticsCellularFabricOutputDTO(), Cream005Translucent.ToKineticsCellularFabricOutputDTO()];
+        return [Cotton001Translucent.ToFabricOutputDTO(), Cream005Translucent.ToFabricOutputDTO()];
     }
 
-    public static KineticsRollerFabric AdagioBlack = new KineticsRollerFabric
+    public readonly static KineticsRollerFabric AdagioBlack = new KineticsRollerFabric
     {
         Fabric = "Adagio",
         Colour = "Black",
@@ -39,7 +42,7 @@ public static class FabricFixture
         ProductOptionVariationId = 3,
     };
 
-    public static KineticsRollerFabric Fenescreen10Charcoal = new KineticsRollerFabric
+    public readonly static KineticsRollerFabric Fenescreen10Charcoal = new KineticsRollerFabric
     {
         Fabric = "Fenescreen 10%",
         Colour = "Charcoal",
@@ -50,9 +53,9 @@ public static class FabricFixture
         ProductOptionVariationId = 4,
     };
 
-    public static List<IFabricOutputDTO> GetFabricListKineticsRoller()
+    public static List<FabricOutputDTO> GetFabricListKineticsRoller()
     {
-        return [AdagioBlack.ToKineticsRollerFabricOutputDTO(), Fenescreen10Charcoal.ToKineticsRollerFabricOutputDTO()];
+        return [AdagioBlack.ToToFabricOutputDTO(), Fenescreen10Charcoal.ToToFabricOutputDTO()];
     }
 
 }
