@@ -59,7 +59,7 @@ public class WorksheetService
     public virtual async Task<Result<WorksheetOutputDTO>> GetWorksheetAsync(Guid externalCustomerId, Guid externalWorksheetId, CancellationToken cancellationToken = default)
     {
 
-        var result = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId);
+        var result = await _sharedUtilityService.GetCustomerAndWorksheetAsync(externalCustomerId, externalWorksheetId, cancellationToken);
         if (result.IsFailed)
         {
             return Result.Fail(result.Errors);

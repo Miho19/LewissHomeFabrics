@@ -150,5 +150,8 @@ public class KineticsCellularProductStrategy : IProductStrategy
 
     }
 
-
+    public Result<ProductEntryOutputDTO> ProductToEntryDTO(Product product, Guid worksheetId)
+    {
+        throw new NotImplementedException();
+    }
 }

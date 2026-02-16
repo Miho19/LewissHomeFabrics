@@ -49,7 +49,28 @@ public class PricingController : ControllerBase
     [HttpGet("customer/{customerId}/worksheet/{worksheetId}", Name = "GetWorksheet")]
     public async Task<IActionResult> GetWorksheet(Guid customerId, Guid worksheetId, CancellationToken cancellationToken = default)
     {
-        var worksheetDTO = await _worksheetService.GetWorksheetAsync(customerId, worksheetId, cancellationToken);
+        var result = await _worksheetService.GetWorksheetAsync(customerId, worksheetId, cancellationToken);
+
+        if (result.IsFailed)
+        {
+            var notFoundResource = result.Errors.OfType<NotFoundResource>().FirstOrDefault();
+            if (notFoundResource is not null)
+            {
+                return NotFound(notFoundResource.Message);
+            }
+
+            var resourceNotOwned = result.Errors.OfType<ResourceNotOwned>().FirstOrDefault();
+            {
+                if (resourceNotOwned is not null)
+                {
+                    return BadRequest(resourceNotOwned.Message);
+                }
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+        }
+
+        var worksheetDTO = result.Value;
 
         return new OkObjectResult(worksheetDTO);
     }
@@ -58,7 +79,19 @@ public class PricingController : ControllerBase
     [HttpPost("customer/{customerId}/worksheet", Name = "CreateWorksheet")]
     public async Task<IActionResult> CreateWorksheet(Guid customerId, CancellationToken cancellationToken = default)
     {
-        var worksheetDTO = await _worksheetService.CreateWorksheetAsync(customerId, cancellationToken);
+        var result = await _worksheetService.CreateWorksheetAsync(customerId, cancellationToken);
+        if (result.IsFailed)
+        {
+            var notFoundResource = result.Errors.OfType<NotFoundResource>().FirstOrDefault();
+            if (notFoundResource is not null)
+            {
+                return NotFound(notFoundResource.Message);
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+        }
+
+        var worksheetDTO = result.Value;
 
         return new CreatedAtActionResult("GetWorksheet", "Pricing", new { worksheetId = worksheetDTO.Id, customerId }, worksheetDTO);
     }
@@ -69,7 +102,35 @@ public class PricingController : ControllerBase
     public async Task<IActionResult> CreateProduct(Guid customerId, Guid workoutId, [FromBody] ProductCreateInputDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
 
-        var productEntryDTO = await _productService.CreateProductAsync(customerId, workoutId, productCreateDTO, cancellationToken);
+        var result = await _productService.CreateProductAsync(customerId, workoutId, productCreateDTO, cancellationToken);
+
+        if (result.IsFailed)
+        {
+
+            var validationError = result.Errors.OfType<ValidationError>().FirstOrDefault();
+            if (validationError is not null)
+            {
+                return BadRequest(validationError.Message);
+            }
+
+            var notFoundResource = result.Errors.OfType<NotFoundResource>().FirstOrDefault();
+            if (notFoundResource is not null)
+            {
+                return NotFound(notFoundResource.Message);
+            }
+
+            var resourceNotOwned = result.Errors.OfType<ResourceNotOwned>().FirstOrDefault();
+            {
+                if (resourceNotOwned is not null)
+                {
+                    return BadRequest(resourceNotOwned.Message);
+                }
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+        }
+
+        var productEntryDTO = result.Value;
 
         return new OkObjectResult(productEntryDTO);
     }
@@ -77,14 +138,69 @@ public class PricingController : ControllerBase
     [HttpGet("customer/{customerId}/worksheet/{worksheetId}/product/{productId}", Name = "GetProduct")]
     public async Task<IActionResult> GetProduct(Guid customerId, Guid worksheetId, Guid productId, CancellationToken cancellationToken = default)
     {
-        var productEntryDTO = await _productService.GetProductAsync(customerId, worksheetId, productId, cancellationToken);
+        var result = await _productService.GetProductAsync(customerId, worksheetId, productId, cancellationToken);
+        if (result.IsFailed)
+        {
+
+            var validationError = result.Errors.OfType<ValidationError>().FirstOrDefault();
+            if (validationError is not null)
+            {
+                return BadRequest(validationError.Message);
+            }
+
+            var notFoundResource = result.Errors.OfType<NotFoundResource>().FirstOrDefault();
+            if (notFoundResource is not null)
+            {
+                return NotFound(notFoundResource.Message);
+            }
+
+            var resourceNotOwned = result.Errors.OfType<ResourceNotOwned>().FirstOrDefault();
+            {
+                if (resourceNotOwned is not null)
+                {
+                    return BadRequest(resourceNotOwned.Message);
+                }
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+        }
+
+        var productEntryDTO = result.Value;
+
         return new OkObjectResult(productEntryDTO);
     }
 
     [HttpGet("customer/{customerId}/worksheet/{worksheetId}/product", Name = "GetWorksheetProduct")]
     public async Task<IActionResult> GetWorksheetProduct(Guid customerId, Guid worksheetId, CancellationToken cancellationToken = default)
     {
-        var productEntryDTOList = await _worksheetService.GetWorksheetProductsAsync(customerId, worksheetId, cancellationToken);
+        var result = await _worksheetService.GetWorksheetProductsAsync(customerId, worksheetId, cancellationToken);
+        if (result.IsFailed)
+        {
+
+            var validationError = result.Errors.OfType<ValidationError>().FirstOrDefault();
+            if (validationError is not null)
+            {
+                return BadRequest(validationError.Message);
+            }
+
+            var notFoundResource = result.Errors.OfType<NotFoundResource>().FirstOrDefault();
+            if (notFoundResource is not null)
+            {
+                return NotFound(notFoundResource.Message);
+            }
+
+            var resourceNotOwned = result.Errors.OfType<ResourceNotOwned>().FirstOrDefault();
+            {
+                if (resourceNotOwned is not null)
+                {
+                    return BadRequest(resourceNotOwned.Message);
+                }
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+        }
+
+        var productEntryDTOList = result.Value;
         return new OkObjectResult(productEntryDTOList);
     }
 

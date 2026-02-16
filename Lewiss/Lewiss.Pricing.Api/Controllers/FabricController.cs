@@ -1,3 +1,4 @@
+using Lewiss.Pricing.Shared.CustomError;
 using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -18,16 +19,19 @@ public class FabricController : ControllerBase
     [HttpGet("", Name = "GetFabrics")]
     public async Task<IActionResult> GetFabrics([FromQuery] string productType, CancellationToken cancellationToken = default)
     {
-        var fabricList = await _fabricService.GetFabricsAsync(productType, cancellationToken);
+        var result = await _fabricService.GetFabricsAsync(productType, cancellationToken);
+        if (result.IsFailed)
+        {
+            if (result.Errors.Any(e => e is ValidationError))
+            {
+                return BadRequest("Product Type is invalid");
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+        }
+
+        var fabricList = result.Value;
         return new OkObjectResult(fabricList);
     }
-
-    // [HttpGet("{productType}", Name = "GetFabricPrice")]
-    // public async Task<IActionResult> GetFabricPrice(string productType, [FromQuery] GetFabricQueryParameters queryParameters, CancellationToken cancellationToken = default)
-    // {
-    //     var fabricPriceDTO = await _fabricService.GetFabricPriceAsync(productType, queryParameters, cancellationToken);
-    //     return new OkObjectResult(fabricPriceDTO);
-    // }
-
 
 }
