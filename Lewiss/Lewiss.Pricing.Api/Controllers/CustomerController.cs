@@ -22,6 +22,10 @@ public class CustomerController : ControllerBase
     public async Task<IActionResult> GetCustomer(Guid customerId, CancellationToken cancellationToken = default)
     {
         var result = await _customerService.GetCustomerByExternalIdAsync(customerId, cancellationToken);
+        if (result is null)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+        }
 
         if (result.IsFailed)
         {
@@ -42,6 +46,12 @@ public class CustomerController : ControllerBase
     public async Task<IActionResult> CreateCustomer([FromBody] CustomerCreateInputDTO customerCreateDTO, CancellationToken cancellationToken = default)
     {
         var result = await _customerService.CreateCustomerAsync(customerCreateDTO, cancellationToken);
+
+        if (result is null)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+        }
+
         if (result.IsFailed)
         {
             if (result.Errors.Any(e => e is CustomerAlreadyExists))
@@ -59,6 +69,11 @@ public class CustomerController : ControllerBase
     public async Task<IActionResult> GetCustomers([FromQuery] GetCustomerQueryParameters getCustomerQueryParameters, CancellationToken cancellationToken = default)
     {
         var result = await _customerService.GetCustomersAsync(getCustomerQueryParameters, cancellationToken);
+
+        if (result is null)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+        }
 
         if (result.IsFailed)
         {

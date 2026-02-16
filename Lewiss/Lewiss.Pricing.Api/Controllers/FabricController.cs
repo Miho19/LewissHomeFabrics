@@ -20,6 +20,10 @@ public class FabricController : ControllerBase
     public async Task<IActionResult> GetFabrics([FromQuery] string productType, CancellationToken cancellationToken = default)
     {
         var result = await _fabricService.GetFabricsAsync(productType, cancellationToken);
+        if (result is null)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+        }
         if (result.IsFailed)
         {
             if (result.Errors.Any(e => e is ValidationError))

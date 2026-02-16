@@ -1,8 +1,10 @@
 using Castle.Core.Logging;
+using FluentResults;
 using Lewiss.Pricing.Api.Controllers;
 using Lewiss.Pricing.Api.Tests.Fixtures;
 using Lewiss.Pricing.Data.Model;
 using Lewiss.Pricing.Shared.CustomerDTO;
+using Lewiss.Pricing.Shared.CustomError;
 using Lewiss.Pricing.Shared.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -58,14 +60,15 @@ public class CustomerControllerTests
         var customerController = new CustomerController(customerServiceMock.Object, customerControllerloggerMock.Object);
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        customerServiceMock.Setup(p => p.GetCustomerByExternalIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync((CustomerEntryOutputDTO)null!);
+        customerServiceMock.Setup(p => p.GetCustomerByExternalIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Fail(new NotFoundResource("Customer", testCustomerEntryDTO.Id)));
 
         var result = await customerController.GetCustomer(testCustomerEntryDTO.Id);
 
         Assert.NotNull(result);
-        var objectResult = Assert.IsType<ObjectResult>(result);
-        var problemsDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
-        Assert.Equal(StatusCodes.Status404NotFound, problemsDetails.Status);
+        var objectResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal(StatusCodes.Status404NotFound, objectResult.StatusCode);
+        Assert.NotNull(objectResult.Value);
+        Assert.Contains("Customer", objectResult.Value.ToString());
     }
 
     [Fact]
@@ -100,15 +103,14 @@ public class CustomerControllerTests
         var customerController = new CustomerController(customerServiceMock.Object, customerControllerloggerMock.Object);
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-
-        customerServiceMock.Setup(p => p.CreateCustomerAsync(It.IsAny<CustomerCreateInputDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync((CustomerEntryOutputDTO)null!);
-
+        customerServiceMock.Setup(p => p.CreateCustomerAsync(It.IsAny<CustomerCreateInputDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Fail(new Error("")));
         var result = await customerController.CreateCustomer(CustomerFixture.TestCustomerCreate);
 
         Assert.NotNull(result);
         var objectResult = Assert.IsType<ObjectResult>(result);
-        var problemsDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
-        Assert.Equal(StatusCodes.Status500InternalServerError, problemsDetails.Status);
+        Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
+        Assert.NotNull(objectResult.Value);
+        Assert.Contains("Something went wrong", objectResult.Value.ToString());
     }
 
 }

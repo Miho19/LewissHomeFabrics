@@ -100,13 +100,14 @@ public class FabricControllerTests
 
         var fabricType = "Kinetics Roller";
 
-        fabricServiceMock.Setup(f => f.GetFabricsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Ok(new List<FabricOutputDTO>()));
+        fabricServiceMock.Setup(f => f.GetFabricsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Fail(new Error("internal error")));
 
         var result = await fabricController.GetFabrics(fabricType);
 
         Assert.NotNull(result);
         var objectResult = Assert.IsType<ObjectResult>(result);
-        var problemDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
-        Assert.Equal(StatusCodes.Status404NotFound, problemDetails.Status);
+        Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
+        Assert.NotNull(objectResult.Value);
+        Assert.Contains("Something went wrong", objectResult.Value.ToString());
     }
 }

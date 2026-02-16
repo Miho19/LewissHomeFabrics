@@ -27,6 +27,10 @@ public class PricingController : ControllerBase
     public async Task<IActionResult> GetCustomerWorksheet(Guid customerId, CancellationToken cancellationToken = default)
     {
         var result = await _customerService.GetCustomerWorksheetDTOListAsync(customerId, cancellationToken);
+        if (result is null)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+        }
 
         if (result.IsFailed)
         {
@@ -50,6 +54,10 @@ public class PricingController : ControllerBase
     public async Task<IActionResult> GetWorksheet(Guid customerId, Guid worksheetId, CancellationToken cancellationToken = default)
     {
         var result = await _worksheetService.GetWorksheetAsync(customerId, worksheetId, cancellationToken);
+        if (result is null)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+        }
 
         if (result.IsFailed)
         {
@@ -80,6 +88,10 @@ public class PricingController : ControllerBase
     public async Task<IActionResult> CreateWorksheet(Guid customerId, CancellationToken cancellationToken = default)
     {
         var result = await _worksheetService.CreateWorksheetAsync(customerId, cancellationToken);
+        if (result is null)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+        }
         if (result.IsFailed)
         {
             var notFoundResource = result.Errors.OfType<NotFoundResource>().FirstOrDefault();
@@ -103,6 +115,10 @@ public class PricingController : ControllerBase
     {
 
         var result = await _productService.CreateProductAsync(customerId, workoutId, productCreateDTO, cancellationToken);
+        if (result is null)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+        }
 
         if (result.IsFailed)
         {
@@ -139,6 +155,10 @@ public class PricingController : ControllerBase
     public async Task<IActionResult> GetProduct(Guid customerId, Guid worksheetId, Guid productId, CancellationToken cancellationToken = default)
     {
         var result = await _productService.GetProductAsync(customerId, worksheetId, productId, cancellationToken);
+        if (result is null)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+        }
         if (result.IsFailed)
         {
 
@@ -174,6 +194,10 @@ public class PricingController : ControllerBase
     public async Task<IActionResult> GetWorksheetProduct(Guid customerId, Guid worksheetId, CancellationToken cancellationToken = default)
     {
         var result = await _worksheetService.GetWorksheetProductsAsync(customerId, worksheetId, cancellationToken);
+        if (result is null)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
+        }
         if (result.IsFailed)
         {
 

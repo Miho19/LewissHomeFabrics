@@ -11,6 +11,7 @@ using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.Services;
 using Lewiss.Pricing.Shared.WorksheetDTO;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -102,9 +103,10 @@ public class PricingControllerTests
         var result = await pricingController.CreateWorksheet(testCustomerEntryDTO.Id);
 
         Assert.NotNull(result);
-        var objectResult = Assert.IsType<ObjectResult>(result);
-        var problemsDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
-        Assert.Equal(StatusCodes.Status500InternalServerError, problemsDetails.Status);
+        var objectResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal(StatusCodes.Status404NotFound, objectResult.StatusCode);
+        Assert.NotNull(objectResult.Value);
+        Assert.Contains("Customer", objectResult.Value.ToString());
     }
 
 
@@ -183,9 +185,10 @@ public class PricingControllerTests
         var result = await pricingController.GetWorksheet(testCustomerEntryDTO.Id, testWorksheetDTO.Id);
 
         Assert.NotNull(result);
-        var objectResult = Assert.IsType<ObjectResult>(result);
-        var problemsDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
-        Assert.Equal(StatusCodes.Status500InternalServerError, problemsDetails.Status);
+        var objectResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal(StatusCodes.Status404NotFound, objectResult.StatusCode);
+        Assert.NotNull(objectResult.Value);
+        Assert.Contains("Worksheet", objectResult.Value.ToString());
     }
 
     [Fact]
@@ -265,9 +268,10 @@ public class PricingControllerTests
         var result = await pricingController.GetCustomerWorksheet(testCustomerEntryDTO.Id);
 
         Assert.NotNull(result);
-        var objectResult = Assert.IsType<ObjectResult>(result);
-        var problemsDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
-        Assert.Equal(StatusCodes.Status500InternalServerError, problemsDetails.Status);
+        var objectResult = Assert.IsType<NotFoundObjectResult>(result);
+        Assert.Equal(StatusCodes.Status404NotFound, objectResult.StatusCode);
+        Assert.NotNull(objectResult.Value);
+        Assert.Contains("Customer", objectResult.Value.ToString());
     }
 
     [Fact]
@@ -383,9 +387,11 @@ public class PricingControllerTests
         var result = await pricingController.CreateProduct(testCustomerEntryDTO.Id, testWorksheetDTO.Id, newProductDTO);
 
         Assert.NotNull(result);
-        var objectResult = Assert.IsType<ObjectResult>(result);
-        var problemsDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
-        Assert.Equal(StatusCodes.Status500InternalServerError, problemsDetails.Status);
+        var objectResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal(StatusCodes.Status400BadRequest, objectResult.StatusCode);
+        Assert.NotNull(objectResult.Value);
+        Assert.Contains("Product Type", objectResult.Value.ToString());
+
     }
 
     [Fact]
