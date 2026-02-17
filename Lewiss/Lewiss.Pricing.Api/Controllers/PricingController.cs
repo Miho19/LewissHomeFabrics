@@ -1,6 +1,8 @@
+using FluentResults;
 using Lewiss.Pricing.Shared.CustomError;
 using Lewiss.Pricing.Shared.ProductDTO;
 using Lewiss.Pricing.Shared.Services;
+using Lewiss.Pricing.Shared.WorksheetDTO;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lewiss.Pricing.Api.Controllers;
@@ -26,17 +28,25 @@ public class PricingController : ControllerBase
     [HttpGet("customer/{customerId}/worksheet", Name = "GetCustomerWorksheet")]
     public async Task<IActionResult> GetCustomerWorksheet(Guid customerId, CancellationToken cancellationToken = default)
     {
-        var result = await _customerService.GetCustomerWorksheetDTOListAsync(customerId, cancellationToken);
-        if (result is null)
+        var result = await Result.Try(async Task<Result<List<WorksheetOutputDTO>>> () =>
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-        }
+            return await _customerService.GetCustomerWorksheetDTOListAsync(customerId, cancellationToken);
+        });
 
         if (result.IsFailed)
         {
-            if (result.Errors.Any(e => e is NotFoundResource))
+            var notFoundResource = result.Errors.OfType<NotFoundResource>().FirstOrDefault();
+            if (notFoundResource is not null)
             {
-                return NotFound("Customer not found.");
+                return NotFound(notFoundResource.Message);
+            }
+
+            var resourceNotOwned = result.Errors.OfType<ResourceNotOwned>().FirstOrDefault();
+            {
+                if (resourceNotOwned is not null)
+                {
+                    return BadRequest(resourceNotOwned.Message);
+                }
             }
 
             return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
@@ -53,11 +63,11 @@ public class PricingController : ControllerBase
     [HttpGet("customer/{customerId}/worksheet/{worksheetId}", Name = "GetWorksheet")]
     public async Task<IActionResult> GetWorksheet(Guid customerId, Guid worksheetId, CancellationToken cancellationToken = default)
     {
-        var result = await _worksheetService.GetWorksheetAsync(customerId, worksheetId, cancellationToken);
-        if (result is null)
+        var result = await Result.Try(async Task<Result<WorksheetOutputDTO>> () =>
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-        }
+            return await _worksheetService.GetWorksheetAsync(customerId, worksheetId, cancellationToken);
+        });
+
 
         if (result.IsFailed)
         {
@@ -87,11 +97,11 @@ public class PricingController : ControllerBase
     [HttpPost("customer/{customerId}/worksheet", Name = "CreateWorksheet")]
     public async Task<IActionResult> CreateWorksheet(Guid customerId, CancellationToken cancellationToken = default)
     {
-        var result = await _worksheetService.CreateWorksheetAsync(customerId, cancellationToken);
-        if (result is null)
+        var result = await Result.Try(async Task<Result<WorksheetOutputDTO>> () =>
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-        }
+            return await _worksheetService.CreateWorksheetAsync(customerId, cancellationToken);
+        });
+
         if (result.IsFailed)
         {
             var notFoundResource = result.Errors.OfType<NotFoundResource>().FirstOrDefault();
@@ -114,11 +124,10 @@ public class PricingController : ControllerBase
     public async Task<IActionResult> CreateProduct(Guid customerId, Guid workoutId, [FromBody] ProductCreateInputDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
 
-        var result = await _productService.CreateProductAsync(customerId, workoutId, productCreateDTO, cancellationToken);
-        if (result is null)
+        var result = await Result.Try(async Task<Result<ProductEntryOutputDTO>> () =>
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-        }
+            return await _productService.CreateProductAsync(customerId, workoutId, productCreateDTO, cancellationToken);
+        });
 
         if (result.IsFailed)
         {
@@ -154,11 +163,11 @@ public class PricingController : ControllerBase
     [HttpGet("customer/{customerId}/worksheet/{worksheetId}/product/{productId}", Name = "GetProduct")]
     public async Task<IActionResult> GetProduct(Guid customerId, Guid worksheetId, Guid productId, CancellationToken cancellationToken = default)
     {
-        var result = await _productService.GetProductAsync(customerId, worksheetId, productId, cancellationToken);
-        if (result is null)
+        var result = await Result.Try(async Task<Result<ProductEntryOutputDTO>> () =>
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-        }
+            return await _productService.GetProductAsync(customerId, worksheetId, productId, cancellationToken);
+        });
+
         if (result.IsFailed)
         {
 
@@ -193,11 +202,11 @@ public class PricingController : ControllerBase
     [HttpGet("customer/{customerId}/worksheet/{worksheetId}/product", Name = "GetWorksheetProduct")]
     public async Task<IActionResult> GetWorksheetProduct(Guid customerId, Guid worksheetId, CancellationToken cancellationToken = default)
     {
-        var result = await _worksheetService.GetWorksheetProductsAsync(customerId, worksheetId, cancellationToken);
-        if (result is null)
+        var result = await Result.Try(async Task<Result<List<ProductEntryOutputDTO>>> () =>
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-        }
+            return await _worksheetService.GetWorksheetProductsAsync(customerId, worksheetId, cancellationToken);
+        });
+
         if (result.IsFailed)
         {
 
