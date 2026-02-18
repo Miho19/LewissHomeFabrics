@@ -14,19 +14,18 @@ public class ProductService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly SharedUtilityService _sharedUtilityService;
-    private readonly ILogger<ProductService> _logger;
-    private readonly FabricService _fabricService;
+
     private readonly ProductStrategyResolver _productStrategyResolver;
+    private readonly ILogger<ProductService> _logger;
+
 
     public ProductService(IUnitOfWork unitOfWork,
     SharedUtilityService sharedUtilityService,
-    FabricService fabricService,
     ProductStrategyResolver productStrategyResolver,
     ILogger<ProductService> logger)
     {
         _unitOfWork = unitOfWork;
         _sharedUtilityService = sharedUtilityService;
-        _fabricService = fabricService;
         _productStrategyResolver = productStrategyResolver;
         _logger = logger;
     }

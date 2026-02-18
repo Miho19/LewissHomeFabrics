@@ -34,11 +34,11 @@ public class CustomerControllerTests
 
         public CustomerControllerMocks()
         {
-            UnitOfWorkMock = new Mock<IUnitOfWork>();
-            CustomerControllerloggerMock = new Mock<ILogger<CustomerController>>();
-            CustomerServiceloggerMock = new Mock<ILogger<CustomerService>>();
-            CustomerServiceMock = new Mock<CustomerService>(UnitOfWorkMock.Object, CustomerServiceloggerMock.Object);
-            CustomerController = new CustomerController(CustomerServiceMock.Object, CustomerControllerloggerMock.Object);
+            UnitOfWorkMock = new();
+            CustomerControllerloggerMock = new();
+            CustomerServiceloggerMock = new();
+            CustomerServiceMock = new(UnitOfWorkMock.Object, CustomerServiceloggerMock.Object);
+            CustomerController = new(CustomerServiceMock.Object, CustomerControllerloggerMock.Object);
         }
     }
 
@@ -70,17 +70,15 @@ public class CustomerControllerTests
     [Fact]
     public async Task GetCustomer_ShouldReturnNotFound404_OnFailure_WhenDatabaseReturnsNull()
     {
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var customerControllerloggerMock = new Mock<ILogger<CustomerController>>();
-        var customerServiceloggerMock = new Mock<ILogger<CustomerService>>();
 
-        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object, customerServiceloggerMock.Object);
-        var customerController = new CustomerController(customerServiceMock.Object, customerControllerloggerMock.Object);
+        var customerControllerMocks = new CustomerControllerMocks();
+
+
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        customerServiceMock.Setup(p => p.GetCustomerByExternalIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Fail(new NotFoundResource("Customer", testCustomerEntryDTO.Id)));
+        customerControllerMocks.CustomerServiceMock.Setup(p => p.GetCustomerByExternalIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Fail(new NotFoundResource("Customer", testCustomerEntryDTO.Id)));
 
-        var result = await customerController.GetCustomer(testCustomerEntryDTO.Id);
+        var result = await customerControllerMocks.CustomerController.GetCustomer(testCustomerEntryDTO.Id);
 
         Assert.NotNull(result);
         var objectResult = Assert.IsType<NotFoundObjectResult>(result);
@@ -92,16 +90,12 @@ public class CustomerControllerTests
     [Fact]
     public async Task CreateCustomer_ShouldReturnOkCreated_OnSuccess()
     {
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var customerControllerloggerMock = new Mock<ILogger<CustomerController>>();
-        var customerServiceloggerMock = new Mock<ILogger<CustomerService>>();
+        var customerControllerMocks = new CustomerControllerMocks();
 
-        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object, customerServiceloggerMock.Object);
-        var customerController = new CustomerController(customerServiceMock.Object, customerControllerloggerMock.Object);
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        customerServiceMock.Setup(p => p.CreateCustomerAsync(It.IsAny<CustomerCreateInputDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(testCustomerEntryDTO);
-        var result = await customerController.CreateCustomer(CustomerFixture.TestCustomerCreate);
+        customerControllerMocks.CustomerServiceMock.Setup(p => p.CreateCustomerAsync(It.IsAny<CustomerCreateInputDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(testCustomerEntryDTO);
+        var result = await customerControllerMocks.CustomerController.CreateCustomer(CustomerFixture.TestCustomerCreate);
 
         Assert.NotNull(result);
         var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
@@ -113,16 +107,12 @@ public class CustomerControllerTests
     [Fact]
     public async Task CreateCustomer_ShouldReturn500_OnFailure()
     {
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var customerControllerloggerMock = new Mock<ILogger<CustomerController>>();
-        var customerServiceloggerMock = new Mock<ILogger<CustomerService>>();
+        var customerControllerMocks = new CustomerControllerMocks();
 
-        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object, customerServiceloggerMock.Object);
-        var customerController = new CustomerController(customerServiceMock.Object, customerControllerloggerMock.Object);
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        customerServiceMock.Setup(p => p.CreateCustomerAsync(It.IsAny<CustomerCreateInputDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Fail(new Error("")));
-        var result = await customerController.CreateCustomer(CustomerFixture.TestCustomerCreate);
+        customerControllerMocks.CustomerServiceMock.Setup(p => p.CreateCustomerAsync(It.IsAny<CustomerCreateInputDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Fail(new Error("")));
+        var result = await customerControllerMocks.CustomerController.CreateCustomer(CustomerFixture.TestCustomerCreate);
 
         Assert.NotNull(result);
         var objectResult = Assert.IsType<ObjectResult>(result);

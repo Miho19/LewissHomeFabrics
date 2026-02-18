@@ -1,17 +1,12 @@
-using Castle.Core.Logging;
 using FluentResults;
 using Lewiss.Pricing.Api.Controllers;
 using Lewiss.Pricing.Api.Tests.Fixtures;
-using Lewiss.Pricing.Data.Model;
-using Lewiss.Pricing.Shared.CustomerDTO;
 using Lewiss.Pricing.Shared.CustomError;
 using Lewiss.Pricing.Shared.ProductDTO;
 using Lewiss.Pricing.Shared.ProductStrategy;
-using Lewiss.Pricing.Shared.QueryParameters;
 using Lewiss.Pricing.Shared.Services;
 using Lewiss.Pricing.Shared.WorksheetDTO;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -28,38 +23,64 @@ public class PricingControllerTests
         _logger = logger;
     }
 
+    private class PricingControllerMocks
+    {
+        public Mock<IUnitOfWork> UnitOfWorkMock;
+
+        public Mock<ILogger<CustomerService>> CustomerServiceLoggerMock;
+
+        public Mock<CustomerService> CustomerServiceMock;
+
+        public Mock<SharedUtilityService> SharedUtilityServiceMock;
+
+        public Mock<IServiceProvider> ServiceProviderMock;
+
+        public Mock<ProductStrategyResolver> ProductStrategyResolverMock;
+
+        public Mock<ILogger<FabricService>> FabricServiceLoggerMock;
+        public Mock<FabricService> FabricServiceMock;
+
+        public Mock<ILogger<ProductService>> ProductServiceLoggerMock;
+
+        public Mock<ProductService> ProductServiceMock;
+
+        public Mock<ILogger<WorksheetService>> WorksheetServiceLoggerMock;
+        public Mock<WorksheetService> WorksheetServiceMock;
+
+        public PricingController PricingController;
+
+        public PricingControllerMocks()
+        {
+            UnitOfWorkMock = new();
+            CustomerServiceLoggerMock = new();
+            CustomerServiceMock = new(UnitOfWorkMock.Object, CustomerServiceLoggerMock.Object);
+            SharedUtilityServiceMock = new(UnitOfWorkMock.Object);
+            ServiceProviderMock = new();
+            ProductStrategyResolverMock = new(ServiceProviderMock.Object);
+            FabricServiceLoggerMock = new();
+            FabricServiceMock = new(UnitOfWorkMock.Object, SharedUtilityServiceMock.Object, ProductStrategyResolverMock.Object, FabricServiceLoggerMock.Object);
+            ProductServiceLoggerMock = new();
+            ProductServiceMock = new(UnitOfWorkMock.Object, SharedUtilityServiceMock.Object, ProductStrategyResolverMock.Object, ProductServiceLoggerMock.Object);
+            WorksheetServiceLoggerMock = new();
+            WorksheetServiceMock = new(UnitOfWorkMock.Object, SharedUtilityServiceMock.Object, ProductStrategyResolverMock.Object, WorksheetServiceLoggerMock.Object);
+            PricingController = new(CustomerServiceMock.Object, ProductServiceMock.Object, WorksheetServiceMock.Object);
+        }
+
+    }
+
 
 
     [Fact]
     public async Task CreateWorksheet_ShouldReturnOkCreated_OnSuccess()
     {
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
 
-        var customerServiceloggerMock = new Mock<ILogger<CustomerService>>();
-        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object, customerServiceloggerMock.Object);
-
-        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
-
-        var serviceProviderMock = new Mock<IServiceProvider>();
-        var productStrategyResolverMock = new Mock<ProductStrategyResolver>(serviceProviderMock.Object);
-
-        var fabricServiceLoggerMock = new Mock<ILogger<FabricService>>();
-        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, fabricServiceLoggerMock.Object);
-
-
-        var productServiceLoggerMock = new Mock<ILogger<ProductService>>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, fabricServiceMock.Object, productStrategyResolverMock.Object, productServiceLoggerMock.Object);
-
-        var worksheetServiceLoggerMock = new Mock<ILogger<WorksheetService>>();
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, worksheetServiceLoggerMock.Object);
-
-        var pricingController = new PricingController(customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
+        var pricingControllerMocks = new PricingControllerMocks();
 
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        worksheetServiceMock.Setup(p => p.CreateWorksheetAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Ok(WorksheetFixture.TestWorksheetDTO));
+        pricingControllerMocks.WorksheetServiceMock.Setup(p => p.CreateWorksheetAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Ok(WorksheetFixture.TestWorksheetDTO));
 
-        var result = await pricingController.CreateWorksheet(testCustomerEntryDTO.Id);
+        var result = await pricingControllerMocks.PricingController.CreateWorksheet(testCustomerEntryDTO.Id);
 
         Assert.NotNull(result);
         var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
@@ -73,34 +94,15 @@ public class PricingControllerTests
     [Fact]
     public async Task CreateWorksheet_ShouldReturnStatus500_OnFailure()
     {
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var pricingControllerMocks = new PricingControllerMocks();
 
-        var customerServiceloggerMock = new Mock<ILogger<CustomerService>>();
-        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object, customerServiceloggerMock.Object);
-
-        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
-
-        var serviceProviderMock = new Mock<IServiceProvider>();
-        var productStrategyResolverMock = new Mock<ProductStrategyResolver>(serviceProviderMock.Object);
-
-        var fabricServiceLoggerMock = new Mock<ILogger<FabricService>>();
-        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, fabricServiceLoggerMock.Object);
-
-
-        var productServiceLoggerMock = new Mock<ILogger<ProductService>>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, fabricServiceMock.Object, productStrategyResolverMock.Object, productServiceLoggerMock.Object);
-
-        var worksheetServiceLoggerMock = new Mock<ILogger<WorksheetService>>();
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, worksheetServiceLoggerMock.Object);
-
-        var pricingController = new PricingController(customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
 
 
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        worksheetServiceMock.Setup(p => p.CreateWorksheetAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Fail(new NotFoundResource("Customer", testCustomerEntryDTO.Id)));
+        pricingControllerMocks.WorksheetServiceMock.Setup(p => p.CreateWorksheetAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Fail(new NotFoundResource("Customer", testCustomerEntryDTO.Id)));
 
-        var result = await pricingController.CreateWorksheet(testCustomerEntryDTO.Id);
+        var result = await pricingControllerMocks.PricingController.CreateWorksheet(testCustomerEntryDTO.Id);
 
         Assert.NotNull(result);
         var objectResult = Assert.IsType<NotFoundObjectResult>(result);
@@ -117,34 +119,15 @@ public class PricingControllerTests
     [Fact]
     public async Task GetWorksheet_ShouldReturnOK200_OnSuccess()
     {
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var pricingControllerMocks = new PricingControllerMocks();
 
-        var customerServiceloggerMock = new Mock<ILogger<CustomerService>>();
-        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object, customerServiceloggerMock.Object);
-
-        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
-
-        var serviceProviderMock = new Mock<IServiceProvider>();
-        var productStrategyResolverMock = new Mock<ProductStrategyResolver>(serviceProviderMock.Object);
-
-        var fabricServiceLoggerMock = new Mock<ILogger<FabricService>>();
-        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, fabricServiceLoggerMock.Object);
-
-
-        var productServiceLoggerMock = new Mock<ILogger<ProductService>>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, fabricServiceMock.Object, productStrategyResolverMock.Object, productServiceLoggerMock.Object);
-
-        var worksheetServiceLoggerMock = new Mock<ILogger<WorksheetService>>();
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, worksheetServiceLoggerMock.Object);
-
-        var pricingController = new PricingController(customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
-        worksheetServiceMock.Setup(p => p.GetWorksheetAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Ok(testWorksheetDTO));
+        pricingControllerMocks.WorksheetServiceMock.Setup(p => p.GetWorksheetAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Ok(testWorksheetDTO));
 
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        var result = await pricingController.GetWorksheet(testCustomerEntryDTO.Id, testWorksheetDTO.Id);
+        var result = await pricingControllerMocks.PricingController.GetWorksheet(testCustomerEntryDTO.Id, testWorksheetDTO.Id);
 
         Assert.NotNull(result);
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
@@ -155,34 +138,15 @@ public class PricingControllerTests
     [Fact]
     public async Task GetWorksheet_ShouldReturn500_OnFailure()
     {
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var pricingControllerMocks = new PricingControllerMocks();
 
-        var customerServiceloggerMock = new Mock<ILogger<CustomerService>>();
-        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object, customerServiceloggerMock.Object);
-
-        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
-
-        var serviceProviderMock = new Mock<IServiceProvider>();
-        var productStrategyResolverMock = new Mock<ProductStrategyResolver>(serviceProviderMock.Object);
-
-        var fabricServiceLoggerMock = new Mock<ILogger<FabricService>>();
-        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, fabricServiceLoggerMock.Object);
-
-
-        var productServiceLoggerMock = new Mock<ILogger<ProductService>>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, fabricServiceMock.Object, productStrategyResolverMock.Object, productServiceLoggerMock.Object);
-
-        var worksheetServiceLoggerMock = new Mock<ILogger<WorksheetService>>();
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, worksheetServiceLoggerMock.Object);
-
-        var pricingController = new PricingController(customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
 
-        worksheetServiceMock.Setup(p => p.GetWorksheetAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Fail(new NotFoundResource("Worksheet", testWorksheetDTO.Id)));
+        pricingControllerMocks.WorksheetServiceMock.Setup(p => p.GetWorksheetAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Fail(new NotFoundResource("Worksheet", testWorksheetDTO.Id)));
 
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
-        var result = await pricingController.GetWorksheet(testCustomerEntryDTO.Id, testWorksheetDTO.Id);
+        var result = await pricingControllerMocks.PricingController.GetWorksheet(testCustomerEntryDTO.Id, testWorksheetDTO.Id);
 
         Assert.NotNull(result);
         var objectResult = Assert.IsType<NotFoundObjectResult>(result);
@@ -194,38 +158,19 @@ public class PricingControllerTests
     [Fact]
     public async Task GetCustomerWorksheet_ShouldReturnOK200_OnSuccess()
     {
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var pricingControllerMocks = new PricingControllerMocks();
 
-        var customerServiceloggerMock = new Mock<ILogger<CustomerService>>();
-        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object, customerServiceloggerMock.Object);
-
-        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
-
-        var serviceProviderMock = new Mock<IServiceProvider>();
-        var productStrategyResolverMock = new Mock<ProductStrategyResolver>(serviceProviderMock.Object);
-
-        var fabricServiceLoggerMock = new Mock<ILogger<FabricService>>();
-        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, fabricServiceLoggerMock.Object);
-
-
-        var productServiceLoggerMock = new Mock<ILogger<ProductService>>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, fabricServiceMock.Object, productStrategyResolverMock.Object, productServiceLoggerMock.Object);
-
-        var worksheetServiceLoggerMock = new Mock<ILogger<WorksheetService>>();
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, worksheetServiceLoggerMock.Object);
-
-        var pricingController = new PricingController(customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
 
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        customerServiceMock.Setup(p => p.GetCustomerWorksheetDTOListAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Ok(new List<WorksheetOutputDTO>
+        pricingControllerMocks.CustomerServiceMock.Setup(p => p.GetCustomerWorksheetDTOListAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Ok(new List<WorksheetOutputDTO>
         {
             testWorksheetDTO
         }));
 
-        var result = await pricingController.GetCustomerWorksheet(testCustomerEntryDTO.Id);
+        var result = await pricingControllerMocks.PricingController.GetCustomerWorksheet(testCustomerEntryDTO.Id);
 
         Assert.NotNull(result);
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
@@ -237,35 +182,16 @@ public class PricingControllerTests
     [Fact]
     public async Task GetCustomerWorksheet_ShouldReturn500_OnFailure()
     {
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var pricingControllerMocks = new PricingControllerMocks();
 
-        var customerServiceloggerMock = new Mock<ILogger<CustomerService>>();
-        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object, customerServiceloggerMock.Object);
-
-        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
-
-        var serviceProviderMock = new Mock<IServiceProvider>();
-        var productStrategyResolverMock = new Mock<ProductStrategyResolver>(serviceProviderMock.Object);
-
-        var fabricServiceLoggerMock = new Mock<ILogger<FabricService>>();
-        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, fabricServiceLoggerMock.Object);
-
-
-        var productServiceLoggerMock = new Mock<ILogger<ProductService>>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, fabricServiceMock.Object, productStrategyResolverMock.Object, productServiceLoggerMock.Object);
-
-        var worksheetServiceLoggerMock = new Mock<ILogger<WorksheetService>>();
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, worksheetServiceLoggerMock.Object);
-
-        var pricingController = new PricingController(customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        customerServiceMock.Setup(p => p.GetCustomerWorksheetDTOListAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Fail(new NotFoundResource("Customer", testCustomerEntryDTO.Id)));
+        pricingControllerMocks.CustomerServiceMock.Setup(p => p.GetCustomerWorksheetDTOListAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Fail(new NotFoundResource("Customer", testCustomerEntryDTO.Id)));
 
 
-        var result = await pricingController.GetCustomerWorksheet(testCustomerEntryDTO.Id);
+        var result = await pricingControllerMocks.PricingController.GetCustomerWorksheet(testCustomerEntryDTO.Id);
 
         Assert.NotNull(result);
         var objectResult = Assert.IsType<NotFoundObjectResult>(result);
@@ -277,34 +203,15 @@ public class PricingControllerTests
     [Fact]
     public async Task GetCustomerWorksheet_ShouldReturn200Ok_OnSuccess_WhenEmptyListIsReturned()
     {
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var pricingControllerMocks = new PricingControllerMocks();
 
-        var customerServiceloggerMock = new Mock<ILogger<CustomerService>>();
-        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object, customerServiceloggerMock.Object);
-
-        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
-
-        var serviceProviderMock = new Mock<IServiceProvider>();
-        var productStrategyResolverMock = new Mock<ProductStrategyResolver>(serviceProviderMock.Object);
-
-        var fabricServiceLoggerMock = new Mock<ILogger<FabricService>>();
-        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, fabricServiceLoggerMock.Object);
-
-
-        var productServiceLoggerMock = new Mock<ILogger<ProductService>>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, fabricServiceMock.Object, productStrategyResolverMock.Object, productServiceLoggerMock.Object);
-
-        var worksheetServiceLoggerMock = new Mock<ILogger<WorksheetService>>();
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, worksheetServiceLoggerMock.Object);
-
-        var pricingController = new PricingController(customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        customerServiceMock.Setup(p => p.GetCustomerWorksheetDTOListAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Ok(new List<WorksheetOutputDTO>()));
+        pricingControllerMocks.CustomerServiceMock.Setup(p => p.GetCustomerWorksheetDTOListAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Ok(new List<WorksheetOutputDTO>()));
 
-        var result = await pricingController.GetCustomerWorksheet(testCustomerEntryDTO.Id);
+        var result = await pricingControllerMocks.PricingController.GetCustomerWorksheet(testCustomerEntryDTO.Id);
 
         Assert.NotNull(result);
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
@@ -316,35 +223,16 @@ public class PricingControllerTests
     [Fact]
     public async Task CreateProduct_ShouldReturnOK200_OnSuccess()
     {
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-
-        var customerServiceloggerMock = new Mock<ILogger<CustomerService>>();
-        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object, customerServiceloggerMock.Object);
-
-        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
-
-        var serviceProviderMock = new Mock<IServiceProvider>();
-        var productStrategyResolverMock = new Mock<ProductStrategyResolver>(serviceProviderMock.Object);
-
-        var fabricServiceLoggerMock = new Mock<ILogger<FabricService>>();
-        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, fabricServiceLoggerMock.Object);
+        var pricingControllerMocks = new PricingControllerMocks();
 
 
-        var productServiceLoggerMock = new Mock<ILogger<ProductService>>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, fabricServiceMock.Object, productStrategyResolverMock.Object, productServiceLoggerMock.Object);
-
-        var worksheetServiceLoggerMock = new Mock<ILogger<WorksheetService>>();
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, worksheetServiceLoggerMock.Object);
-
-        var pricingController = new PricingController(customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
-
-        productServiceMock.Setup(p => p.CreateProductAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<ProductCreateInputDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Ok(ProductFixture.TestProductEntryDTOKineticsCellular));
+        pricingControllerMocks.ProductServiceMock.Setup(p => p.CreateProductAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<ProductCreateInputDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Ok(ProductFixture.TestProductEntryDTOKineticsCellular));
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
         var newProductDTO = ProductFixture.TestProductCreateInputDTOKineticsCellular;
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        var result = await pricingController.CreateProduct(testCustomerEntryDTO.Id, testWorksheetDTO.Id, newProductDTO);
+        var result = await pricingControllerMocks.PricingController.CreateProduct(testCustomerEntryDTO.Id, testWorksheetDTO.Id, newProductDTO);
 
         Assert.NotNull(result);
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
@@ -356,35 +244,16 @@ public class PricingControllerTests
     [Fact]
     public async Task CreateProduct_ShouldReturnNotFound404_OnFailure()
     {
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-
-        var customerServiceloggerMock = new Mock<ILogger<CustomerService>>();
-        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object, customerServiceloggerMock.Object);
-
-        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
-
-        var serviceProviderMock = new Mock<IServiceProvider>();
-        var productStrategyResolverMock = new Mock<ProductStrategyResolver>(serviceProviderMock.Object);
-
-        var fabricServiceLoggerMock = new Mock<ILogger<FabricService>>();
-        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, fabricServiceLoggerMock.Object);
+        var pricingControllerMocks = new PricingControllerMocks();
 
 
-        var productServiceLoggerMock = new Mock<ILogger<ProductService>>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, fabricServiceMock.Object, productStrategyResolverMock.Object, productServiceLoggerMock.Object);
-
-        var worksheetServiceLoggerMock = new Mock<ILogger<WorksheetService>>();
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, worksheetServiceLoggerMock.Object);
-
-        var pricingController = new PricingController(customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
-
-        productServiceMock.Setup(p => p.CreateProductAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<ProductCreateInputDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Fail(new ValidationError("Product Type", "null")));
+        pricingControllerMocks.ProductServiceMock.Setup(p => p.CreateProductAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<ProductCreateInputDTO>(), It.IsAny<CancellationToken>())).ReturnsAsync(Result.Fail(new ValidationError("Product Type", "null")));
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
         var newProductDTO = ProductFixture.TestProductCreateInputDTOKineticsCellular;
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        var result = await pricingController.CreateProduct(testCustomerEntryDTO.Id, testWorksheetDTO.Id, newProductDTO);
+        var result = await pricingControllerMocks.PricingController.CreateProduct(testCustomerEntryDTO.Id, testWorksheetDTO.Id, newProductDTO);
 
         Assert.NotNull(result);
         var objectResult = Assert.IsType<BadRequestObjectResult>(result);
@@ -397,39 +266,20 @@ public class PricingControllerTests
     [Fact]
     public async Task GetWorksheetProduct_ShouldReturnOK200_OnSuccess()
     {
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
+        var pricingControllerMocks = new PricingControllerMocks();
 
-        var customerServiceloggerMock = new Mock<ILogger<CustomerService>>();
-        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object, customerServiceloggerMock.Object);
-
-        var sharedUtilityServiceMock = new Mock<SharedUtilityService>(unitOfWorkMock.Object);
-
-        var serviceProviderMock = new Mock<IServiceProvider>();
-        var productStrategyResolverMock = new Mock<ProductStrategyResolver>(serviceProviderMock.Object);
-
-        var fabricServiceLoggerMock = new Mock<ILogger<FabricService>>();
-        var fabricServiceMock = new Mock<FabricService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, fabricServiceLoggerMock.Object);
-
-
-        var productServiceLoggerMock = new Mock<ILogger<ProductService>>();
-        var productServiceMock = new Mock<ProductService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, fabricServiceMock.Object, productStrategyResolverMock.Object, productServiceLoggerMock.Object);
-
-        var worksheetServiceLoggerMock = new Mock<ILogger<WorksheetService>>();
-        var worksheetServiceMock = new Mock<WorksheetService>(unitOfWorkMock.Object, sharedUtilityServiceMock.Object, productStrategyResolverMock.Object, worksheetServiceLoggerMock.Object);
-
-        var pricingController = new PricingController(customerServiceMock.Object, productServiceMock.Object, worksheetServiceMock.Object);
 
         var testWorksheetDTO = WorksheetFixture.TestWorksheetDTO;
         var newProductDTO = ProductFixture.TestProductCreateInputDTOKineticsCellular;
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        worksheetServiceMock.Setup(w => w.GetWorksheetProductsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+        pricingControllerMocks.WorksheetServiceMock.Setup(w => w.GetWorksheetProductsAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
         .ReturnsAsync(Result.Ok(new List<ProductEntryOutputDTO>()
         {
             ProductFixture.TestProductEntryDTOKineticsCellular, ProductFixture.TestProductEntryOutputDTOKineticsRoller
         }));
 
-        var result = await pricingController.GetWorksheetProduct(testCustomerEntryDTO.Id, testWorksheetDTO.Id);
+        var result = await pricingControllerMocks.PricingController.GetWorksheetProduct(testCustomerEntryDTO.Id, testWorksheetDTO.Id);
 
         Assert.NotNull(result);
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
