@@ -28,10 +28,7 @@ public class PricingController : ControllerBase
     [HttpGet("customer/{customerId}/worksheet", Name = "GetCustomerWorksheet")]
     public async Task<IActionResult> GetCustomerWorksheet(Guid customerId, CancellationToken cancellationToken = default)
     {
-        var result = await Result.Try(async Task<Result<List<WorksheetOutputDTO>>> () =>
-        {
-            return await _customerService.GetCustomerWorksheetDTOListAsync(customerId, cancellationToken);
-        });
+        var result = await Result.Try(async Task<Result<List<WorksheetOutputDTO>>> () => await _customerService.GetCustomerWorksheetDTOListAsync(customerId, cancellationToken));
 
         if (result.IsFailed)
         {
@@ -63,10 +60,7 @@ public class PricingController : ControllerBase
     [HttpGet("customer/{customerId}/worksheet/{worksheetId}", Name = "GetWorksheet")]
     public async Task<IActionResult> GetWorksheet(Guid customerId, Guid worksheetId, CancellationToken cancellationToken = default)
     {
-        var result = await Result.Try(async Task<Result<WorksheetOutputDTO>> () =>
-        {
-            return await _worksheetService.GetWorksheetAsync(customerId, worksheetId, cancellationToken);
-        });
+        var result = await Result.Try(async Task<Result<WorksheetOutputDTO>> () => await _worksheetService.GetWorksheetAsync(customerId, worksheetId, cancellationToken));
 
 
         if (result.IsFailed)
@@ -97,10 +91,7 @@ public class PricingController : ControllerBase
     [HttpPost("customer/{customerId}/worksheet", Name = "CreateWorksheet")]
     public async Task<IActionResult> CreateWorksheet(Guid customerId, CancellationToken cancellationToken = default)
     {
-        var result = await Result.Try(async Task<Result<WorksheetOutputDTO>> () =>
-        {
-            return await _worksheetService.CreateWorksheetAsync(customerId, cancellationToken);
-        });
+        var result = await Result.Try(async Task<Result<WorksheetOutputDTO>> () => await _worksheetService.CreateWorksheetAsync(customerId, cancellationToken));
 
         if (result.IsFailed)
         {
@@ -124,10 +115,7 @@ public class PricingController : ControllerBase
     public async Task<IActionResult> CreateProduct(Guid customerId, Guid workoutId, [FromBody] ProductCreateInputDTO productCreateDTO, CancellationToken cancellationToken = default)
     {
 
-        var result = await Result.Try(async Task<Result<ProductEntryOutputDTO>> () =>
-        {
-            return await _productService.CreateProductAsync(customerId, workoutId, productCreateDTO, cancellationToken);
-        });
+        var result = await Result.Try(async Task<Result<ProductEntryOutputDTO>> () => await _productService.CreateProductAsync(customerId, workoutId, productCreateDTO, cancellationToken));
 
         if (result.IsFailed)
         {
@@ -163,10 +151,7 @@ public class PricingController : ControllerBase
     [HttpGet("customer/{customerId}/worksheet/{worksheetId}/product/{productId}", Name = "GetProduct")]
     public async Task<IActionResult> GetProduct(Guid customerId, Guid worksheetId, Guid productId, CancellationToken cancellationToken = default)
     {
-        var result = await Result.Try(async Task<Result<ProductEntryOutputDTO>> () =>
-        {
-            return await _productService.GetProductAsync(customerId, worksheetId, productId, cancellationToken);
-        });
+        var result = await Result.Try(async Task<Result<ProductEntryOutputDTO>> () => await _productService.GetProductAsync(customerId, worksheetId, productId, cancellationToken));
 
         if (result.IsFailed)
         {
@@ -202,10 +187,7 @@ public class PricingController : ControllerBase
     [HttpGet("customer/{customerId}/worksheet/{worksheetId}/product", Name = "GetWorksheetProduct")]
     public async Task<IActionResult> GetWorksheetProduct(Guid customerId, Guid worksheetId, CancellationToken cancellationToken = default)
     {
-        var result = await Result.Try(async Task<Result<List<ProductEntryOutputDTO>>> () =>
-        {
-            return await _worksheetService.GetWorksheetProductsAsync(customerId, worksheetId, cancellationToken);
-        });
+        var result = await Result.Try(async Task<Result<List<ProductEntryOutputDTO>>> () => await _worksheetService.GetWorksheetProductsAsync(customerId, worksheetId, cancellationToken));
 
         if (result.IsFailed)
         {

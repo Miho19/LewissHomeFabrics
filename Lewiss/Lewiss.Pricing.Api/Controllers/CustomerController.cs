@@ -1,3 +1,4 @@
+using FluentResults;
 using Lewiss.Pricing.Shared.CustomerDTO;
 using Lewiss.Pricing.Shared.CustomError;
 using Lewiss.Pricing.Shared.QueryParameters;
@@ -21,18 +22,31 @@ public class CustomerController : ControllerBase
     [HttpGet("{customerId}", Name = "GetCustomer")]
     public async Task<IActionResult> GetCustomer(Guid customerId, CancellationToken cancellationToken = default)
     {
-        var result = await _customerService.GetCustomerByExternalIdAsync(customerId, cancellationToken);
-        if (result is null)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-        }
+        var result = await Result.Try(async Task<Result<CustomerEntryOutputDTO>> () => await _customerService.GetCustomerByExternalIdAsync(customerId, cancellationToken));
 
         if (result.IsFailed)
         {
-            if (result.Errors.Any(e => e is NotFoundResource))
+
+            var validationError = result.Errors.OfType<ValidationError>().FirstOrDefault();
+            if (validationError is not null)
             {
-                return NotFound("Customer not found.");
+                return BadRequest(validationError.Message);
             }
+
+            var notFoundResource = result.Errors.OfType<NotFoundResource>().FirstOrDefault();
+            if (notFoundResource is not null)
+            {
+                return NotFound(notFoundResource.Message);
+            }
+
+            var resourceNotOwned = result.Errors.OfType<ResourceNotOwned>().FirstOrDefault();
+            {
+                if (resourceNotOwned is not null)
+                {
+                    return BadRequest(resourceNotOwned.Message);
+                }
+            }
+
             return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
         }
 
@@ -45,17 +59,36 @@ public class CustomerController : ControllerBase
     [HttpPost("", Name = "CreateCustomer")]
     public async Task<IActionResult> CreateCustomer([FromBody] CustomerCreateInputDTO customerCreateDTO, CancellationToken cancellationToken = default)
     {
-        var result = await _customerService.CreateCustomerAsync(customerCreateDTO, cancellationToken);
-
-        if (result is null)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-        }
+        var result = await Result.Try(async Task<Result<CustomerEntryOutputDTO>> () => await _customerService.CreateCustomerAsync(customerCreateDTO, cancellationToken));
 
         if (result.IsFailed)
         {
-            if (result.Errors.Any(e => e is CustomerAlreadyExists))
+
+            var resourceAlreadyExists = result.Errors.OfType<CustomerAlreadyExists>().FirstOrDefault();
+            if (resourceAlreadyExists is not null)
+            {
                 return Conflict("Customer already exists");
+            }
+
+            var validationError = result.Errors.OfType<ValidationError>().FirstOrDefault();
+            if (validationError is not null)
+            {
+                return BadRequest(validationError.Message);
+            }
+
+            var notFoundResource = result.Errors.OfType<NotFoundResource>().FirstOrDefault();
+            if (notFoundResource is not null)
+            {
+                return NotFound(notFoundResource.Message);
+            }
+
+            var resourceNotOwned = result.Errors.OfType<ResourceNotOwned>().FirstOrDefault();
+            {
+                if (resourceNotOwned is not null)
+                {
+                    return BadRequest(resourceNotOwned.Message);
+                }
+            }
 
             return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
         }
@@ -68,15 +101,31 @@ public class CustomerController : ControllerBase
     [HttpGet("", Name = "GetCustomers")]
     public async Task<IActionResult> GetCustomers([FromQuery] GetCustomerQueryParameters getCustomerQueryParameters, CancellationToken cancellationToken = default)
     {
-        var result = await _customerService.GetCustomersAsync(getCustomerQueryParameters, cancellationToken);
-
-        if (result is null)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
-        }
+        var result = await Result.Try(async Task<Result<List<CustomerEntryOutputDTO>>> () => await _customerService.GetCustomersAsync(getCustomerQueryParameters, cancellationToken));
 
         if (result.IsFailed)
         {
+
+            var validationError = result.Errors.OfType<ValidationError>().FirstOrDefault();
+            if (validationError is not null)
+            {
+                return BadRequest(validationError.Message);
+            }
+
+            var notFoundResource = result.Errors.OfType<NotFoundResource>().FirstOrDefault();
+            if (notFoundResource is not null)
+            {
+                return NotFound(notFoundResource.Message);
+            }
+
+            var resourceNotOwned = result.Errors.OfType<ResourceNotOwned>().FirstOrDefault();
+            {
+                if (resourceNotOwned is not null)
+                {
+                    return BadRequest(resourceNotOwned.Message);
+                }
+            }
+
             return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
         }
 

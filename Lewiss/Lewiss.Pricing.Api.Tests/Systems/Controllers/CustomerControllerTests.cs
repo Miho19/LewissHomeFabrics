@@ -22,22 +22,40 @@ public class CustomerControllerTests
         _logger = testOutputHelper;
     }
 
+    private class CustomerControllerMocks
+    {
+        public Mock<IUnitOfWork> UnitOfWorkMock;
+
+        public Mock<ILogger<CustomerService>> CustomerServiceloggerMock;
+        public Mock<CustomerService> CustomerServiceMock;
+
+        public Mock<ILogger<CustomerController>> CustomerControllerloggerMock;
+        public CustomerController CustomerController;
+
+        public CustomerControllerMocks()
+        {
+            UnitOfWorkMock = new Mock<IUnitOfWork>();
+            CustomerControllerloggerMock = new Mock<ILogger<CustomerController>>();
+            CustomerServiceloggerMock = new Mock<ILogger<CustomerService>>();
+            CustomerServiceMock = new Mock<CustomerService>(UnitOfWorkMock.Object, CustomerServiceloggerMock.Object);
+            CustomerController = new CustomerController(CustomerServiceMock.Object, CustomerControllerloggerMock.Object);
+        }
+    }
+
+
+
 
     [Fact]
     public async Task GetCustomer_ShouldReturnOkWithCustomerEntryDTO_OnSuccess()
     {
-        var unitOfWorkMock = new Mock<IUnitOfWork>();
-        var customerControllerloggerMock = new Mock<ILogger<CustomerController>>();
-        var customerServiceloggerMock = new Mock<ILogger<CustomerService>>();
+        var customerControllerMocks = new CustomerControllerMocks();
 
-        var customerServiceMock = new Mock<CustomerService>(unitOfWorkMock.Object, customerServiceloggerMock.Object);
-        var customerController = new CustomerController(customerServiceMock.Object, customerControllerloggerMock.Object);
         var testCustomerEntryDTO = CustomerFixture.TestCustomerEntryDTO;
 
-        customerServiceMock.Setup(p => p.GetCustomerByExternalIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+        customerControllerMocks.CustomerServiceMock.Setup(p => p.GetCustomerByExternalIdAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
         .ReturnsAsync(testCustomerEntryDTO);
 
-        var result = await customerController.GetCustomer(testCustomerEntryDTO.Id);
+        var result = await customerControllerMocks.CustomerController.GetCustomer(testCustomerEntryDTO.Id);
 
         Assert.NotNull(result);
         var okObjectResult = Assert.IsType<OkObjectResult>(result);
